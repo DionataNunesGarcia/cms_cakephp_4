@@ -14,7 +14,8 @@
 .Spotlight-V100
 .Trashes
 # Icon must end with two \r
-Icon
+Icon
+
 ehthumbs.db
 Thumbs.db
 .directory
@@ -50,3 +51,17 @@ nbproject/*
 # yarn
 yarn-debug.log
 yarn-error.log
+
+# CakePHP specific files #
+##########################
+/config/app.php
+/webroot/upload/*
+/config/Migrations/schema-dump-default.lock
+
+### Docker ###
+.docker/nginx/log
+.docker/app/log
+.docker/database/dumps
+.docker/database/data
+!.docker/database/dumps/.gitkeep
+!.docker/database/data/.gitkeep
