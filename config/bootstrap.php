@@ -221,3 +221,19 @@ TypeFactory::map('time', StringType::class);
 //Inflector::rules('plural', ['/^(inflect)or$/i' => '\1ables']);
 //Inflector::rules('irregular', ['red' => 'redlings']);
 //Inflector::rules('uninflected', ['dontinflectme']);
+
+
+date_default_timezone_set('America/Belem');
+setlocale(LC_ALL, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
+
+
+Configure::write('Client', [
+    'name' => 'Client Name',
+    'link' => '#',
+    'skin' => 'skin-blue-light',
+    'logo' => [
+        'large' => 'Client <b>Name</b>'
+    ],
+]);
+
+//require ('functions.php');

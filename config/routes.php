@@ -88,4 +88,14 @@ return static function (RouteBuilder $routes) {
      * });
      * ```
      */
+    $routes->prefix('Admin', function (RouteBuilder $routes) {
+        // All routes here will be prefixed with `/admin`, and
+        // have the `'prefix' => 'Admin'` route element added that
+        // will be required when generating URLs for these routes
+        $routes->connect('/', ['controller' => 'Admin', 'action' => 'index']);
+        $routes->connect('/logout', ['controller' => 'Users', 'action' => 'logout']);
+        $routes->connect('/login', ['controller' => 'Users', 'action' => 'login']);
+
+        $routes->fallbacks(DashedRoute::class);
+    });
 };
