@@ -93,7 +93,11 @@ class UsersDatatablesService extends DatatablesService
         return $query;
     }
 
-    private function handleResponse($results)
+    /**
+     * @param array $results
+     * @return array
+     */
+    private function handleResponse(array $results) :array
     {
         $router = Router::url('/', true);
         $response = [];

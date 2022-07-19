@@ -92,7 +92,11 @@ class LevelsDatatablesService extends DatatablesService
         return $query;
     }
 
-    private function handleResponse($results)
+    /**
+     * @param array $results
+     * @return array
+     */
+    private function handleResponse(array $results) :array
     {
         $response = [];
         foreach ($results as $item) {

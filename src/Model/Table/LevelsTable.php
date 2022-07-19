@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Model\Table;
 
+use App\Model\Entity\Level;
+use App\Model\Entity\User;
 use App\Utils\Enum\StatusEnum;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
@@ -84,5 +86,27 @@ class LevelsTable extends Table
             ->notEmptyString('deletable');
 
         return $validator;
+    }
+
+    /**
+     * @param int|null $id
+     * @return Level
+     */
+    public function getEntity(int $id = null) :Level
+    {
+        if ($id) {
+            $entity = $this
+                ->get($id, [
+                    'contain' => [
+                        "LevelsPermissions",
+                    ]
+                ]);
+            $entity->permissions = [];
+            foreach ($entity->levels_permissions as $permission) {
+                $entity->permissions[] = "{$permission->prefix}:{$permission->controller}:{$permission->action}";
+            }
+            return $entity;
+        }
+        return $this->newEntity(['permissions']);
     }
 }

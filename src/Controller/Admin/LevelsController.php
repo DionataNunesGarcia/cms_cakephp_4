@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Error\Exception\ValidationErrorException;
 use App\Services\Datatables\LevelsDatatablesService;
 use App\Services\Datatables\UsersDatatablesService;
 use App\Services\Form\LevelsFormService;
@@ -50,9 +51,6 @@ class LevelsController extends AdminController
      */
     public function index()
     {
-        $levels = $this->paginate($this->Levels);
-
-        $this->set(compact('levels'));
     }
 
     /**
@@ -71,21 +69,24 @@ class LevelsController extends AdminController
     /**
      * Add method
      *
-     * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
+     * @return \Cake\Http\Response|void|null
      */
     public function add()
     {
-        $level = $this->Levels->newEmptyEntity();
-        if ($this->request->is('post')) {
-            $level = $this->Levels->patchEntity($level, $this->request->getData());
-            if ($this->Levels->save($level)) {
-                $this->Flash->success(__('The level has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
+        $entity = $this->_formService->getEntity();
+        if ($this->getRequest()->is('post')) {
+            try {
+                $response = $this->_managerService->saveEntity();
+                $this->Flash->success($response['message']);
+                return $this->redirect(['action' => 'edit', $response['data']->id]);
+            } catch (ValidationErrorException $ex) {
+                $entity = $ex->getEntity();
+                $this->Flash->error($ex->getMessage());
             }
-            $this->Flash->error(__('The level could not be saved. Please, try again.'));
         }
-        $this->set(compact('level'));
+        $permissionsList = $this->getPermissionsList('Admin');
+        $this->set(compact('entity', 'permissionsList'));
+        $this->render('edit');
     }
 
     /**
@@ -95,41 +96,47 @@ class LevelsController extends AdminController
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function edit($id = null)
+    public function edit(int $id = null)
     {
-        $level = $this->Levels->get($id, [
-            'contain' => [],
-        ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $level = $this->Levels->patchEntity($level, $this->request->getData());
-            if ($this->Levels->save($level)) {
-                $this->Flash->success(__('The level has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
+        $this->_formService->setId($id);
+        $entity = $this->_formService->getEntity();
+        if ($this->getRequest()->is(['patch', 'post', 'put'])) {
+            try {
+                $this->_managerService->setId($id);
+                $response = $this->_managerService->saveEntity();
+                $this->Flash->success($response['message']);
+                return $this->redirect(['action' => 'edit', $response['data']->id]);
+            } catch (ValidationErrorException $ex) {
+                $entity = $ex->getEntity();
+                $this->Flash->error($ex->getMessage());
             }
-            $this->Flash->error(__('The level could not be saved. Please, try again.'));
         }
-        $this->set(compact('level'));
+        $permissionsList = $this->getPermissionsList('Admin');
+        $this->set(compact('entity', 'permissionsList'));
     }
 
     /**
      * Delete method
      *
-     * @param string|null $id Level id.
+     * @param string|null $id User id.
      * @return \Cake\Http\Response|null|void Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function delete($id = null)
+    public function delete($ids)
     {
         $this->request->allowMethod(['post', 'delete']);
-        $level = $this->Levels->get($id);
-        if ($this->Levels->delete($level)) {
-            $this->Flash->success(__('The level has been deleted.'));
-        } else {
-            $this->Flash->error(__('The level could not be deleted. Please, try again.'));
+        $this->RequestHandler->renderAs($this,'json');
+        try {
+            $response = $this->_managerService->deletedEntities($ids);
+        } catch (\Exception $exc) {
+            $code = $exc->getCode() != 0? $exc->getCode() : 403;
+            $this->response = $this->response->withStatus($code);
+            $response = [
+                'message' => $exc->getMessage(),
+            ];
         }
-
-        return $this->redirect(['action' => 'index']);
+        $this->set(compact('response'));
+        $this->set('_serialize', 'response');
     }
 
     /**

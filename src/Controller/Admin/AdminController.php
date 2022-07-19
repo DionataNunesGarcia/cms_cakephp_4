@@ -189,10 +189,10 @@ class AdminController extends AppController
         $className = "App\\Controller\\" . $prefix . $controllerName . 'Controller';
 
         //Reflection this class
-        $class = new ReflectionClass($className);
+        $class = new \ReflectionClass($className);
 
         //List all public actions
-        $actions = $class->getMethods(ReflectionMethod::IS_PUBLIC);
+        $actions = $class->getMethods(\ReflectionMethod::IS_PUBLIC);
 
         //Get list ignore actions
         $ignoreList = $this->getActionsIgnoreController($controllerName, str_replace('\\', '', $prefix));

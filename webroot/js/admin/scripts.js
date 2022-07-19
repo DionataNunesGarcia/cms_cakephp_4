@@ -49,16 +49,16 @@ $(document).ready(function () {
     }
 
     //Seleciona todos as actions do controlador ao clicar
-    $('.seleciona-perfis [name=selecionar-todos]').click(function () {
+    $('.select-profiles [name=select_all]').click(function () {
         var id = $(this).data('controller');
 
         $('#' + id + ' input:checkbox').not(this).prop('checked', this.checked);
     });
 
-    if ($('.seleciona-perfis').length) {
-        $('.seleciona-perfis').each(function () {
-            if ($('#' + this.id + '.seleciona-perfis [name*=action]').length === $('#' + this.id + '.seleciona-perfis [name*=action]:checked').length) {
-                $('#' + this.id + '.seleciona-perfis [name*=selecionar-todos]').prop('checked', true);
+    if ($('.select-profiles').length) {
+        $('.select-profiles').each(function () {
+            if ($('#' + this.id + '.select-profiles [name*=levelsPermissions]').length === $('#' + this.id + '.select-profiles [name*=levelsPermissions]:checked').length) {
+                $('#' + this.id + '.select-profiles [name*=select_all]').prop('checked', true);
             }
         });
     }

@@ -2,12 +2,24 @@
 
 namespace App\Services\Manager;
 
+use App\Error\Exception\ValidationErrorException;
+use App\Model\Table\LevelsPermissionsTable;
+use App\Model\Table\LevelsTable;
 use App\Services\DefaultService;
+use App\Utils\Enum\HttpStatusCodeEnum;
+use App\Utils\Enum\StatusEnum;
 use Cake\Controller\Controller;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\Entity;
+use Cake\ORM\TableRegistry;
 
 class LevelsManagerService extends DefaultService
 {
+    /**
+     * @var LevelsPermissionsTable
+     */
+    private $_levelsPermissionsTable;
+
     /**
      * @param Controller $controller
      */
@@ -15,6 +27,7 @@ class LevelsManagerService extends DefaultService
     {
         $this->setModel('Levels');
         parent::__construct($controller);
+        $this->_levelsPermissionsTable = TableRegistry::getTableLocator()->get('LevelsPermissions');
     }
 
     public function saveEntity()
@@ -22,49 +35,64 @@ class LevelsManagerService extends DefaultService
         $entity = $this->_controller
             ->{$this->getModel()}
             ->patchEntity($this->getEntity(), $this->_request->getData());
-        try {
-            if ($this->_controller->{$this->getModel()}->save($entity)) {
-                return $entity;
-            }
-            debug($entity);
-        } catch (\Exception $ex) {
-            debug($entity);
-            $this->renderizaErro($entity);
+        if (!$this->_controller->{$this->getModel()}->save($entity)) {
+            throw new ValidationErrorException($entity);
         }
-        die;
+
+        $this->saveLevelsPermissions($entity);
+        $this->response['data'] = $entity;
+        return $this->response;
     }
 
-    public function delete($ids)
+    public function deletedEntities($ids)
     {
+        $ids = explode(',', $ids);
         if (empty($ids)) {
-            $this->_controller->Flash->error('Nenhum registro foi selecionado.');
-            return $this->_controller->redirect($this->_controller->referer());
+            throw new \Exception("Nenhum registro foi selecionado", HttpStatusCodeEnum::BAD_REQUEST);
         }
 
-        $entidades = $this->_controller->ContasReceber
+        $entities = $this->_controller->{$this->getModel()}
             ->find()
             ->where([
                 'id IN'  => $ids,
             ])
-            ->combine('id', 'nome');
+            ->toArray();
 
-        $resultado = $this->_controller->ContasReceber->excluir($ids);
-        if (!$resultado) {
-            throw new \Exception("Erro ao deletar o(s) titulo(s).", HttpStatusCodeHelper::BAD_REQUEST);
+        foreach ($entities as $entity) {
+            $entity->status = StatusEnum::EXCLUDED;
+            $entity->modified = FrozenTime::now();
+            if (!$this->_controller->{$this->getModel()}->save($entity)) {
+                throw new ValidationErrorException($entity, "Erro ao deletar o Nível {$entity->user}");
+            }
         }
-        return [
-            'entidades' => $entidades,
-            'resultado' => $resultado
-        ];
+        $this->response['data'] = $entities;
+        $this->response['status'] = HttpStatusCodeEnum::RESET_CONTENT;
+        return $this->response;
     }
 
     /**
-     * @param Entity $entidade
+     * @param Entity $level
      * @return void
      */
-    public function renderizaErro(Entity $entity)
+    private function saveLevelsPermissions(Entity $level) :void
     {
-        $this->_controller->Flash->error('Falha ao salvar o Usuário. Verifique se você preencheu todos os campos corretamente.');
-        $this->_controller->set('entity', $entity);
+        $levelsPermissions = $this->_request->getData('levelsPermissions');
+        $this->_levelsPermissionsTable
+            ->deleteAll([
+                'level_id' => $level->id
+            ]);
+        foreach ($levelsPermissions as $permission) {
+            $entity = $this->_levelsPermissionsTable->newEntity([]);
+            list($prefix, $controller, $action) = explode(':', $permission);
+
+            $entity->level_id = $level->id;
+            $entity->prefix = $prefix;
+            $entity->controller = $controller;
+            $entity->action = $action;
+
+            if (!$this->_levelsPermissionsTable->save($entity)) {
+                throw new ValidationErrorException($entity, "Erro ao salvar a permissão");
+            }
+        }
     }
 }
