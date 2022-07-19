@@ -60,7 +60,7 @@ class UsersController extends AdminController
     /**
      * @return string[]
      */
-    public static function ignoreListActions() :array
+    public static function ignoreListActionsCustom() :array
     {
         return [
             'login',
@@ -205,7 +205,14 @@ class UsersController extends AdminController
             $result = $this->Authentication->getResult();
             // regardless of POST or GET, redirect if user is logged in
             if ($result->isValid()) {
-                // redirect to /articles after login success
+                $user = $this->_formService->buildUserLogged($result->getData()->id);
+                if (!$user) {
+                    $this->Authentication->logout();
+                    $this->Flash->success(__('Você não tem permissão para acessar o sistema, converse com um administrador.'));
+                    return $this->redirect(['controller' => 'Users', 'action' => 'login']);
+                }
+                $this->Authentication->setIdentity($user);
+                // redirect to /admin/index after login success
                 $redirect = $this->request->getQuery('redirect', [
                     'controller' => 'Admin',
                     'action' => 'index',
@@ -221,8 +228,13 @@ class UsersController extends AdminController
     }
 
     public function logout() {
-        $this->Flash->success(__('Você saiu do sistema.'));
-        return $this->redirect($this->Auth->logout());
+        $result = $this->Authentication->getResult();
+        // regardless of POST or GET, redirect if user is logged in
+        if ($result->isValid()) {
+            $this->Authentication->logout();
+            $this->Flash->success(__('Você saiu do sistema.'));
+            return $this->redirect(['controller' => 'Users', 'action' => 'login']);
+        }
     }
 
 }

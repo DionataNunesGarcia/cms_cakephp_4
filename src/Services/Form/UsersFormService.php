@@ -2,6 +2,7 @@
 
 namespace App\Services\Form;
 
+use App\Model\Entity\User;
 use App\Services\DefaultService;
 use App\Utils\Enum\StatusEnum;
 use Cake\Controller\Controller;
@@ -53,6 +54,22 @@ class UsersFormService extends DefaultService
             ]);
         }
         return $query->toArray();
+    }
+
+    public function buildUserLogged(int $userId)
+    {
+        return $this->_controller
+            ->{$this->getModel()}
+            ->find()
+            ->where([
+                "{$this->getModel()}.id" => $userId,
+                "{$this->getModel()}.status" => StatusEnum::ACTIVE,
+            ])
+            ->contain([
+                "Levels.LevelsPermissions",
+                "Avatar"
+            ])
+            ->firstOrFail();
     }
 
 }

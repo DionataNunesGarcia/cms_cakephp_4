@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Controller\AppController;
+use App\Utils\TranslateControllerActions;
+use Authentication\Authenticator\UnauthenticatedException;
 use Cake\Core\Configure;
 use Cake\Event\EventInterface;
 
@@ -48,27 +50,36 @@ class AdminController extends AppController
     public function beforeFilter(EventInterface $event)
     {
         $result = $this->Authentication->getResult();
-
         if (strtolower($this->request->getParam('prefix')) == 'admin' && $result->isValid()) {
 
-            $this->set([
-                '_csrfToken' => $this->request->getCookie('csrfToken')
-            ]);
-            if (in_array($this->getRequest()->getParam('action'), ['delete'])) {
-                $this->Security->setConfig('validatePost', false);
-            }
+            $this->configurePrefixAdmin($result);
+        }
+    }
 
-            $this->viewBuilder()->setLayout('admin');
-            $this->userSession = $result->getData()->toArray();
-            Configure::write('SessionUser', $this->userSession);
-            $this->set([
-                'userSession' => $this->userSession
-            ]);
+    /**
+     * @param $result
+     * @return \Cake\Http\Response|void|null
+     */
+    private function configurePrefixAdmin($result)
+    {
+        $this->viewBuilder()->setLayout('admin');
+        $this->set([
+            '_csrfToken' => $this->request->getCookie('csrfToken')
+        ]);
+        if (in_array($this->getRequest()->getParam('action'), ['delete'])) {
+            $this->Security->setConfig('validatePost', false);
+        }
+        $this->userSession = $result->getData()->toArray();
+        Configure::write('SessionUser', $this->userSession);
+        $this->set([
+            'userSession' => $this->userSession
+        ]);
 
-            if (!empty($userSession) && !$this->hasPermission($userSession)) {
-                $this->Flash->error(__('Você não tem permissão para acessar essa URL "' . $this->request->here . '"'));
-                return $this->redirect(['controller' => 'Home', 'action' => 'index']);
-            }
+        try {
+            $this->hasPermission();
+        } catch (UnauthenticatedException $ex) {
+            $this->Flash->error(__($ex->getMessage()));
+            return $this->redirect(['controller' => 'Admin', 'action' => 'index']);
         }
     }
 
@@ -84,17 +95,16 @@ class AdminController extends AppController
             'AppController.php',
             'AdminController.php',
             //não terá cadastro no sistema
-//            'CidadesController.php',
-//            'EstadosController.php',
-//            'StatusController.php',
+            'CitiesController.php',
+            'StatesController.php',
+            'StatusController.php',
         ];
     }
 
     /**
-     * @param array|null $usuario
      * @return bool
      */
-    private function hasPermission(array $usuario = null) :bool
+    private function hasPermission() :bool
     {
         $controller = $this->request->getParam('controller');
         $action = $this->request->getParam('action');
@@ -102,32 +112,35 @@ class AdminController extends AppController
         //Se tiver prefixo preenche, se não deixa null
         $prefix = $this->request->getParam('prefix');
 
-        //Verifica se o controller atual existe na lista de ignorado
-        if (in_array("{$controller}.Controller.php", self::ignoreControllerList())) {
+        if ($this->userSession['super']) {
             return true;
         }
 
-        //Busca a lista de actions ignoradas por controller
+        // verify if controller exist in ignore list
+        if (in_array("{$controller}Controller.php", self::ignoreControllerList())) {
+            return true;
+        }
+
+        //get actions list ignored by controller
         $ignoreListActions = $this->getActionsIgnoreController($controller, $prefix);
         if (in_array($action, $ignoreListActions)) {
             return true;
         }
 
-        if (!empty($usuario)) {
-            foreach ($usuario['niveis']['niveisPermissoes'] AS $permissoes) {
+        if (!empty($this->userSession['level']['levels_permissions'])) {
+            foreach ($this->userSession['level']['levels_permissions'] AS $permission) {
                 if (
-                    (strtolower($permissoes['action']) === strtolower($action))
-                    && (strtolower($permissoes['controller']) === strtolower($controller))
-                    && (strtolower($permissoes['prefix']) === strtolower($prefix))
+                    (strtolower($permission['action']) === strtolower($action))
+                    && (strtolower($permission['controller']) === strtolower($controller))
+                    && (strtolower($permission['prefix']) === strtolower($prefix))
                 ) {
                     return true;
                 }
             }
-        } else {
-            $this->Auth->config('authError', false);
         }
-
-        return false;
+        $controllerTranslate = TranslateControllerActions::translateController($controller);
+        $actionTranslate = TranslateControllerActions::translateAction($action);
+        throw new UnauthenticatedException("Você não tem permissão para executar a seguinte ação: {$prefix}/{$controllerTranslate}/{$actionTranslate}");
     }
 
     public function getControllers($prefix = null) {
@@ -155,6 +168,7 @@ class AdminController extends AppController
             'ignoreListActions',
             'autocomplete',
             'removeUploads',
+            'searchAjax',
             'cropImageAjax',
             'download',
         ];
@@ -165,12 +179,12 @@ class AdminController extends AppController
         //Concat prefix
         $prefix = !empty($prefix) ? ucfirst($prefix) . '\\' : '';
 
-        //Monta o nome da class
+        //build the class name
         $className = 'App\\Controller\\' . $prefix . $controllerName . 'Controller';
 
         $ignoreListActions = [];
-        if (method_exists($className, 'ignoreListActions')) {
-            $ignoreListActions = $className::ignoreListActions();
+        if (method_exists($className, 'ignoreListActionsCustom')) {
+            $ignoreListActions = $className::ignoreListActionsCustom();
         }
         return array_merge(self::ignoreListActions(), $ignoreListActions);
     }
@@ -179,6 +193,7 @@ class AdminController extends AppController
      * @param string $controllerName
      * @param string|null $prefix
      * @return array[]
+     * @throws \ReflectionException
      */
     public function getActionsList(string $controllerName, string $prefix = null) :array
     {
@@ -213,6 +228,7 @@ class AdminController extends AppController
     /**
      * @param string|null $prefix
      * @return array
+     * @throws \ReflectionException
      */
     public function getPermissionsList(string$prefix = null) :array
     {

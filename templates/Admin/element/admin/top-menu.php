@@ -59,13 +59,13 @@ use App\Utils\ConvertDates;
                         <!-- Menu Footer-->
                         <li class="user-footer">
                             <div class="pull-left">
-                                <a href="<?= $this->Url->build(null, ['prefix' => 'Admin', 'controller' => 'Users', 'action' => 'profile'], true); ?>" class="btn btn-default btn-flat" data-auth="false">
+                                <a href="<?= $this->Url->build(['prefix' => 'Admin', 'controller' => 'Users', 'action' => 'profile'], ['fullBase' => true]); ?>" class="btn btn-default btn-flat" data-auth="false">
                                     <i class="fa fa-user-o"></i>
                                     <?= __('Perfil') ?>
                                 </a>
                             </div>
                             <div class="pull-right">
-                                <a href="<?= $this->Url->build(null, ['prefix' => 'admin', 'controller' => 'Users', 'action' => 'logout'], true); ?>" class="btn btn-default btn-flat" data-auth="false">
+                                <a href="<?= $this->Url->build(['prefix' => 'Admin', 'controller' => 'Users', 'action' => 'logout'], ['fullBase' => true]); ?>" class="btn btn-default btn-flat" data-auth="false">
                                     <i class="fa fa-sign-out"></i>
                                     <?= __('Sair') ?>
                                 </a>
