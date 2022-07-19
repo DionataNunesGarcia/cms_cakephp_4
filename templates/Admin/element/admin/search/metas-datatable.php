@@ -1,5 +1,4 @@
-<?= $this->Html->css('https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css', ['block' => 'custom']) ?>
-<?= $this->Html->css('https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap.min.css', ['block' => 'custom']) ?>
+<?= $this->Html->css('https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap.min.css', ['block' => 'custom']) ?>
 <?= $this->Html->css('https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css', ['block' => 'custom']) ?>
 <?= $this->Html->css('https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css', ['block' => 'custom']) ?>
 <?= $this->Html->css('https://cdn.datatables.net/rowgroup/1.1.3/css/rowGroup.dataTables.min.css', ['block' => 'custom']) ?>
