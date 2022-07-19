@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace App\Model\Table;
 
+use App\Model\Entity\User;
+use Cake\Datasource\EntityInterface;
+use Cake\Event\Event;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -87,12 +90,7 @@ class UsersTable extends Table
         $validator
             ->scalar('password')
             ->maxLength('password', 255)
-            ->requirePresence('password', 'create')
-            ->notEmptyString('password');
-
-        $validator
-            ->boolean('status')
-            ->notEmptyString('status');
+            ->requirePresence('password', 'create');
 
         $validator
             ->boolean('super')
@@ -114,8 +112,36 @@ class UsersTable extends Table
      */
     public function buildRules(RulesChecker $rules): RulesChecker
     {
+        $rules->add($rules->isUnique(['user'],
+            'Esse Usuário já estão sendo usado.'
+        ));
         $rules->add($rules->existsIn('level_id', 'Levels'), ['errorField' => 'level_id']);
 
         return $rules;
+    }
+
+    public function beforeMarshal(Event $event, \ArrayObject $data, \ArrayObject $options)
+    {
+        if (!empty($data['id']) && empty($data['password'])) {
+            unset($data['password']);
+        }
+    }
+
+    /**
+     * @param int|null $id
+     * @return User
+     */
+    public function getEntity(int $id = null) :User
+    {
+        if ($id) {
+            return $this
+                ->get($id, [
+                    'contain' => [
+                        "Levels",
+                        "Avatar"
+                    ]
+                ]);
+        }
+        return $this->newEntity([]);
     }
 }

@@ -44,8 +44,8 @@
             <table class="table table-datatable table-striped table-bordered nowrap " id="table-index" style="width: 100%">
                 <thead>
                 <tr>
-                    <th>
-                        <?= $this->Form->checkbox('select-all', ['hiddenField' => false]); ?>
+                    <th class="text-center">
+                        <?= $this->Form->checkbox('select_all', ['hiddenField' => false]); ?>
                     </th>
                     <th>
                     </th>
@@ -61,7 +61,7 @@
                     <th>
                         <?= __('Criado') ?>
                     </th>
-                    <th>
+                    <th class="text-center actions">
                         <?= __('Ações') ?>
                     </th>
                 </tr>
@@ -81,7 +81,7 @@
         ]);
     ?>";
 
-    $('#table-index').DataTable({
+    let datatableCurrent = $('#table-index').DataTable({
         serverSide: true,
         responsive: true,
         ajax: urlDatatable,
@@ -89,13 +89,14 @@
         paging: true,
         ordering: false,
         processing: true,
-        language: configDatatables.language,
+        language: datatablesCustom.configDatatables().language,
         dataFilter: function(res) {
             debugger;
         },
         columns: [
             {
                 data: 'id',
+                className: 'text-center',
                 render: function(data, type, full, meta) {
                     let disabled = '';
                     return '<input type="checkbox" name="selected[]" value="' + data + '" ' + disabled + '>';
@@ -103,6 +104,7 @@
             },
             {
                 data: 'avatar',
+                className: 'text-center',
                 render: function(data, type, full, meta) {
                     return '<img src="' + data + '" class="avatar">';
                 }
@@ -121,25 +123,11 @@
             },
             {
                 data: 'actions',
+                className: 'text-center',
                 render: function(data, type, full, meta) {
-
-                    let entity = encodeURIComponent(JSON.stringify(full.entity));
                     let html = ``;
-                    if (full.actions.edit) {
-                        html += `
-                          <a class="btn btn-success btn-xs btn-edit" href="${full.actions.edit}">
-                            <i class="fa fa-edit"></i>
-                          </a>
-                        `;
-                    }
-                    if (full.actions.delete) {
-                        html += `
-                          <a class="btn btn-danger btn-xs btn-delete" href="${full.actions.delete}">
-                            <i class="fa fa-trash"></i>
-                          </a>
-                        `;
-                    }
-
+                    html += datatablesCustom.buildBtnEdit(full.actions.edit);
+                    html += datatablesCustom.buildBtnDelete(full.actions.delete);
                     return html;
                 }
             },

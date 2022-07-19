@@ -39,6 +39,12 @@ class StatusEnum
         self::FINISHED => 'Finalizado',
     ];
 
+    const ARRAY_SIMPLE = [
+        self::ACTIVE => 'Ativo',
+        self::INACTIVE => 'Inativo',
+        self::BLOCKED => 'Bloqueado',
+    ];
+
     public static function getType($type) {
         return self::ARRAY_STR[$type];
     }

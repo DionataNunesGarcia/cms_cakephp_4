@@ -48,16 +48,6 @@ class DatatablesService extends DefaultService
     protected int $draft;
 
     /**
-     * @var string
-     */
-    protected string $__model;
-
-    /**
-     * @var TableRegistry
-     */
-    protected $__table;
-
-    /**
      * DatatablesService constructor.
      */
     public function __construct($controller)
@@ -79,25 +69,9 @@ class DatatablesService extends DefaultService
             $this->limit = $query['length'];
             $this->offset = $query['start'];
             $this->draw = $query['draw'];
-//            $this->order = $query['order'] ?? [];
+            $this->order = $query['order'] ?? [];
             $this->search = $query['search'];
             $this->draft = $query['draft'] ?? 1;
         }
-    }
-
-    /**
-     * @return string
-     */
-    public function getModel()
-    {
-        return $this->__model;
-    }
-
-    /**
-     * @param string $_model
-     */
-    public function setModel(string $_model)
-    {
-        $this->__model = $_model;
     }
 }

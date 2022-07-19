@@ -31,6 +31,7 @@ use Authentication\Middleware\AuthenticationMiddleware;
 use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\AuthenticationServiceProviderInterface;
+use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -81,6 +82,22 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
      */
     public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
     {
+        $csrf = new CsrfProtectionMiddleware([
+            'httponly' => true,
+        ]);;
+
+        // Token check will be skipped when callback returns `true`.
+        $csrf->skipCheckCallback(function ($request) {
+            // Skip token check for API URLs.
+            $actions = [
+                'delete',
+                'autocomplete'
+            ];
+            if ($request->getParam('prefix') === 'Admin' && in_array($request->getParam('action'), $actions)) {
+                return true;
+            }
+        });
+
         $middlewareQueue
             // Catch any exceptions in the lower layers,
             // and make an error page/response
@@ -106,9 +123,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
 
             // Cross Site Request Forgery (CSRF) Protection Middleware
             // https://book.cakephp.org/4/en/security/csrf.html#cross-site-request-forgery-csrf-middleware
-            ->add(new CsrfProtectionMiddleware([
-                'httponly' => true,
-            ]))
+            ->add($csrf)
             ->add(new AuthenticationMiddleware($this));
 
         return $middlewareQueue;

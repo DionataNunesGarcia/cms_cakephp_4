@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Services\Form\LevelsFormService;
+use App\Services\Manager\LevelsManagerService;
+
 /**
  * Levels Controller
  *
@@ -11,6 +14,27 @@ namespace App\Controller\Admin;
  */
 class LevelsController extends AdminController
 {
+    /**
+     * @var LevelsFormService $_formService
+     */
+    private LevelsFormService $_formService;
+
+    /**
+     * @var LevelsManagerService $_managerService
+     */
+    private LevelsManagerService $_managerService;
+
+    /**
+     * @return void
+     */
+    public function initialize(): void
+    {
+        parent::initialize();
+
+        $this->_formService = new LevelsFormService($this);
+        $this->_managerService = new LevelsManagerService($this);
+    }
+
     /**
      * Index method
      *
@@ -101,5 +125,20 @@ class LevelsController extends AdminController
         }
 
         return $this->redirect(['action' => 'index']);
+    }
+
+    /**
+     * autocomplete method
+     *
+     * @return \Cake\Http\Response|void
+     */
+    public function autocomplete()
+    {
+        $response = $this->_formService
+            ->getAutocomplete();
+
+        $this->RequestHandler->renderAs($this, 'json');
+        $this->set(compact('response'));
+        $this->set('_serialize', 'response');
     }
 }

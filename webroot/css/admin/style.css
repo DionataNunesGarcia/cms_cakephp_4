@@ -6,7 +6,7 @@
     max-height: 35px;
 }
 
-#excluir-selecionados{
+#deleted-selected {
     margin-left: 5px;
     display: none;
 }

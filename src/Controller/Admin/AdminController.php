@@ -24,6 +24,10 @@ class AdminController extends AppController
         $this->loadComponent('Flash');
 
         $this->loadComponent('Authentication.Authentication');
+
+        $this->loadComponent('Security');
+
+        $this->loadComponent('RequestHandler');
     }
 
 
@@ -44,7 +48,16 @@ class AdminController extends AppController
     public function beforeFilter(EventInterface $event)
     {
         $result = $this->Authentication->getResult();
+
         if (strtolower($this->request->getParam('prefix')) == 'admin' && $result->isValid()) {
+
+            $this->set([
+                '_csrfToken' => $this->request->getCookie('csrfToken')
+            ]);
+            if (in_array($this->getRequest()->getParam('action'), ['delete'])) {
+                $this->Security->setConfig('validatePost', false);
+            }
+
             $this->viewBuilder()->setLayout('admin');
             $this->userSession = $result->getData()->toArray();
             Configure::write('SessionUser', $this->userSession);
@@ -141,12 +154,13 @@ class AdminController extends AppController
             'initialize',
             'ignoreListActions',
             'autocomplete',
+            'removeUploads',
             'cropImageAjax',
             'download',
         ];
     }
 
-    private function getActionsIgnoreController($controllerName, $prefix = null): array
+    private function getActionsIgnoreController(string $controllerName, string $prefix = ''): array
     {
         //Concat prefix
         $prefix = !empty($prefix) ? ucfirst($prefix) . '\\' : '';
@@ -158,7 +172,7 @@ class AdminController extends AppController
         if (method_exists($className, 'ignoreListActions')) {
             $ignoreListActions = $className::ignoreListActions();
         }
-        return array_merge($this->ignoreListActions, $ignoreListActions);
+        return array_merge(self::ignoreListActions(), $ignoreListActions);
     }
 
     /**

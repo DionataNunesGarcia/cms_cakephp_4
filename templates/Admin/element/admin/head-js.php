@@ -36,3 +36,9 @@
 <?= $this->Html->script('admin/scripts.js') ?>
 <?= $this->Html->script('admin/setup.js') ?>
 <?= $this->Html->script('admin/functions.js') ?>
+<?=
+    $this->Html->scriptBlock(sprintf(
+    'let _csrfToken = %s;',
+        json_encode($_csrfToken)
+    ));
+?>

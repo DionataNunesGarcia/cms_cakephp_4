@@ -12,7 +12,7 @@ use Cake\ORM\Entity;
  * @property int $id
  * @property string $user
  * @property string $password
- * @property bool $status
+ * @property int $status
  * @property bool $super
  * @property int $level_id
  * @property \Cake\I18n\FrozenTime|null $created
@@ -63,5 +63,6 @@ class User extends Entity
         if (strlen($password) > 0) {
             return (new DefaultPasswordHasher())->hash($password);
         }
+        return null;
     }
 }

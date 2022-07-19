@@ -138,8 +138,8 @@ class AddCommonTables extends AbstractMigration
                 'limit' => 255,
                 'null' => false,
             ])
-            ->addColumn('status', 'boolean', [
-                'default' => 1,
+            ->addColumn('status', 'integer', [
+                'default' => 11,
                 'null' => false,
             ])
             ->addColumn('super', 'boolean', [

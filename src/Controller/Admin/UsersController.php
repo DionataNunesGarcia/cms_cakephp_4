@@ -3,7 +3,11 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Error\BusinessException;
+use App\Error\Exception\ValidationErrorException;
 use App\Services\Datatables\UsersDatatablesService;
+use App\Services\Form\UsersFormService;
+use App\Services\Manager\UsersManagerService;
 use Cake\I18n\FrozenTime;
 
 /**
@@ -14,11 +18,31 @@ use Cake\I18n\FrozenTime;
  */
 class UsersController extends AdminController
 {
+    /**
+     * @var UsersFormService $_formService
+     */
+    private UsersFormService $_formService;
+
+    /**
+     * @var UsersManagerService $_managerService
+     */
+    private UsersManagerService $_managerService;
+
+    /**
+     * @return void
+     */
     public function initialize(): void
     {
         parent::initialize();
+
+        $this->_formService = new UsersFormService($this);
+        $this->_managerService = new UsersManagerService($this);
     }
 
+    /**
+     * @param \Cake\Event\EventInterface $event
+     * @return string|void
+     */
     public function beforeFilter(\Cake\Event\EventInterface $event)
     {
         parent::beforeFilter($event);
@@ -27,14 +51,17 @@ class UsersController extends AdminController
         $this->Authentication->addUnauthenticatedActions(['login']);
     }
 
-    public static function ignoreListActions() {
+    /**
+     * @return string[]
+     */
+    public static function ignoreListActions() :array
+    {
         return [
             'login',
             'logout',
-            'perfil',
-            'renovarSenha',
-            'primeiroAcesso',
-            'excluirImagemPerfil',
+            'profile',
+            'passwordRenew',
+            'firstAccess',
         ];
     }
 
@@ -64,40 +91,25 @@ class UsersController extends AdminController
     }
 
     /**
-     * View method
-     *
-     * @param string|null $id User id.
-     * @return \Cake\Http\Response|null|void Renders view
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function view($id = null)
-    {
-        $user = $this->Users->get($id, [
-            'contain' => ['Levels', 'LogsAccess', 'LogsChange', 'Uploads'],
-        ]);
-
-        $this->set(compact('user'));
-    }
-
-    /**
      * Add method
      *
      * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
      */
     public function add()
     {
-        $user = $this->Users->newEmptyEntity();
-        if ($this->request->is('post')) {
-            $user = $this->Users->patchEntity($user, $this->request->getData());
-            if ($this->Users->save($user)) {
-                $this->Flash->success(__('The user has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
+        $entity = $this->_formService->getEntity();
+        if ($this->getRequest()->is('post')) {
+            try {
+                $response = $this->_managerService->saveEntity();
+                $this->Flash->success($response['message']);
+                return $this->redirect(['action' => 'edit', $response['data']->id]);
+            } catch (ValidationErrorException $ex) {
+                $entity = $ex->getEntity();
+                $this->Flash->error($ex->getMessage());
             }
-            $this->Flash->error(__('The user could not be saved. Please, try again.'));
         }
-        $levels = $this->Users->Levels->find('list', ['limit' => 200])->all();
-        $this->set(compact('user', 'levels'));
+        $this->set(compact('entity'));
+        $this->render('edit');
     }
 
     /**
@@ -107,22 +119,22 @@ class UsersController extends AdminController
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function edit($id = null)
+    public function edit(int $id = null)
     {
-        $user = $this->Users->get($id, [
-            'contain' => [],
-        ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $user = $this->Users->patchEntity($user, $this->request->getData());
-            if ($this->Users->save($user)) {
-                $this->Flash->success(__('The user has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
+        $this->_formService->setId($id);
+        $entity = $this->_formService->getEntity();
+        if ($this->getRequest()->is(['patch', 'post', 'put'])) {
+            try {
+                $this->_managerService->setId($id);
+                $response = $this->_managerService->saveEntity();
+                $this->Flash->success($response['message']);
+                return $this->redirect(['action' => 'edit', $response['data']->id]);
+            } catch (ValidationErrorException $ex) {
+                $entity = $ex->getEntity();
+                $this->Flash->error($ex->getMessage());
             }
-            $this->Flash->error(__('The user could not be saved. Please, try again.'));
         }
-        $levels = $this->Users->Levels->find('list', ['limit' => 200])->all();
-        $this->set(compact('user', 'levels'));
+        $this->set(compact('entity'));
     }
 
     /**
@@ -132,17 +144,36 @@ class UsersController extends AdminController
      * @return \Cake\Http\Response|null|void Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function delete($id = null)
+    public function delete($ids)
     {
+        $this->RequestHandler->renderAs($this,'json');
         $this->request->allowMethod(['post', 'delete']);
-        $user = $this->Users->get($id);
-        if ($this->Users->delete($user)) {
-            $this->Flash->success(__('The user has been deleted.'));
-        } else {
-            $this->Flash->error(__('The user could not be deleted. Please, try again.'));
-        }
 
-        return $this->redirect(['action' => 'index']);
+        try {
+            $response = $this->_managerService->deletedEntities($ids);
+        } catch (\Exception $exc) {
+            $code = $exc->getCode() != 0? $exc->getCode() : 403;
+            $this->response = $this->response->withStatus($code);
+            $response = [
+                'message' => $exc->getMessage(),
+            ];
+        }
+        $this->set(compact('response'));
+        $this->set('_serialize', 'response');
+    }
+
+    /**
+     * autocomplete method
+     *
+     * @return \Cake\Http\Response|void
+     */
+    public function autocomplete()
+    {
+        $response = $this->_formService->getAutocomplete();
+
+        $this->RequestHandler->renderAs($this, 'json');
+        $this->set(compact('response'));
+        $this->set('_serialize', 'response');
     }
 
     /**

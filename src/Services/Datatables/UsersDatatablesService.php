@@ -2,6 +2,7 @@
 
 namespace App\Services\Datatables;
 
+use App\Utils\Enum\StatusEnum;
 use Cake\Controller\Controller;
 use Cake\Routing\Router;
 
@@ -67,7 +68,7 @@ class UsersDatatablesService extends DatatablesService
 
     private function setConditions()
     {
-
+        $this->conditions["{$this->getModel()}.status !="] = StatusEnum::EXCLUDED;
     }
 
     private function getSearchQuery()
@@ -106,7 +107,7 @@ class UsersDatatablesService extends DatatablesService
                 'created' => $item->created->i18nFormat('dd/MM/yyyy'),
                 'actions' => [
                     'edit' => Router::url(['controller' => 'Users', 'action' => 'edit', $item->id], true),
-                    'delete' => Router::url(['controller' => 'Users', 'action' => 'deleted', $item->id], true),
+                    'delete' => Router::url(['controller' => 'Users', 'action' => 'delete', $item->id], true),
                 ],
             ];
         }

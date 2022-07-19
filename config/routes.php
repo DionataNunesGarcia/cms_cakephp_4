@@ -95,6 +95,7 @@ return static function (RouteBuilder $routes) {
         $routes->connect('/', ['controller' => 'Admin', 'action' => 'index']);
         $routes->connect('/logout', ['controller' => 'Users', 'action' => 'logout']);
         $routes->connect('/login', ['controller' => 'Users', 'action' => 'login']);
+        $routes->setExtensions(['json', 'xml']);
 
         $routes->fallbacks(DashedRoute::class);
     });

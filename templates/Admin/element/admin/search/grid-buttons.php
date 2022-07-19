@@ -1,4 +1,21 @@
 <div class="botoes text-right">
-    <?= $this->Html->link(__('<i class="fa fa-plus-square-o"></i> Incluir'), ['action' => 'incluir', '_full' => true], ['class' => 'btn btn-primary', 'escape' => false]) ?>
-    <?= $this->Html->link(__('<i class="fa fa-trash"></i> Exluir Selecionados'), ['action' => 'excluir', '_full' => true], ['id' => 'excluir-selecionados', 'class' => 'btn btn-danger', 'escape' => false]) ?>
+    <?=
+    $this->Html->link(__('<i class="fa fa-plus-square-o"></i> Incluir'), [
+        'action' => 'add',
+        '_full' => true
+    ], [
+        'class' => 'btn btn-primary',
+        'escapeTitle' => false
+    ])
+    ?>
+    <?=
+    $this->Html->link(__('<i class="fa fa-trash"></i> Excluir Selecionados'), [
+        'action' => 'delete',
+        '_full' => true
+    ], [
+        'id' => 'deleted-selected',
+        'class' => 'btn btn-danger',
+        'escapeTitle' => false
+    ])
+    ?>
 </div>
