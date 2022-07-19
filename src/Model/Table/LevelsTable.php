@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Model\Table;
 
+use App\Utils\Enum\StatusEnum;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -53,6 +54,9 @@ class LevelsTable extends Table
         ]);
         $this->hasMany('Users', [
             'foreignKey' => 'level_id',
+            'conditions' => [
+                'Users.status !=' => StatusEnum::EXCLUDED,
+            ],
         ]);
     }
 

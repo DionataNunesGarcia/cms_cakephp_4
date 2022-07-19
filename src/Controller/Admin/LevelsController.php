@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Services\Datatables\LevelsDatatablesService;
+use App\Services\Datatables\UsersDatatablesService;
 use App\Services\Form\LevelsFormService;
 use App\Services\Manager\LevelsManagerService;
 
@@ -25,6 +27,11 @@ class LevelsController extends AdminController
     private LevelsManagerService $_managerService;
 
     /**
+     * @var LevelsDatatablesService
+     */
+    private LevelsDatatablesService $_datatableService;
+
+    /**
      * @return void
      */
     public function initialize(): void
@@ -33,6 +40,7 @@ class LevelsController extends AdminController
 
         $this->_formService = new LevelsFormService($this);
         $this->_managerService = new LevelsManagerService($this);
+        $this->_datatableService = new LevelsDatatablesService($this);
     }
 
     /**
@@ -48,19 +56,16 @@ class LevelsController extends AdminController
     }
 
     /**
-     * View method
+     * Index Ajax method
      *
-     * @param string|null $id Level id.
      * @return \Cake\Http\Response|null|void Renders view
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function view($id = null)
+    public function searchAjax()
     {
-        $level = $this->Levels->get($id, [
-            'contain' => ['LevelsPermissions', 'Users'],
-        ]);
-
-        $this->set(compact('level'));
+        $response = $this->_datatableService->getResults();
+        $this->RequestHandler->renderAs($this, 'json');
+        $this->set(compact('response'));
+        $this->set('_serialize', 'response');
     }
 
     /**

@@ -1,52 +1,114 @@
 <?php
 /**
  * @var \App\View\AppView $this
- * @var \App\Model\Entity\Level[]|\Cake\Collection\CollectionInterface $levels
  */
 ?>
-<div class="levels index content">
-    <?= $this->Html->link(__('New Level'), ['action' => 'add'], ['class' => 'button float-right']) ?>
-    <h3><?= __('Levels') ?></h3>
-    <div class="table-responsive">
-        <table>
-            <thead>
-                <tr>
-                    <th><?= $this->Paginator->sort('id') ?></th>
-                    <th><?= $this->Paginator->sort('name') ?></th>
-                    <th><?= $this->Paginator->sort('status') ?></th>
-                    <th><?= $this->Paginator->sort('deletable') ?></th>
-                    <th><?= $this->Paginator->sort('created') ?></th>
-                    <th><?= $this->Paginator->sort('modified') ?></th>
-                    <th class="actions"><?= __('Actions') ?></th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($levels as $level): ?>
-                <tr>
-                    <td><?= $this->Number->format($level->id) ?></td>
-                    <td><?= h($level->name) ?></td>
-                    <td><?= $this->Number->format($level->status) ?></td>
-                    <td><?= h($level->deletable) ?></td>
-                    <td><?= h($level->created) ?></td>
-                    <td><?= h($level->modified) ?></td>
-                    <td class="actions">
-                        <?= $this->Html->link(__('View'), ['action' => 'view', $level->id]) ?>
-                        <?= $this->Html->link(__('Edit'), ['action' => 'edit', $level->id]) ?>
-                        <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $level->id], ['confirm' => __('Are you sure you want to delete # {0}?', $level->id)]) ?>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+<?= $this->element('admin/search/metas-datatable') ?>
+<?= $this->Form->create(null, ['type' => 'get']); ?>
+<div class="box">
+    <?= $this->element('admin/box-title', ['title' => '<i class="fa fa-filter"></i> Filtrar']) ?>
+    <div class="box-body">
+
+        <div class="col-md-6">
+            <?=
+            $this->Form->control('name', ['class' => 'form-control', 'label' => false,
+                'placeholder' => 'Pesquise por usuário',
+                'autofocus' => true,
+                'value' => $this->request->getQuery('user')]);
+            ?>
+        </div>
     </div>
-    <div class="paginator">
-        <ul class="pagination">
-            <?= $this->Paginator->first('<< ' . __('first')) ?>
-            <?= $this->Paginator->prev('< ' . __('previous')) ?>
-            <?= $this->Paginator->numbers() ?>
-            <?= $this->Paginator->next(__('next') . ' >') ?>
-            <?= $this->Paginator->last(__('last') . ' >>') ?>
-        </ul>
-        <p><?= $this->Paginator->counter(__('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')) ?></p>
+    <div class="box-footer">
+        <div class="pull-right">
+            <?= $this->element('admin/search/filter-buttons') ?>
+        </div>
     </div>
 </div>
+<?= $this->Form->end(); ?>
+
+<!-- Default box -->
+<div class="box">
+    <?= $this->element('admin/box-title', ['title' => '<i class="fa fa-table"></i> Registros']) ?>
+    <div class="box-body">
+        <?= $this->element('admin/search/grid-buttons') ?>
+        <div class="col-md-12">
+            <table class="table table-datatable table-striped table-bordered nowrap " id="table-index" style="width: 100%">
+                <thead>
+                <tr>
+                    <th class="text-center">
+                        <?= $this->Form->checkbox('select_all', ['hiddenField' => false]); ?>
+                    </th>
+                    <th>
+                        <?= __('Nome') ?>
+                    </th>
+                    <th class="text-center">
+                        <?= __('Usuários') ?>
+                    </th>
+                    <th>
+                        <?= __('Criado') ?>
+                    </th>
+                    <th class="text-center actions">
+                        <?= __('Ações') ?>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    let urlDatatable = "<?=
+        $this->Url->build([
+            'controller' => 'Levels',
+            'action' => 'searchAjax',
+            'prefix' => 'Admin',
+        ]);
+        ?>";
+
+    let datatableCurrent = $('#table-index').DataTable({
+        serverSide: true,
+        responsive: true,
+        ajax: urlDatatable,
+        searching: false,
+        paging: true,
+        ordering: false,
+        processing: true,
+        language: datatablesCustom.configDatatables().language,
+        dataFilter: function(res) {
+            debugger;
+        },
+        columns: [
+            {
+                data: 'id',
+                className: 'text-center',
+                render: function(data, type, full, meta) {
+                    let disabled = '';
+                    return '<input type="checkbox" name="selected[]" value="' + data + '" ' + disabled + '>';
+                }
+            },
+            {
+                data: 'name'
+            },
+            {
+                data: 'users',
+                className: 'text-center',
+            },
+            {
+                data: 'created'
+            },
+            {
+                data: 'actions',
+                className: 'text-center',
+                render: function(data, type, full, meta) {
+                    let html = ``;
+                    html += datatablesCustom.buildBtnEdit(full.actions.edit);
+                    html += datatablesCustom.buildBtnDelete(full.actions.delete);
+                    return html;
+                }
+            },
+        ]
+    });
+</script>
+

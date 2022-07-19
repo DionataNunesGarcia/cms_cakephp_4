@@ -37,7 +37,7 @@
                 </a>
                 <ul class="treeview-menu">
                     <li>
-                        <a href="<?= $this->Url->build(null, ['prefix' => 'admin', 'controller' => 'Users', 'action' => 'index'], true); ?>" title="Pesquisar Fornecedores" data-placement="right">
+                        <a href="<?= $this->Url->build(['controller' => 'About', 'action' => 'edit'], ['fullBase' => true]); ?>" title="" data-placement="right">
                             <i class="fa fa-circle-o"></i>
                             <?= __('Usuarios') ?>
                         </a>
@@ -57,7 +57,7 @@
                 </a>
                 <ul class="treeview-menu">
                     <li>
-                        <a href="<?= $this->Url->build(null, ['controller' => 'About', 'action' => 'edit'], true); ?>" data-placement="right">
+                        <a href="<?= $this->Url->build(['controller' => 'About', 'action' => 'edit'], ['fullBase' => true]); ?>" data-placement="right">
                             <i class="fa fa-address-book"></i>
                             <?= __('Sobre') ?>
                         </a>
@@ -77,37 +77,37 @@
                 </a>
                 <ul class="treeview-menu">
                     <li>
-                        <a href="<?= $this->Url->build(null, ['controller' => 'Users', 'action' => 'index'], true); ?>" data-placement="right">
+                        <a href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'index'], ['fullBase' => true]); ?>" data-placement="right">
                             <i class="fa fa-users"></i>
                             <?= __('Usuários') ?>
                         </a>
                     </li>
                     <li>
-                        <a href="<?= $this->Url->build(null, ['controller' => 'Levels', 'action' => 'index'], true); ?>" data-placement="right">
+                        <a href="<?= $this->Url->build(['controller' => 'Levels', 'action' => 'index'], ['fullBase' => true]); ?>" data-placement="right">
                             <i class="fa fa-bar-chart-o"></i>
                             <?= __('Níveis Permissões') ?>
                         </a>
                     </li>
                     <li>
-                        <a href="<?= $this->Url->build(null, ['controller' => 'SystemParameters', 'action' => 'edit'], true); ?>" data-placement="right">
+                        <a href="<?= $this->Url->build(['controller' => 'SystemParameters', 'action' => 'edit'], ['fullBase' => true]); ?>" data-placement="right">
                             <i class="fa fa-gear"></i>
                             <?= __('Parâmetros do Sistema') ?>
                         </a>
                     </li>
                     <li>
-                        <a href="<?= $this->Url->build(null, ['controller' => 'LogsChange', 'action' => 'index'], true); ?>" data-placement="right">
+                        <a href="<?= $this->Url->build(['controller' => 'LogsChange', 'action' => 'index'], ['fullBase' => true]); ?>" data-placement="right">
                             <i class="fa fa-exclamation-triangle"></i>
                             <?= __('Logs Alterações') ?>
                         </a>
                     </li>
                     <li>
-                        <a href="<?= $this->Url->build(null, ['controller' => 'LogsAccess', 'action' => 'index'], true); ?>" data-placement="right">
+                        <a href="<?= $this->Url->build(['controller' => 'LogsAccess', 'action' => 'index'], ['fullBase' => true]); ?>" data-placement="right">
                             <i class="fa fa-check"></i>
                             <?= __('Logs Acessos') ?>
                         </a>
                     </li>
                     <li>
-                        <a href="<?= $this->Url->build(null, ['controller' => 'Users', 'action' => 'logout'], true); ?>" data-auth="false" data-placement="right">
+                        <a href="<?= $this->Url->build(null, ['controller' => 'Users', 'action' => 'logout'], ['fullBase' => true]); ?>" data-auth="false" data-placement="right">
                             <i class="fa fa-sign-out"></i>
                             <?= __('Sair') ?>
                         </a>

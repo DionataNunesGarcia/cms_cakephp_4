@@ -29,6 +29,11 @@ class UsersController extends AdminController
     private UsersManagerService $_managerService;
 
     /**
+     * @var UsersDatatablesService
+     */
+    private UsersDatatablesService $_datatableService;
+
+    /**
      * @return void
      */
     public function initialize(): void
@@ -37,6 +42,7 @@ class UsersController extends AdminController
 
         $this->_formService = new UsersFormService($this);
         $this->_managerService = new UsersManagerService($this);
+        $this->_datatableService = new UsersDatatablesService($this);
     }
 
     /**
@@ -81,13 +87,10 @@ class UsersController extends AdminController
      */
     public function searchAjax()
     {
-        if ($this->request->is('ajax')) {
-            $datatableService = new UsersDatatablesService($this);
-            $response = $datatableService->getResults();
-            $this->RequestHandler->renderAs($this, 'json');
-            $this->set(compact('response'));
-            $this->set('_serialize', 'response');
-        }
+        $response = $this->_datatableService->getResults();
+        $this->RequestHandler->renderAs($this, 'json');
+        $this->set(compact('response'));
+        $this->set('_serialize', 'response');
     }
 
     /**

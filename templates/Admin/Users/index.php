@@ -1,7 +1,6 @@
 <?php
 /**
  * @var \App\View\AppView $this
- * @var \App\Model\Entity\User[]|\Cake\Collection\CollectionInterface $users
  */
 ?>
 <?= $this->element('admin/search/metas-datatable') ?>
@@ -75,7 +74,6 @@
 <script>
     let urlDatatable = "<?=
         $this->Url->build([
-            'controller' => 'Users',
             'action' => 'searchAjax',
             'prefix' => 'Admin',
         ]);
