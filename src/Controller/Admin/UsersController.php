@@ -224,6 +224,11 @@ class UsersController extends AdminController
                 $this->Flash->error(__('Invalid username or password'));
             }
         }
+        $result = $this->Authentication->getResult();
+        if ($result->isValid()) {
+            $this->Flash->warning(__('Você já está logado.'));
+            return $this->redirect(['controller' => 'Admin', 'action' => 'index']);
+        }
         $this->viewBuilder()->setLayout('login');
     }
 
