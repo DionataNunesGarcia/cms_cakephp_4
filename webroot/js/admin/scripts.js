@@ -2,7 +2,7 @@ $(document).ready(function () {
     openLoad();
     setup();
 
-    verificaPermissoes();
+    verifyPermissions();
 
     //Abre o modal clicando no link
     $('body').on('click', 'a[data-open-modal-id]', function (e) {

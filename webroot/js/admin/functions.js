@@ -16,22 +16,7 @@ function addHelp(name, text) {
 
 }
 
-function verificaSelecionados() {
-
-    if ($('[name*=selecionado]:checked').length > 0) {
-        $('#excluir-selecionados').fadeIn();
-    } else {
-        $('#excluir-selecionados').fadeOut();
-        $('[name=selecionar-todos]').prop('checked', false);
-    }
-    if ($('[name*=selecionado]:checked').length === $('[name*=selecionado]').length) {
-        $('[name=selecionar-todos]').prop('checked', true);
-    } else {
-        $('[name=selecionar-todos]').prop('checked', false);
-    }
-}
-
-function verificaPermissoes() {
+function verifyPermissions() {
     if (!userPermissions.super) {
         return;
     }

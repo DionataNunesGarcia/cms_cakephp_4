@@ -21,44 +21,11 @@ function setup() {
         }
     });
 
-    $('table.table').on('click', '[name=selecionar-todos]', function () {
-        $('tbody input:checkbox').not(this).prop('checked', this.checked);
-        verificaSelecionados();
-    });
-
-    $("[name*=selecionado]").click(function () {
-        verificaSelecionados();
-    });
-
     $('button#reset').click(function () {
         var form = $(this).closest("form");
         form.find('input').each(function () {
             $(this).val('');
         });
-        return false;
-    });
-
-    $('#excluir-selecionados').click(function () {
-        var link = $(this).attr("href");
-
-        if (!$('[name*=selecionado]:checked').length) {
-            alert('Não existe nenhum item selecionado.');
-            return false;
-        }
-
-        if (!confirm('Deseja realmente excluir o(s) ' + $('[name*=selecionado]:checked').length + ' registro(s)')) {
-            return false;
-        }
-
-        var ids = '';
-        $('[name*=selecionado]:checked').each(function () {
-            ids += (ids !== '') ? ',' : '';
-            ids += $(this).val();
-        });
-
-        link += '/' + ids;
-
-        window.location.href = link;
         return false;
     });
 
@@ -69,7 +36,7 @@ function setup() {
         }
     });
 
-    /*----------------INICIO AUTOCOMPLETE------------------------*/
+    /*----------------START AUTOCOMPLETE------------------------*/
     $("input.autocomplete").autocomplete({
         source: function (request, response) {
             var $_this = $(this.element);
@@ -136,10 +103,10 @@ function setup() {
             window.location.hash = this.hash;
         });
     }
-    /*----------------FIM AUTOCOMPLETE------------------------*/
+    /*----------------END AUTOCOMPLETE------------------------*/
 
     //Date range picker
-    $('.intervalo-tempo').daterangepicker({
+    $('.dates-start-end').daterangepicker({
         "locale": {
             format: "DD/MM/YYYY",
             "separator": " - ",
@@ -175,14 +142,14 @@ function setup() {
             endDate: null
         }
     }).val('');
-    $('.intervalo-tempo-load').each(function(e) {
+    $('.dates-start-end-load').each(function(e) {
         if ($(this).val() != '') {
             $("#" + $(this).data('id')).val($(this).val());
         }
     });
 
     //Date range picker with time picker
-    $('.intervalo-tempo-hora').daterangepicker({
+    $('.dates-start-end-hour').daterangepicker({
         timePicker: true,
         timePickerIncrement: 30,
         format: 'DD/MM/YYYY h:mm',
@@ -248,23 +215,23 @@ function setup() {
 
     $(".datepicker").inputmask("99/99/9999");
 
-    $('.mes-ano').datepicker({
+    $('.month-year').datepicker({
         format: "mm/yyyy",
         startView: "year",
         minViewMode: "months",
         language: 'pt-BR'
     });
-    $(".mes-ano").inputmask("99/9999");
+    $(".month-year").inputmask("99/9999");
 
     //Somente ano
-    $('.ano').datepicker( {
+    $('.year').datepicker( {
         format: "yyyy",
         viewMode: "years",
         minViewMode: "years"
     }).on('changeDate', function(e){
         $(this).datepicker('hide');
     });
-    $(".ano").inputmask("9999");
+    $(".year").inputmask("9999");
 
 
     //iCheck for checkbox and radio inputs
@@ -294,8 +261,6 @@ function setup() {
     $(".cpf").inputmask("999.999.999-99");
     $(".cnpj").inputmask("99.999.999/9999-99");
     $(".cep").inputmask("99999-999");
-    $(".placa").inputmask({mask: ['AAA-9999','AAA-9A99']});
-    $(".numero-motor").inputmask('***.*******.**.******');
 
     //Campos somente com numeros
     $('.integer').keyup(function () {
@@ -303,15 +268,10 @@ function setup() {
     });
 
     //Mascara para telefones
-    $(".fone").inputmask({
+    $(".phone").inputmask({
         mask: ["(99) 9999-9999", "(99) 9999-99999", ],
         keepStatic: true
     });
-
-    //Mascara Peso
-    $(".peso").inputmask({mask: "999,99"});
-    $(".altura").inputmask({mask: "9,99"});
-
 
     $(".nf2Cifrado")
         .attr('maxlength', 5000)
@@ -504,13 +464,13 @@ function setup() {
 //    });
 
     $(document).ajaxError(function (e, jqXHR, ajaxSettings, thrownError) {
-        // // if 403 - check if user still has active session - if not redirect to login page
-        // if (jqXHR.status == '403') {
-        //     // inactive session so redirect to login page
-        //     window.location = $('body').data('url') + "admin/users/logout";
-        // } else if (jqXHR.status == '500') {
-        //     //window.location = $('body').data('url') + "admin/usuarios/logout";
-        // }
+        // if 403 - check if user still has active session - if not redirect to login page
+        if (jqXHR.status == '403') {
+            // inactive session so redirect to login page
+            window.location = $('body').data('url') + "admin/users/logout";
+        } else if (jqXHR.status == '500') {
+            //window.location = $('body').data('url') + "admin/usuarios/logout";
+        }
     });
 
     $('body').append('<div id="toTop" class="btn btn-primary"><span class="fa fa-chevron-up"></span></div>');
