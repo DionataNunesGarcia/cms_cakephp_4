@@ -1,48 +1,107 @@
 <?php
 /**
  * @var \App\View\AppView $this
- * @var \App\Model\Entity\LogsAcces[]|\Cake\Collection\CollectionInterface $logsAccess
  */
 ?>
-<div class="logsAccess index content">
-    <?= $this->Html->link(__('New Logs Acces'), ['action' => 'add'], ['class' => 'button float-right']) ?>
-    <h3><?= __('Logs Access') ?></h3>
-    <div class="table-responsive">
-        <table>
-            <thead>
-                <tr>
-                    <th><?= $this->Paginator->sort('id') ?></th>
-                    <th><?= $this->Paginator->sort('user_id') ?></th>
-                    <th><?= $this->Paginator->sort('ip') ?></th>
-                    <th><?= $this->Paginator->sort('created') ?></th>
-                    <th class="actions"><?= __('Actions') ?></th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($logsAccess as $logsAcces): ?>
-                <tr>
-                    <td><?= $this->Number->format($logsAcces->id) ?></td>
-                    <td><?= $logsAcces->has('user') ? $this->Html->link($logsAcces->user->id, ['controller' => 'Users', 'action' => 'view', $logsAcces->user->id]) : '' ?></td>
-                    <td><?= h($logsAcces->ip) ?></td>
-                    <td><?= h($logsAcces->created) ?></td>
-                    <td class="actions">
-                        <?= $this->Html->link(__('View'), ['action' => 'view', $logsAcces->id]) ?>
-                        <?= $this->Html->link(__('Edit'), ['action' => 'edit', $logsAcces->id]) ?>
-                        <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $logsAcces->id], ['confirm' => __('Are you sure you want to delete # {0}?', $logsAcces->id)]) ?>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+<?= $this->element('admin/search/metas-datatable') ?>
+<?= $this->Form->create(null, ['type' => 'get']); ?>
+<div class="box">
+    <?= $this->element('admin/box-title', ['title' => '<i class="fa fa-filter"></i> Filtrar']) ?>
+    <div class="box-body">
+
+        <div class="col-md-6">
+            <?=
+            $this->Form->control('user_id', ['class' => 'form-control', 'label' => false,
+                'placeholder' => 'Pesquise por usuário',
+                'autofocus' => true,
+                'value' => $this->request->getQuery('user_id')]);
+            ?>
+        </div>
+        <div class="col-md-6">
+            <?=
+            $this->Form->control('email', ['class' => 'form-control', 'label' => false,
+                'placeholder' => 'Pesquse por e-mail',
+                'autofocus' => true,
+                'value' => $this->request->getQuery('email')]);
+            ?>
+        </div>
     </div>
-    <div class="paginator">
-        <ul class="pagination">
-            <?= $this->Paginator->first('<< ' . __('first')) ?>
-            <?= $this->Paginator->prev('< ' . __('previous')) ?>
-            <?= $this->Paginator->numbers() ?>
-            <?= $this->Paginator->next(__('next') . ' >') ?>
-            <?= $this->Paginator->last(__('last') . ' >>') ?>
-        </ul>
-        <p><?= $this->Paginator->counter(__('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')) ?></p>
+    <div class="box-footer">
+        <div class="pull-right">
+            <?= $this->element('admin/search/filter-buttons') ?>
+        </div>
     </div>
 </div>
+<?= $this->Form->end(); ?>
+
+<!-- Default box -->
+<div class="box">
+    <?= $this->element('admin/box-title', ['title' => '<i class="fa fa-table"></i> Registros']) ?>
+    <div class="box-body">
+        <?= $this->element('admin/search/grid-buttons') ?>
+        <div class="col-md-12">
+            <table class="table table-datatable table-striped table-bordered nowrap " id="table-index" style="width: 100%">
+                <thead>
+                    <tr>
+                        <th>
+                            <?= __('Usuário') ?>
+                        </th>
+                        <th>
+                            <?= __('IP') ?>
+                        </th>
+                        <th>
+                            <?= __('Criado') ?>
+                        </th>
+                        <th class="text-center actions">
+                            <?= __('Ações') ?>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    let urlDatatable = "<?=
+        $this->Url->build([
+            'action' => 'searchAjax',
+            'prefix' => 'Admin',
+        ]);
+        ?>";
+
+    let datatableCurrent = $('#table-index').DataTable({
+        serverSide: true,
+        responsive: true,
+        ajax: urlDatatable,
+        searching: false,
+        paging: true,
+        ordering: false,
+        processing: true,
+        language: datatablesCustom.configDatatables().language,
+        dataFilter: function(res) {
+            debugger;
+        },
+        columns: [
+            {
+                data: 'user'
+            },
+            {
+                data: 'ip'
+            },
+            {
+                data: 'created'
+            },
+            {
+                data: 'actions',
+                className: 'text-center',
+                render: function(data, type, full, meta) {
+                    let html = ``;
+                    html += datatablesCustom.buildBtnView(full.actions.view);
+                    return html;
+                }
+            },
+        ]
+    });
+</script>

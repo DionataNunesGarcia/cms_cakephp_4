@@ -89,4 +89,13 @@ class LogsAccessTable extends Table
 
         return $rules;
     }
+
+    /**
+     * @param int|null $id
+     * @return \App\Model\Entity\LogsAcces
+     */
+    public function getEntity(int $id = null)
+    {
+        return $id ? $this->get($id, ['contain' => ['Users']]) : $this->newEntity([]);
+    }
 }

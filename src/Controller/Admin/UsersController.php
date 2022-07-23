@@ -3,12 +3,10 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
-use App\Error\BusinessException;
 use App\Error\Exception\ValidationErrorException;
 use App\Services\Datatables\UsersDatatablesService;
 use App\Services\Form\UsersFormService;
 use App\Services\Manager\UsersManagerService;
-use Cake\I18n\FrozenTime;
 
 /**
  * Users Controller
@@ -213,6 +211,8 @@ class UsersController extends AdminController
                 }
                 $this->Authentication->setIdentity($user);
                 // redirect to /admin/index after login success
+
+                $this->_managerService->generateLog($user);
                 $redirect = $this->request->getQuery('redirect', [
                     'controller' => 'Admin',
                     'action' => 'index',

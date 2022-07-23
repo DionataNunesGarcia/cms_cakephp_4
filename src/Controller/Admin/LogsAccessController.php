@@ -3,6 +3,10 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Model\Entity\LogsAcces;
+use App\Services\Datatables\LogsAccessDatatablesService;
+use App\Services\Form\LogsAccessFormService;
+
 /**
  * LogsAccess Controller
  *
@@ -12,18 +16,46 @@ namespace App\Controller\Admin;
 class LogsAccessController extends AdminController
 {
     /**
+     * @var LogsAccessFormService $_formService
+     */
+    private LogsAccessFormService $_formService;
+
+    /**
+     * @var LogsAccessDatatablesService
+     */
+    private LogsAccessDatatablesService $_datatableService;
+
+    /**
+     * @return void
+     */
+    public function initialize(): void
+    {
+        parent::initialize();
+
+        $this->_formService = new LogsAccessFormService($this);
+        $this->_datatableService = new LogsAccessDatatablesService($this);
+    }
+
+    /**
      * Index method
      *
      * @return \Cake\Http\Response|null|void Renders view
      */
     public function index()
     {
-        $this->paginate = [
-            'contain' => ['Users'],
-        ];
-        $logsAccess = $this->paginate($this->LogsAccess);
+    }
 
-        $this->set(compact('logsAccess'));
+    /**
+     * Index Ajax method
+     *
+     * @return \Cake\Http\Response|null|void Renders view
+     */
+    public function searchAjax()
+    {
+        $response = $this->_datatableService->getResults();
+        $this->RequestHandler->renderAs($this, 'json');
+        $this->set(compact('response'));
+        $this->set('_serialize', 'response');
     }
 
     /**
@@ -33,13 +65,11 @@ class LogsAccessController extends AdminController
      * @return \Cake\Http\Response|null|void Renders view
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function view($id = null)
+    public function view(int $id = null)
     {
-        $logsAcces = $this->LogsAccess->get($id, [
-            'contain' => ['Users'],
-        ]);
-
-        $this->set(compact('logsAcces'));
+        $this->_formService->setId($id);
+        $entity = $this->_formService->getEntity();
+        $this->set(compact('entity'));
     }
 
     /**

@@ -104,11 +104,15 @@ class DatatablesService extends DefaultService
         $prefix = strtolower($this->_request->getParam("prefix"));
         foreach ($permissions as $permission) {
             if (
-                strtolower($permission->prefix) == $prefix
-                &&
-                strtolower($permission->controller) == strtolower($controller)
-                &&
-                strtolower($permission->action) == strtolower($action)
+                $this->_userSession->super
+                ||
+                (
+                    strtolower($permission->prefix) == $prefix
+                    &&
+                    strtolower($permission->controller) == strtolower($controller)
+                    &&
+                    strtolower($permission->action) == strtolower($action)
+                )
             ) {
                 return Router::url([
                     'controller' => $controller,

@@ -40,6 +40,16 @@ let datatablesCustom = {
           </a>
         `;
     },
+    buildBtnView: function (url) {
+        if (!url) {
+            return ``;
+        }
+        return `
+          <a class="btn btn-default btn-xs btn-view" href="${url}">
+            <i class="fa fa-eye"></i>
+          </a>
+        `;
+    },
     buildBtnDelete: function (url) {
         if (!url) {
             return ``;
