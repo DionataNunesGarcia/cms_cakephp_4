@@ -63,7 +63,7 @@ $this->Form->create($entity, ['url' => [
 
                                         $value = "{$prefix}:{$controllerKey}:{$action}";
                                         $checked = false;
-                                        if (array_search($value, $entity->permissions) !== false) {
+                                        if ($entity->permissions && array_search($value, $entity->permissions) !== false) {
                                             $checked = true;
                                         }
                                         ?>

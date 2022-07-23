@@ -34,23 +34,23 @@
         <div class="col-md-12">
             <table class="table table-datatable table-striped table-bordered nowrap " id="table-index" style="width: 100%">
                 <thead>
-                <tr>
-                    <th class="text-center">
-                        <?= $this->Form->checkbox('select_all', ['hiddenField' => false]); ?>
-                    </th>
-                    <th>
-                        <?= __('Nome') ?>
-                    </th>
-                    <th class="text-center">
-                        <?= __('Usuários') ?>
-                    </th>
-                    <th>
-                        <?= __('Criado') ?>
-                    </th>
-                    <th class="text-center actions">
-                        <?= __('Ações') ?>
-                    </th>
-                </tr>
+                    <tr>
+                        <th class="checkbox-select">
+                            <?= $this->Form->checkbox('select_all', ['hiddenField' => false]); ?>
+                        </th>
+                        <th>
+                            <?= __('Nome') ?>
+                        </th>
+                        <th class="text-center">
+                            <?= __('Usuários') ?>
+                        </th>
+                        <th>
+                            <?= __('Criado') ?>
+                        </th>
+                        <th class="text-center actions">
+                            <?= __('Ações') ?>
+                        </th>
+                    </tr>
                 </thead>
                 <tbody>
                 </tbody>
@@ -84,8 +84,7 @@
                 data: 'id',
                 className: 'text-center',
                 render: function(data, type, full, meta) {
-                    let disabled = '';
-                    return '<input type="checkbox" name="selected[]" value="' + data + '" ' + disabled + '>';
+                    return full.actions.delete ? '<input type="checkbox" name="selected[]" value="' + data + '">' : '';
                 }
             },
             {
@@ -103,8 +102,8 @@
                 className: 'text-center',
                 render: function(data, type, full, meta) {
                     let html = ``;
-                    html += datatablesCustom.buildBtnEdit(full.actions.edit);
-                    html += datatablesCustom.buildBtnDelete(full.actions.delete);
+                    html += datatablesCustom.buildBtnEdit(data.edit);
+                    html += datatablesCustom.buildBtnDelete(data.delete);
                     return html;
                 }
             },

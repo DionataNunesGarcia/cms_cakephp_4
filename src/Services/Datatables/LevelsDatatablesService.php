@@ -100,14 +100,15 @@ class LevelsDatatablesService extends DatatablesService
     {
         $response = [];
         foreach ($results as $item) {
+            $users = count($item->users);
             $response[] = [
                 'id' => $item->id,
                 'name' => $item->name,
-                'users' => count($item->users),
+                'users' => $users,
                 'created' => $item->created->i18nFormat('dd/MM/yyyy'),
                 'actions' => [
-                    'edit' => Router::url(['action' => 'edit', $item->id], true),
-                    'delete' => Router::url(['action' => 'delete', $item->id], true),
+                    'edit' => $this->hasPermission('edit', 'Levels', $item->id),
+                    'delete' => $users ? false : $this->hasPermission('delete', 'Levels', $item->id),
                 ],
             ];
         }

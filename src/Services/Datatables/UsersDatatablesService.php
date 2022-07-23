@@ -109,10 +109,7 @@ class UsersDatatablesService extends DatatablesService
                 'level' => $item->level->name,
                 'status' => $item->situation->name,
                 'created' => $item->created->i18nFormat('dd/MM/yyyy'),
-                'actions' => [
-                    'edit' => Router::url(['controller' => 'Users', 'action' => 'edit', $item->id], true),
-                    'delete' => Router::url(['controller' => 'Users', 'action' => 'delete', $item->id], true),
-                ],
+                'actions' => $this->verifyHasPermissionActions(['edit', 'delete'], 'Users', $item->id),
             ];
         }
         return $response;

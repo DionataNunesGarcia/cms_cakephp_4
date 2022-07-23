@@ -4,6 +4,7 @@ namespace App\Services\Datatables;
 
 use App\Services\DefaultService;
 use Cake\ORM\TableRegistry;
+use Cake\Routing\Router;
 
 class DatatablesService extends DefaultService
 {
@@ -73,5 +74,49 @@ class DatatablesService extends DefaultService
             $this->search = $query['search'];
             $this->draft = $query['draft'] ?? 1;
         }
+    }
+
+    /**
+     * @param array $actions
+     * @param $controller
+     * @param int|null $id
+     * @return array
+     */
+    protected function verifyHasPermissionActions(array $actions, $controller = null, int $id = null) :array
+    {
+        $links = [];
+        foreach ($actions as $action) {
+            $links[$action] = $this->hasPermission($action, $controller, $id);
+        }
+        return $links;
+    }
+
+    /**
+     * @param string $action
+     * @param string|null $controller
+     * @param int|null $id
+     * @return false|string
+     */
+    protected function hasPermission(string $action, string $controller = null, int $id = null)
+    {
+        $permissions = $this->_userSession->level->levels_permissions;
+        $controller = $controller ?? $this->_request->getParam("controller");
+        $prefix = strtolower($this->_request->getParam("prefix"));
+        foreach ($permissions as $permission) {
+            if (
+                strtolower($permission->prefix) == $prefix
+                &&
+                strtolower($permission->controller) == strtolower($controller)
+                &&
+                strtolower($permission->action) == strtolower($action)
+            ) {
+                return Router::url([
+                    'controller' => $controller,
+                    'action' => $action,
+                    $id
+                ], true);
+            }
+        }
+        return false;
     }
 }

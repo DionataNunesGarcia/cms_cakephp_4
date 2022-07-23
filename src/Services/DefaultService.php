@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Model\Entity\User;
 use App\Utils\Enum\HttpStatusCodeEnum;
 use Cake\Controller\Controller;
 use Cake\ORM\Entity;
@@ -18,6 +19,11 @@ class DefaultService
      * @var \Cake\Http\ServerRequest
      */
     protected $_request;
+
+    /**
+     * @var User
+     */
+    protected $_userSession;
 
     /**
      * @var ?int $id
@@ -65,6 +71,12 @@ class DefaultService
     {
         $this->_controller = $controller;
         $this->_request = $this->_controller->getRequest();
+
+        if ($this->_request->getSession()->check('Auth')) {
+            $this->_userSession = $this->_request
+                ->getSession()
+                ->read('Auth');
+        }
     }
 
     /**

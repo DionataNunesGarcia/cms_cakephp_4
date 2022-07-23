@@ -20,7 +20,9 @@ let datatablesCustom = {
                 datatablesCustom.deleteRecordsSelected($(this).attr('href'));
             })
             .on('click', 'thead [name=select_all]', function () {
-                $('table.table-datatable tbody input:checkbox').not(this).prop('checked', this.checked);
+                $('body table.table-datatable tbody input[name^=selected]')
+                    .not(this)
+                    .prop('checked', this.checked);
                 datatablesCustom.verifyCheckboxSelected();
             })
             .on('click', 'tbody [name^=selected]', function () {
@@ -48,12 +50,12 @@ let datatablesCustom = {
           </a>
         `;
     },
-    verifyCheckboxSelected: function (url) {
-        let buttonDeleteSelected = $('#deleted-selected')
+    verifyCheckboxSelected: function () {
+        let button = $('#deleted-selected')
         if ($('[name*=selected]:checked').length > 0) {
-            buttonDeleteSelected.fadeIn();
+            button.fadeIn();
         } else {
-            buttonDeleteSelected.fadeOut();
+            button.fadeOut();
             $('[name=select_all]').prop('checked', false);
         }
         if ($('[name*=selected]:checked').length === $('[name*=selected]').length) {

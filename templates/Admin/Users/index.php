@@ -43,7 +43,7 @@
             <table class="table table-datatable table-striped table-bordered nowrap " id="table-index" style="width: 100%">
                 <thead>
                 <tr>
-                    <th class="text-center">
+                    <th class="checkbox-select">
                         <?= $this->Form->checkbox('select_all', ['hiddenField' => false]); ?>
                     </th>
                     <th>
