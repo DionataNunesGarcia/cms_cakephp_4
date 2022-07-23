@@ -38,7 +38,19 @@
 <?= $this->Html->script('admin/functions.js') ?>
 <?=
     $this->Html->scriptBlock(sprintf(
-    'let _csrfToken = %s;',
-        json_encode($_csrfToken)
+    'let _csrfToken = %s',
+        json_encode($_csrfToken),
+    ));
+?>
+<?=
+    $this->Html->scriptBlock(sprintf(
+    'let userPermissions = %s',
+        json_encode($userSession),
+    ));
+?>
+<?=
+    $this->Html->scriptBlock(sprintf(
+    'let urlHome = %s',
+        json_encode(\Cake\Routing\Router::url('/', true)),
     ));
 ?>

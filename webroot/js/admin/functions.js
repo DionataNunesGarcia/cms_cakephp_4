@@ -32,68 +32,77 @@ function verificaSelecionados() {
 }
 
 function verificaPermissoes() {
-    // var listaPermissoes = $('#valida_permissoes').val();
-    // listaPermissoes = JSON.parse(listaPermissoes);
-    //
-    // $('a[href]').each(function () {
-    //     var href = $(this).attr('href');
-    //
-    //     if ($(this).attr('data-auth') === 'false' || $(this).closest('table.table thead th').length || href.substr(0, 1) === '#' || href === '') {
-    //         return;
-    //     }
-    //
-    //     if (!existePermissao(listaPermissoes, href)) {
-    //         $(this).parent('li').remove();
-    //         $(this).remove();
-    //     }
-    // });
-    //
-    // $('form[action^="/admin"]').not('[method="get"]').each(function () {
-    //     var action = $(this).attr('action');
-    //     if ($(this).attr('id') === 'search' || $(this).attr('data-auth') === 'false') {
-    //         return;
-    //     }
-    //
-    //     if (!existePermissao(listaPermissoes, action)) {
-    //
-    //         $(this).find(':input:not(:disabled)').prop('disabled', true);
-    //         $(this).find('button[type=submit], .autocomplete-btn').remove();
-    //         $(this).attr('action', '');
-    //         $(this).before('<div class="alert alert-warning"><i class="icon fa fa-warning"></i>Você não tem permissão para salvar os dados desse formulário.</div>');
-    //     }
-    // });
-    //
-    // //Remove os menu pai se estiver vázio os submenus
-    // $('ul.sidebar-menu li.treeview').each(function () {
-    //     if ($(this).find('ul.treeview-menu').length && $(this).find('ul.treeview-menu li').length === 0) {
-    //         $(this).remove();
-    //     }
-    // });
-    //
-    // $('#valida_permissoes').remove();
-}
+    if (!userPermissions.super) {
+        return;
+    }
+    let permissionsList = userPermissions.level.levels_permissions;
+    console.log(permissionsList);
 
-function existePermissao(permissoes, href) {
-    var permitido = false;
-    href = convertUrl(href);
+    $('a[href]').each(function () {
+        var href = $(this).attr('href');
 
-    $.each(permissoes, function (i, item) {
-        item = convertUrl(item);
-        if (item.prefix === href.prefix && item.controller === href.controller && item.action === href.action) {
-            permitido = true;
+        if ($(this).attr('data-auth') === 'false' || $(this).closest('table.table thead th').length || href.substr(0, 1) === '#' || href === '') {
+            return;
+        }
+
+        if (!hasPermission(permissionsList, href)) {
+            $(this).parent('li').remove();
+            $(this).remove();
         }
     });
-    return permitido;
+
+    $('form[action^="/admin"]').not('[method="get"]').each(function () {
+        var action = $(this).attr('action');
+        if ($(this).attr('id') === 'search' || $(this).attr('data-auth') === 'false') {
+            return;
+        }
+
+        if (!hasPermission(permissionsList, action)) {
+
+            $(this).find(':input:not(:disabled)').prop('disabled', true);
+            $(this).find('button[type=submit], .autocomplete-btn').remove();
+            $(this).attr('action', '');
+            $(this).before('<div class="alert alert-warning"><i class="icon fa fa-warning"></i>Você não tem permissão para salvar os dados desse formulário.</div>');
+        }
+    });
+    // //Remove os menu pai se estiver vázio os submenus
+    $('ul.sidebar-menu li.treeview').each(function () {
+        if ($(this).find('ul.treeview-menu').length && $(this).find('ul.treeview-menu li').length === 0) {
+            $(this).remove();
+        }
+    });
 }
 
-function convertUrl(href) {
+function hasPermission(permissionsList, href) {
+    href = urlConvert(href);
+    let ok = false;
 
-    var url = $('body').data('url');
-    url = url.toLocaleLowerCase();
+    $.each(permissionsList, function (i, item) {
+        if (
+            item.prefix.toLowerCase() === href.prefix
+            &&
+            item.controller.toLowerCase() === href.controller
+            &&
+            item.action.toLowerCase() === href.action
+        ) {
+            ok = true;
+        }
+    });
+    return ok;
+}
 
-    href = href.replace(/#.*$/, '').replace(/\?.*$/, '');
+function urlConvert(href) {
+    let url = urlHome.toLocaleLowerCase();
 
-    if (href.toLocaleLowerCase().indexOf(url) === 0) {
+    href = href.replace(/-/, '').toLocaleLowerCase();
+    if (href.indexOf('?') === 0) {
+        href = href.replace(/\?.*$/, '');
+    }
+    if (href.indexOf('#') === 0) {
+        href = href.replace(/#.*$/, '');
+    }
+
+    if (href.indexOf(url) === 0) {
         href = href.replace(url, "");
     }
 
@@ -102,10 +111,14 @@ function convertUrl(href) {
     }
 
     href = href.split('/');
+    let action = 'index';
+    if (href[2] != undefined || href[2] == '') {
+        action = href[2];
+    }
     return {
         prefix: href[0],
         controller: href[1],
-        action: href[2]
+        action: action,
     };
 }
 

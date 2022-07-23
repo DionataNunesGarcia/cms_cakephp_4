@@ -166,6 +166,7 @@ class AdminController extends AppController
             'afterFilter',
             'initialize',
             'ignoreListActions',
+            'ignoreListActionsCustom',
             'autocomplete',
             'removeUploads',
             'searchAjax',
