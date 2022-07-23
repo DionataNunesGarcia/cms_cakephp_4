@@ -3,10 +3,13 @@ declare(strict_types=1);
 
 namespace App\Model\Table;
 
+use App\Model\Entity\SystemParameter;
+use Cake\Event\Event;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use App\Utils\ConvertCharacters;
 
 /**
  * SystemParameters Model
@@ -87,5 +90,30 @@ class SystemParametersTable extends Table
             ->notEmptyString('emails');
 
         return $validator;
+    }
+
+    /**
+     * @param Event $event
+     * @param \ArrayObject $data
+     * @param \ArrayObject $options
+     * @return void
+     */
+    public function beforeMarshal(Event $event, \ArrayObject $data, \ArrayObject $options)
+    {
+        if (!empty($data['emails'])) {
+            $data['emails'] = implode(';', $data['emails']);
+        }
+        if (!empty($data['cnpj_cpf'])) {
+            $data['cnpj_cpf'] = ConvertCharacters::onlyNumbers($data['cnpj_cpf']);
+        }
+    }
+
+    /**
+     * @return SystemParameter
+     */
+    public function getEntity() :SystemParameter
+    {
+        $entity = $this->find()->first();
+        return $entity ?? $this->newEntity([]);
     }
 }

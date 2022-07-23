@@ -260,6 +260,10 @@ function setup() {
     //CPF
     $(".cpf").inputmask("999.999.999-99");
     $(".cnpj").inputmask("99.999.999/9999-99");
+    $(".cpf-cnpj").inputmask({
+        mask: ['999.999.999-99', '99.999.999/9999-99'],
+        keepStatic: true
+    });
     $(".cep").inputmask("99999-999");
 
     //Campos somente com numeros
@@ -377,6 +381,7 @@ function setup() {
     $(".select2-tags").select2({
         tags: true,
         multiple: true,
+        tokenSeparators: [';', ' '],
         createTag: function (tag) {
             console.log(tag);
             return {

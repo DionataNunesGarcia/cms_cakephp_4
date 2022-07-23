@@ -3,6 +3,10 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Error\Exception\ValidationErrorException;
+use App\Services\Form\SystemParametersFormService;
+use App\Services\Manager\SystemParametersManagerService;
+
 /**
  * SystemParameters Controller
  *
@@ -12,94 +16,46 @@ namespace App\Controller\Admin;
 class SystemParametersController extends AdminController
 {
     /**
-     * Index method
-     *
-     * @return \Cake\Http\Response|null|void Renders view
+     * @var SystemParametersFormService $_formService
      */
-    public function index()
-    {
-        $systemParameters = $this->paginate($this->SystemParameters);
-
-        $this->set(compact('systemParameters'));
-    }
+    private SystemParametersFormService $_formService;
 
     /**
-     * View method
-     *
-     * @param string|null $id System Parameter id.
-     * @return \Cake\Http\Response|null|void Renders view
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     * @var SystemParametersManagerService $_managerService
      */
-    public function view($id = null)
-    {
-        $systemParameter = $this->SystemParameters->get($id, [
-            'contain' => [],
-        ]);
-
-        $this->set(compact('systemParameter'));
-    }
+    private SystemParametersManagerService $_managerService;
 
     /**
-     * Add method
-     *
-     * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
+     * @return void
      */
-    public function add()
+    public function initialize(): void
     {
-        $systemParameter = $this->SystemParameters->newEmptyEntity();
-        if ($this->request->is('post')) {
-            $systemParameter = $this->SystemParameters->patchEntity($systemParameter, $this->request->getData());
-            if ($this->SystemParameters->save($systemParameter)) {
-                $this->Flash->success(__('The system parameter has been saved.'));
+        parent::initialize();
 
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The system parameter could not be saved. Please, try again.'));
-        }
-        $this->set(compact('systemParameter'));
+        $this->_formService = new SystemParametersFormService($this);
+        $this->_managerService = new SystemParametersManagerService($this);
     }
 
     /**
      * Edit method
      *
-     * @param string|null $id System Parameter id.
+     * @param string|null $id User id.
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function edit($id = null)
+    public function edit()
     {
-        $systemParameter = $this->SystemParameters->get($id, [
-            'contain' => [],
-        ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $systemParameter = $this->SystemParameters->patchEntity($systemParameter, $this->request->getData());
-            if ($this->SystemParameters->save($systemParameter)) {
-                $this->Flash->success(__('The system parameter has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
+        $entity = $this->_formService->getEntity();
+        if ($this->getRequest()->is(['patch', 'post', 'put'])) {
+            try {
+                $response = $this->_managerService->saveEntity();
+                $this->Flash->success($response['message']);
+                return $this->redirect(['action' => 'edit', $response['data']->id]);
+            } catch (ValidationErrorException $ex) {
+                $entity = $ex->getEntity();
+                $this->Flash->error($ex->getMessage());
             }
-            $this->Flash->error(__('The system parameter could not be saved. Please, try again.'));
         }
-        $this->set(compact('systemParameter'));
-    }
-
-    /**
-     * Delete method
-     *
-     * @param string|null $id System Parameter id.
-     * @return \Cake\Http\Response|null|void Redirects to index.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function delete($id = null)
-    {
-        $this->request->allowMethod(['post', 'delete']);
-        $systemParameter = $this->SystemParameters->get($id);
-        if ($this->SystemParameters->delete($systemParameter)) {
-            $this->Flash->success(__('The system parameter has been deleted.'));
-        } else {
-            $this->Flash->error(__('The system parameter could not be deleted. Please, try again.'));
-        }
-
-        return $this->redirect(['action' => 'index']);
+        $this->set(compact('entity'));
     }
 }
