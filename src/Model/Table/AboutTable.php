@@ -3,6 +3,10 @@ declare(strict_types=1);
 
 namespace App\Model\Table;
 
+use App\Model\Entity\About;
+use App\Model\Entity\SystemParameter;
+use App\Utils\ConvertCharacters;
+use Cake\Event\Event;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -123,5 +127,30 @@ class AboutTable extends Table
             ->notEmptyString('values');
 
         return $validator;
+    }
+
+    /**
+     * @param Event $event
+     * @param \ArrayObject $data
+     * @param \ArrayObject $options
+     * @return void
+     */
+    public function beforeMarshal(Event $event, \ArrayObject $data, \ArrayObject $options)
+    {
+        if (!empty($data['phone'])) {
+            $data['phone'] = ConvertCharacters::onlyNumbers($data['phone']);
+        }
+        if (!empty($data['cell_phone'])) {
+            $data['cell_phone'] = ConvertCharacters::onlyNumbers($data['cell_phone']);
+        }
+    }
+
+    /**
+     * @return About
+     */
+    public function getEntity()
+    {
+        $entity = $this->find()->first();
+        return $entity ?? $this->newEntity([]);
     }
 }

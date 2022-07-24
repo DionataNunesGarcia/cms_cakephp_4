@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Services\Form\AboutFormService;
+use App\Services\Manager\AboutManagerService;
+
 /**
  * About Controller
  *
@@ -12,94 +15,46 @@ namespace App\Controller\Admin;
 class AboutController extends AdminController
 {
     /**
-     * Index method
-     *
-     * @return \Cake\Http\Response|null|void Renders view
+     * @var AboutFormService $_formService
      */
-    public function index()
-    {
-        $about = $this->paginate($this->About);
-
-        $this->set(compact('about'));
-    }
+    private AboutFormService $_formService;
 
     /**
-     * View method
-     *
-     * @param string|null $id About id.
-     * @return \Cake\Http\Response|null|void Renders view
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     * @var AboutManagerService $_managerService
      */
-    public function view($id = null)
-    {
-        $about = $this->About->get($id, [
-            'contain' => [],
-        ]);
-
-        $this->set(compact('about'));
-    }
+    private AboutManagerService $_managerService;
 
     /**
-     * Add method
-     *
-     * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
+     * @return void
      */
-    public function add()
+    public function initialize(): void
     {
-        $about = $this->About->newEmptyEntity();
-        if ($this->request->is('post')) {
-            $about = $this->About->patchEntity($about, $this->request->getData());
-            if ($this->About->save($about)) {
-                $this->Flash->success(__('The about has been saved.'));
+        parent::initialize();
 
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The about could not be saved. Please, try again.'));
-        }
-        $this->set(compact('about'));
+        $this->_formService = new AboutFormService($this);
+        $this->_managerService = new AboutManagerService($this);
     }
 
     /**
      * Edit method
      *
-     * @param string|null $id About id.
+     * @param string|null $id User id.
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function edit($id = null)
+    public function edit()
     {
-        $about = $this->About->get($id, [
-            'contain' => [],
-        ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $about = $this->About->patchEntity($about, $this->request->getData());
-            if ($this->About->save($about)) {
-                $this->Flash->success(__('The about has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
+        $entity = $this->_formService->getEntity();
+        if ($this->getRequest()->is(['patch', 'post', 'put'])) {
+            try {
+                $response = $this->_managerService->saveEntity();
+                $this->Flash->success($response['message']);
+                return $this->redirect(['action' => 'edit', $response['data']->id]);
+            } catch (ValidationErrorException $ex) {
+                $entity = $ex->getEntity();
+                $this->Flash->error($ex->getMessage());
             }
-            $this->Flash->error(__('The about could not be saved. Please, try again.'));
         }
-        $this->set(compact('about'));
-    }
-
-    /**
-     * Delete method
-     *
-     * @param string|null $id About id.
-     * @return \Cake\Http\Response|null|void Redirects to index.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function delete($id = null)
-    {
-        $this->request->allowMethod(['post', 'delete']);
-        $about = $this->About->get($id);
-        if ($this->About->delete($about)) {
-            $this->Flash->success(__('The about has been deleted.'));
-        } else {
-            $this->Flash->error(__('The about could not be deleted. Please, try again.'));
-        }
-
-        return $this->redirect(['action' => 'index']);
+        $this->set(compact('entity'));
     }
 }

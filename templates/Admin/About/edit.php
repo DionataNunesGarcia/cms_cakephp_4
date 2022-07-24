@@ -1,44 +1,78 @@
-<?php
-/**
- * @var \App\View\AppView $this
- * @var \App\Model\Entity\About $about
- */
+<?=
+$this->Form->create($entity, [
+    'url' => [
+        'action' => 'edit',
+        $entity->id,
+        'fullBase' => true,
+    ],
+    'enctype' => 'multipart/form-data'
+]);
 ?>
-<div class="row">
-    <aside class="column">
-        <div class="side-nav">
-            <h4 class="heading"><?= __('Actions') ?></h4>
-            <?= $this->Form->postLink(
-                __('Delete'),
-                ['action' => 'delete', $about->id],
-                ['confirm' => __('Are you sure you want to delete # {0}?', $about->id), 'class' => 'side-nav-item']
-            ) ?>
-            <?= $this->Html->link(__('List About'), ['action' => 'index'], ['class' => 'side-nav-item']) ?>
-        </div>
-    </aside>
-    <div class="column-responsive column-80">
-        <div class="about form content">
-            <?= $this->Form->create($about) ?>
-            <fieldset>
-                <legend><?= __('Edit About') ?></legend>
-                <?php
-                    echo $this->Form->control('title');
-                    echo $this->Form->control('email');
-                    echo $this->Form->control('phone');
-                    echo $this->Form->control('cell_phone');
-                    echo $this->Form->control('facebook');
-                    echo $this->Form->control('instagram');
-                    echo $this->Form->control('linkedin');
-                    echo $this->Form->control('github');
-                    echo $this->Form->control('super');
-                    echo $this->Form->control('about');
-                    echo $this->Form->control('vision');
-                    echo $this->Form->control('mission');
-                    echo $this->Form->control('values');
+<div class="box">
+    <?= $this->element('admin/box-title', ['title' => 'Dados Sistema', 'collapse' => false]) ?>
+    <div class="box-body">
+        <?= $this->Form->hidden('id') ?>
+        <div class="row">
+            <div class="form-group col-md-6">
+                <?= $this->Form->control('title', ['label' => 'Título']); ?>
+            </div>
+            <div class="form-group col-md-6">
+                <?= $this->Form->control('email', ['label' => 'E-mail', 'type' => 'email']); ?>
+            </div>
+            <div class="form-group col-md-6">
+                <?=
+                $this->Form->control('phone', [
+                    'value' => ($entity->phone),
+                    'class' => 'phone',
+                    'label' => 'Telefone',
+                ]);
                 ?>
-            </fieldset>
-            <?= $this->Form->button(__('Submit')) ?>
-            <?= $this->Form->end() ?>
+            </div>
+            <div class="form-group col-md-6">
+                <?=
+                $this->Form->control('cell_phone', [
+                    'value' => ($entity->cell_phone),
+                    'class' => 'phone',
+                    'label' => 'Celular',
+                ]);
+                ?>
+            </div>
+            <div class="form-group col-md-6">
+                <?= $this->Form->control('facebook'); ?>
+            </div>
+            <div class="form-group col-md-6">
+                <?= $this->Form->control('instagram'); ?>
+            </div>
+            <div class="form-group col-md-6">
+                <?= $this->Form->control('linkedin'); ?>
+            </div>
+            <div class="form-group col-md-6">
+                <?= $this->Form->control('github'); ?>
+            </div>
         </div>
     </div>
+    <?= $this->element('admin/box-title', ['title' => 'Textos']) ?>
+    <div class="box-body">
+        <div class="form-group col-md-12">
+            <?= $this->Form->input('about', ['class' => 'ckeditor', 'text' => 'Sobre', 'type' => 'textarea']) ?>
+        </div>
+        <div class="form-group col-md-12">
+            <?= $this->Form->input('vision', ['class' => 'ckeditor', 'text' => 'Visão', 'type' => 'textarea']) ?>
+        </div>
+        <div class="form-group col-md-12">
+            <?= $this->Form->input('mission', ['class' => 'ckeditor', 'text' => 'Missão', 'type' => 'textarea']) ?>
+        </div>
+        <div class="form-group col-md-12">
+            <?= $this->Form->input('values', ['text' => 'Valores', 'class' => 'ckeditor', 'type' => 'textarea']) ?>
+        </div>
+    </div>
+    <div class="box-footer">
+        <?=
+        $this->Form->button('<i class="fa fa-save"></i> Salvar', [
+            'class' => 'btn btn-primary',
+            'escapeTitle' => false
+        ]);
+        ?>
+    </div>
 </div>
+<?= $this->Form->end() ?>

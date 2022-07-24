@@ -7,9 +7,6 @@ $this->Form->create($entity, [
     ],
     'enctype' => 'multipart/form-data'
 ]);
-$this->Form->control('generate_access_logs');
-$this->Form->control('generate_change_log');
-$this->Form->control('emails');
 ?>
 <div class="box">
     <?= $this->element('admin/box-title', ['title' => 'Dados Sistema', 'collapse' => false]) ?>
