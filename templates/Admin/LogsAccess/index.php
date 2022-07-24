@@ -52,9 +52,6 @@
                         <th>
                             <?= __('Criado') ?>
                         </th>
-                        <th class="text-center actions">
-                            <?= __('Ações') ?>
-                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -92,16 +89,7 @@
             },
             {
                 data: 'created'
-            },
-            {
-                data: 'actions',
-                className: 'text-center',
-                render: function(data, type, full, meta) {
-                    let html = ``;
-                    html += datatablesCustom.buildBtnView(full.actions.view);
-                    return html;
-                }
-            },
+            }
         ]
     });
 </script>

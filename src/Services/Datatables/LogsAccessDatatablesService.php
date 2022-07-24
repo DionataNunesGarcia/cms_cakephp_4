@@ -104,9 +104,6 @@ class LogsAccessDatatablesService extends DatatablesService
                 'user' => $item->user->user,
                 'ip' => $item->ip,
                 'created' => $item->created->i18nFormat('dd/MM/yyyy'),
-                'actions' => [
-                    'view' => $this->hasPermission('view', 'LogsAccess', $item->id),
-                ],
             ];
         }
         return $response;
