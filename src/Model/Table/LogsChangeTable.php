@@ -52,10 +52,6 @@ class LogsChangeTable extends Table
             'foreignKey' => 'user_id',
             'joinType' => 'INNER',
         ]);
-        $this->belongsTo('Records', [
-            'foreignKey' => 'record_id',
-            'joinType' => 'INNER',
-        ]);
     }
 
     /**
@@ -112,7 +108,6 @@ class LogsChangeTable extends Table
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn('user_id', 'Users'), ['errorField' => 'user_id']);
-        $rules->add($rules->existsIn('record_id', 'Records'), ['errorField' => 'record_id']);
 
         return $rules;
     }

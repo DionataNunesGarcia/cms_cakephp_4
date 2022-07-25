@@ -71,6 +71,7 @@ class AdminController extends AppController
         }
         $this->userSession = $result->getData()->toArray();
         Configure::write('SessionUser', $this->userSession);
+//        dd( Configure::read('SessionUser'));
         $this->set([
             'userSession' => $this->userSession
         ]);

@@ -47,6 +47,8 @@ class SystemParametersTable extends Table
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
+
+        $this->addBehavior('RegisterLogChange');
     }
 
     /**

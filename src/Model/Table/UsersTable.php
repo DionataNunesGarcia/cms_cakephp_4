@@ -53,6 +53,8 @@ class UsersTable extends Table
 
         $this->addBehavior('Timestamp');
 
+        $this->addBehavior('RegisterLogChange');
+
         $this->belongsTo('Levels', [
             'foreignKey' => 'level_id',
             'joinType' => 'INNER',
