@@ -1,52 +1,95 @@
 <?php
 /**
  * @var \App\View\AppView $this
- * @var \App\Model\Entity\LogsChange[]|\Cake\Collection\CollectionInterface $logsChange
  */
 ?>
-<div class="logsChange index content">
-    <?= $this->Html->link(__('New Logs Change'), ['action' => 'add'], ['class' => 'button float-right']) ?>
-    <h3><?= __('Logs Change') ?></h3>
-    <div class="table-responsive">
-        <table>
-            <thead>
-                <tr>
-                    <th><?= $this->Paginator->sort('id') ?></th>
-                    <th><?= $this->Paginator->sort('user_id') ?></th>
-                    <th><?= $this->Paginator->sort('table_name') ?></th>
-                    <th><?= $this->Paginator->sort('record_id') ?></th>
-                    <th><?= $this->Paginator->sort('action_type') ?></th>
-                    <th><?= $this->Paginator->sort('created') ?></th>
-                    <th class="actions"><?= __('Actions') ?></th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($logsChange as $logsChange): ?>
-                <tr>
-                    <td><?= $this->Number->format($logsChange->id) ?></td>
-                    <td><?= $logsChange->has('user') ? $this->Html->link($logsChange->user->id, ['controller' => 'Users', 'action' => 'view', $logsChange->user->id]) : '' ?></td>
-                    <td><?= h($logsChange->table_name) ?></td>
-                    <td><?= $this->Number->format($logsChange->record_id) ?></td>
-                    <td><?= h($logsChange->action_type) ?></td>
-                    <td><?= h($logsChange->created) ?></td>
-                    <td class="actions">
-                        <?= $this->Html->link(__('View'), ['action' => 'view', $logsChange->id]) ?>
-                        <?= $this->Html->link(__('Edit'), ['action' => 'edit', $logsChange->id]) ?>
-                        <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $logsChange->id], ['confirm' => __('Are you sure you want to delete # {0}?', $logsChange->id)]) ?>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+<?= $this->element('admin/search/metas-datatable') ?>
+<?= $this->Form->create(null, ['type' => 'get']); ?>
+<div class="box">
+    <?= $this->element('admin/box-title', ['title' => '<i class="fa fa-filter"></i> Filtrar']) ?>
+    <div class="box-body">
+
+        <div class="col-md-6">
+            <?=
+            $this->Form->control('user_id', ['class' => 'form-control', 'label' => false,
+                'placeholder' => 'Pesquise por usuário',
+                'autofocus' => true,
+                'value' => $this->request->getQuery('user_id')]);
+            ?>
+        </div>
+        <div class="col-md-6">
+            <?=
+            $this->Form->control('email', ['class' => 'form-control', 'label' => false,
+                'placeholder' => 'Pesquse por e-mail',
+                'autofocus' => true,
+                'value' => $this->request->getQuery('email')]);
+            ?>
+        </div>
     </div>
-    <div class="paginator">
-        <ul class="pagination">
-            <?= $this->Paginator->first('<< ' . __('first')) ?>
-            <?= $this->Paginator->prev('< ' . __('previous')) ?>
-            <?= $this->Paginator->numbers() ?>
-            <?= $this->Paginator->next(__('next') . ' >') ?>
-            <?= $this->Paginator->last(__('last') . ' >>') ?>
-        </ul>
-        <p><?= $this->Paginator->counter(__('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')) ?></p>
+    <div class="box-footer">
+        <div class="pull-right">
+            <?= $this->element('admin/search/filter-buttons') ?>
+        </div>
     </div>
 </div>
+<?= $this->Form->end(); ?>
+
+<!-- Default box -->
+<div class="box">
+    <?= $this->element('admin/box-title', ['title' => '<i class="fa fa-table"></i> Registros']) ?>
+    <div class="box-body">
+        <?= $this->element('admin/search/grid-buttons') ?>
+        <div class="col-md-12">
+            <table class="table table-datatable table-striped table-bordered nowrap " id="table-index" style="width: 100%">
+                <thead>
+                    <tr>
+                        <th>
+                            <?= __('Usuário') ?>
+                        </th>
+                        <th>
+                            <?= __('Tipo') ?>
+                        </th>
+                        <th>
+                            <?= __('Criado') ?>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    let urlDatatable = "<?=
+        $this->Url->build([
+            'action' => 'searchAjax',
+            'prefix' => 'Admin',
+        ]);
+        ?>";
+
+    let datatableCurrent = $('#table-index').DataTable({
+        serverSide: true,
+        responsive: true,
+        ajax: urlDatatable,
+        searching: false,
+        paging: true,
+        ordering: false,
+        processing: true,
+        language: datatablesCustom.configDatatables().language,
+        dataFilter: function(res) {
+            debugger;
+        },
+        columns: [
+            {
+                data: 'user'
+            },
+            {
+                data: 'tipo'
+            },
+            {
+                data: 'created'
+            }
+        ]
+    });
+</script>

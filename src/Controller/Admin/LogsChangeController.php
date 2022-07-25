@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Services\Datatables\LogsChangeDatatablesService;
+use App\Services\Form\LogsChangeFormService;
+
 /**
  * LogsChange Controller
  *
@@ -12,20 +15,47 @@ namespace App\Controller\Admin;
 class LogsChangeController extends AdminController
 {
     /**
+     * @var LogsChangeFormService $_formService
+     */
+    private LogsChangeFormService $_formService;
+
+    /**
+     * @var LogsChangeDatatablesService
+     */
+    private LogsChangeDatatablesService $_datatableService;
+
+    /**
+     * @return void
+     */
+    public function initialize(): void
+    {
+        parent::initialize();
+
+        $this->_formService = new LogsChangeFormService($this);
+        $this->_datatableService = new LogsChangeDatatablesService($this);
+    }
+
+    /**
      * Index method
      *
      * @return \Cake\Http\Response|null|void Renders view
      */
     public function index()
     {
-        $this->paginate = [
-            'contain' => ['Users', 'Records'],
-        ];
-        $logsChange = $this->paginate($this->LogsChange);
-
-        $this->set(compact('logsChange'));
     }
 
+    /**
+     * Index Ajax method
+     *
+     * @return \Cake\Http\Response|null|void Renders view
+     */
+    public function searchAjax()
+    {
+        $response = $this->_datatableService->getResults();
+        $this->RequestHandler->renderAs($this, 'json');
+        $this->set(compact('response'));
+        $this->set('_serialize', 'response');
+    }
     /**
      * View method
      *
@@ -35,78 +65,10 @@ class LogsChangeController extends AdminController
      */
     public function view($id = null)
     {
-        $logsChange = $this->LogsChange->get($id, [
-            'contain' => ['Users', 'Records'],
-        ]);
-
-        $this->set(compact('logsChange'));
-    }
-
-    /**
-     * Add method
-     *
-     * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
-     */
-    public function add()
-    {
-        $logsChange = $this->LogsChange->newEmptyEntity();
-        if ($this->request->is('post')) {
-            $logsChange = $this->LogsChange->patchEntity($logsChange, $this->request->getData());
-            if ($this->LogsChange->save($logsChange)) {
-                $this->Flash->success(__('The logs change has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The logs change could not be saved. Please, try again.'));
-        }
-        $users = $this->LogsChange->Users->find('list', ['limit' => 200])->all();
-        $records = $this->LogsChange->Records->find('list', ['limit' => 200])->all();
-        $this->set(compact('logsChange', 'users', 'records'));
-    }
-
-    /**
-     * Edit method
-     *
-     * @param string|null $id Logs Change id.
-     * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function edit($id = null)
-    {
-        $logsChange = $this->LogsChange->get($id, [
-            'contain' => [],
-        ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $logsChange = $this->LogsChange->patchEntity($logsChange, $this->request->getData());
-            if ($this->LogsChange->save($logsChange)) {
-                $this->Flash->success(__('The logs change has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The logs change could not be saved. Please, try again.'));
-        }
-        $users = $this->LogsChange->Users->find('list', ['limit' => 200])->all();
-        $records = $this->LogsChange->Records->find('list', ['limit' => 200])->all();
-        $this->set(compact('logsChange', 'users', 'records'));
-    }
-
-    /**
-     * Delete method
-     *
-     * @param string|null $id Logs Change id.
-     * @return \Cake\Http\Response|null|void Redirects to index.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function delete($id = null)
-    {
-        $this->request->allowMethod(['post', 'delete']);
-        $logsChange = $this->LogsChange->get($id);
-        if ($this->LogsChange->delete($logsChange)) {
-            $this->Flash->success(__('The logs change has been deleted.'));
-        } else {
-            $this->Flash->error(__('The logs change could not be deleted. Please, try again.'));
-        }
-
-        return $this->redirect(['action' => 'index']);
+        $this->viewBuilder()->setLayout('ajax');
+        $this->_formService->setId($id);
+        $entity = $this->_formService->getEntity();
+        $this->set(compact('entity'));
+        $this->render('view');
     }
 }
