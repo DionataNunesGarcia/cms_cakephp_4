@@ -2,9 +2,11 @@
 
 namespace App\Services;
 
+use App\Error\Exception\ValidationErrorException;
 use App\Model\Entity\User;
 use App\Utils\Enum\HttpStatusCodeEnum;
 use Cake\Controller\Controller;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
 

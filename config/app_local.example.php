@@ -17,6 +17,9 @@ return [
      */
     'debug' => filter_var(env('DEBUG', true), FILTER_VALIDATE_BOOLEAN),
 
+    'App' => [
+        'defaultLocale' => env('APP_DEFAULT_LOCALE', 'pt_BR'),
+    ],
     /*
      * Security and encryption configuration
      *

@@ -5,6 +5,7 @@ namespace App\Services\Manager;
 use App\Error\Exception\ValidationErrorException;
 use App\Services\DefaultService;
 use Cake\Controller\Controller;
+use Cake\I18n\FrozenTime;
 
 class AboutManagerService extends DefaultService
 {
@@ -25,8 +26,14 @@ class AboutManagerService extends DefaultService
         $entity = $this->_controller
             ->{$this->getModel()}
             ->patchEntity($this->getEntity(), $this->_request->getData());
-        if (!$this->_controller->{$this->getModel()}->save($entity)) {
-            throw new ValidationErrorException($entity);
+        try {
+            if (!$this->_controller->{$this->getModel()}->save($entity)) {
+                dd($entity);
+                throw new ValidationErrorException($entity);
+            }
+        } catch (\PDOException $ex) {
+
+            dd($ex);
         }
         $this->response['data'] = $entity;
         return $this->response;

@@ -11,6 +11,7 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use function Twig\Extra\Markdown\twig_html_to_markdown;
 
 /**
  * About Model
@@ -99,32 +100,24 @@ class AboutTable extends Table
             ->allowEmptyString('github');
 
         $validator
-            ->boolean('super')
-            ->notEmptyString('super');
-
-        $validator
             ->scalar('about')
             ->maxLength('about', 4294967295)
-            ->requirePresence('about', 'create')
-            ->notEmptyString('about');
+            ->allowEmptyString('about');
 
         $validator
             ->scalar('vision')
             ->maxLength('vision', 4294967295)
-            ->requirePresence('vision', 'create')
-            ->notEmptyString('vision');
+            ->allowEmptyString('vision');
 
         $validator
             ->scalar('mission')
             ->maxLength('mission', 4294967295)
-            ->requirePresence('mission', 'create')
-            ->notEmptyString('mission');
+            ->allowEmptyString('mission');
 
         $validator
             ->scalar('values')
             ->maxLength('values', 4294967295)
-            ->requirePresence('values', 'create')
-            ->notEmptyString('values');
+            ->allowEmptyString('values');
 
         return $validator;
     }
@@ -142,6 +135,18 @@ class AboutTable extends Table
         }
         if (!empty($data['cell_phone'])) {
             $data['cell_phone'] = ConvertCharacters::onlyNumbers($data['cell_phone']);
+        }
+        if (isset($data['about'])) {
+            $data['about'] = trim(utf8_encode($data['about']));
+        }
+        if (isset($data['mission'])) {
+            $data['mission'] = trim(utf8_encode($data['mission']));
+        }
+        if (isset($data['vision'])) {
+            $data['vision'] = trim(utf8_encode($data['vision']));
+        }
+        if (isset($data['values_about'])) {
+            $data['values_about'] = trim(utf8_encode($data['values_about']));
         }
     }
 

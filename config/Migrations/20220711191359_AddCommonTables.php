@@ -256,34 +256,20 @@ class AddCommonTables extends AbstractMigration
                 'limit' => 255,
                 'null' => true,
             ])
-            ->addColumn('super', 'boolean', [
-                'default' => 0,
-                'null' => false,
-            ])
             ->addColumn('about', 'text', [
                 'limit' => MysqlAdapter::TEXT_LONG,
-                'null' => false,
+                'null' => true,
             ])
             ->addColumn('vision', 'text', [
                 'limit' => MysqlAdapter::TEXT_LONG,
-                'null' => false,
+                'null' => true,
             ])
             ->addColumn('mission', 'text', [
                 'limit' => MysqlAdapter::TEXT_LONG,
-                'null' => false,
-            ])
-            ->addColumn('values', 'text', [
-                'limit' => MysqlAdapter::TEXT_LONG,
-                'null' => false,
-            ])
-            ->addColumn('created', 'datetime', [
-                'default' => null,
-                'limit' => null,
                 'null' => true,
             ])
-            ->addColumn('modified', 'datetime', [
-                'default' => null,
-                'limit' => null,
+            ->addColumn('values_about', 'text', [
+                'limit' => MysqlAdapter::TEXT_LONG,
                 'null' => true,
             ])
             ->create();

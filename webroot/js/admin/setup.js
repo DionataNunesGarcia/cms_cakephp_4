@@ -7,7 +7,8 @@ function setup() {
     });
 
     //adiciona classes bootstrap aos formulários
-    $('input[type=text], input[type=password], input[type=email], input[type=number], input[type=url], select').addClass('form-control');
+    $('input[type=text], input[type=password], input[type=email], input[type=number], input[type=url], input[type=tel], select')
+        .addClass('form-control');
 
     $('nav#actions-sidebar').remove();
 

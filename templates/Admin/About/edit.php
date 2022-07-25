@@ -13,41 +13,47 @@ $this->Form->create($entity, [
     <div class="box-body">
         <?= $this->Form->hidden('id') ?>
         <div class="row">
-            <div class="form-group col-md-6">
-                <?= $this->Form->control('title', ['label' => 'Título']); ?>
+            <div class="col-md-12">
+                <div class="form-group col-md-4">
+                    <?= $this->Form->control('title', ['label' => 'Título']); ?>
+                </div>
+                <div class="form-group col-md-4">
+                    <?= $this->Form->control('email', ['label' => 'E-mail', 'type' => 'email']); ?>
+                </div>
+                <div class="form-group col-md-4">
+                    <?=
+                    $this->Form->control('phone', [
+                        'value' => ($entity->phone),
+                        'class' => 'phone',
+                        'label' => 'Telefone',
+                    ]);
+                    ?>
+                </div>
             </div>
-            <div class="form-group col-md-6">
-                <?= $this->Form->control('email', ['label' => 'E-mail', 'type' => 'email']); ?>
+            <div class="col-md-12">
+                <div class="form-group col-md-4">
+                    <?=
+                    $this->Form->control('cell_phone', [
+                        'value' => ($entity->cell_phone),
+                        'class' => 'phone',
+                        'label' => 'Celular',
+                    ]);
+                    ?>
+                </div>
+                <div class="form-group col-md-4">
+                    <?= $this->Form->control('facebook'); ?>
+                </div>
+                <div class="form-group col-md-4">
+                    <?= $this->Form->control('instagram'); ?>
+                </div>
             </div>
-            <div class="form-group col-md-6">
-                <?=
-                $this->Form->control('phone', [
-                    'value' => ($entity->phone),
-                    'class' => 'phone',
-                    'label' => 'Telefone',
-                ]);
-                ?>
-            </div>
-            <div class="form-group col-md-6">
-                <?=
-                $this->Form->control('cell_phone', [
-                    'value' => ($entity->cell_phone),
-                    'class' => 'phone',
-                    'label' => 'Celular',
-                ]);
-                ?>
-            </div>
-            <div class="form-group col-md-6">
-                <?= $this->Form->control('facebook'); ?>
-            </div>
-            <div class="form-group col-md-6">
-                <?= $this->Form->control('instagram'); ?>
-            </div>
-            <div class="form-group col-md-6">
-                <?= $this->Form->control('linkedin'); ?>
-            </div>
-            <div class="form-group col-md-6">
-                <?= $this->Form->control('github'); ?>
+            <div class="col-md-12">
+                <div class="form-group col-md-4">
+                    <?= $this->Form->control('linkedin'); ?>
+                </div>
+                <div class="form-group col-md-4">
+                    <?= $this->Form->control('github'); ?>
+                </div>
             </div>
         </div>
     </div>
@@ -63,7 +69,7 @@ $this->Form->create($entity, [
             <?= $this->Form->input('mission', ['class' => 'ckeditor', 'text' => 'Missão', 'type' => 'textarea']) ?>
         </div>
         <div class="form-group col-md-12">
-            <?= $this->Form->input('values', ['text' => 'Valores', 'class' => 'ckeditor', 'type' => 'textarea']) ?>
+            <?= $this->Form->input('values_about', ['class' => 'ckeditor', 'text' => 'Valores', 'type' => 'textarea']) ?>
         </div>
     </div>
     <div class="box-footer">
