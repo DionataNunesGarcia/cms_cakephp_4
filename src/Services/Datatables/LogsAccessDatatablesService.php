@@ -103,7 +103,7 @@ class LogsAccessDatatablesService extends DatatablesService
                 'id' => $item->id,
                 'user' => $item->user->user,
                 'ip' => $item->ip,
-                'created' => $item->created->i18nFormat('dd/MM/yyyy'),
+                'created' => $item->created->i18nFormat('dd/MM/yyyy HH:mm:ss'),
             ];
         }
         return $response;

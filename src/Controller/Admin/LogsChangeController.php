@@ -59,13 +59,13 @@ class LogsChangeController extends AdminController
     /**
      * View method
      *
-     * @param string|null $id Logs Change id.
+     * @param int|null $id Logs Change id.
      * @return \Cake\Http\Response|null|void Renders view
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function view($id = null)
+    public function view(int $id = null)
     {
-        $this->viewBuilder()->setLayout('ajax');
+        $this->viewBuilder()->setLayout(null);
         $this->_formService->setId($id);
         $entity = $this->_formService->getEntity();
         $this->set(compact('entity'));

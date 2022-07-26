@@ -2,7 +2,8 @@
 
 namespace App\Services\Datatables;
 
-use App\Utils\Enum\StatusEnum;
+use App\Utils\Enum\LogsChangeTypesEnum;
+use App\Utils\TranslateControllerActions;
 use Cake\Controller\Controller;
 use Cake\Routing\Router;
 
@@ -99,11 +100,21 @@ class LogsChangeDatatablesService extends DatatablesService
     {
         $response = [];
         foreach ($results as $item) {
+            $item->created = $item->created->i18nFormat('dd/MM/yyyy HH:mm:ss');
+            $item->table = TranslateControllerActions::translateController($item->table_name);
+            $item->type = LogsChangeTypesEnum::getType($item->action_type);
+            $item->new_value_json = json_decode($item->new_value, JSON_OBJECT_AS_ARRAY);
+            $item->old_value_json = json_decode($item->old_value, JSON_OBJECT_AS_ARRAY);
             $response[] = [
                 'id' => $item->id,
                 'user' => $item->user->user,
-                'type' => '',
-                'created' => $item->created->i18nFormat('dd/MM/yyyy'),
+                'table' => $item->table,
+                'type' => $item->type,
+                'new_value' => $item->new_value_json,
+                'old_value' => $item->old_value_json,
+                'created' => $item->created,
+                'entity' => $item,
+                'actions' => $this->verifyHasPermissionActions(['view'], 'LogsChange', $item->id),
             ];
         }
         return $response;

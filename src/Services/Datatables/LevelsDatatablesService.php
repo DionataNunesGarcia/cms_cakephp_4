@@ -105,7 +105,7 @@ class LevelsDatatablesService extends DatatablesService
                 'id' => $item->id,
                 'name' => $item->name,
                 'users' => $users,
-                'created' => $item->created->i18nFormat('dd/MM/yyyy'),
+                'created' => $item->created->i18nFormat('dd/MM/yyyy HH:mm:ss'),
                 'actions' => [
                     'edit' => $this->hasPermission('edit', 'Levels', $item->id),
                     'delete' => $users ? false : $this->hasPermission('delete', 'Levels', $item->id),

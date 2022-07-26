@@ -108,7 +108,7 @@ class UsersDatatablesService extends DatatablesService
                 'user' => $item->user,
                 'level' => $item->level->name,
                 'status' => $item->situation->name,
-                'created' => $item->created->i18nFormat('dd/MM/yyyy'),
+                'created' => $item->created->i18nFormat('dd/MM/yyyy HH:mm:ss'),
                 'actions' => $this->verifyHasPermissionActions(['edit', 'delete'], 'Users', $item->id),
             ];
         }

@@ -8,16 +8,19 @@ $(document).ready(function () {
     $('body').on('click', 'a[data-open-modal-id]', function (e) {
         e.preventDefault();
         openLoad();
-
         var url = $(this).attr('href');
         var id_div = $(this).data('open-modal-id');
 
         if(id_div !== ''){
             var $modal = $('#' + id_div);
-
-            $modal.load(url,{id:id_div }, function () {
-                closeLoad();
-                $modal.modal('toggle');
+            $.ajax({
+                url: url,
+                type: "GET",
+                success: function(result){
+                    closeLoad();
+                    $modal.html(result);
+                    $modal.modal('toggle');
+                }
             });
         }
     });

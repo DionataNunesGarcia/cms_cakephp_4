@@ -47,16 +47,64 @@
                             <?= __('Usuário') ?>
                         </th>
                         <th>
+                            <?= __('Cadastro') ?>
+                        </th>
+                        <th>
                             <?= __('Tipo') ?>
                         </th>
                         <th>
                             <?= __('Criado') ?>
+                        </th>
+                        <th>
+                            <?= __('Ações') ?>
                         </th>
                     </tr>
                 </thead>
                 <tbody>
                 </tbody>
             </table>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal-view" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Log Alteração</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group col-md-3">
+                        <strong><?= __('Usuário') ?></strong>
+                        <span class="help-block" id="user">
+                    </span>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <strong><?= __('Data/Hora') ?></strong>
+                        <span class="help-block" id="created"></span>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <strong><?= __('Tabela') ?></strong>
+                        <span class="help-block" id="table"></span>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <strong><?= __('Tipo') ?></strong>
+                        <span class="help-block" id="type"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <strong><?= __('Valores Novos') ?></strong>
+                        <span class="help-block string-to-json" id="new_values"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <strong><?= __('Valores Antigos') ?></strong>
+                        <span class="help-block string-to-json" id="old_values"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" >Fechar</button>
+            </div>
         </div>
     </div>
 </div>
@@ -85,11 +133,50 @@
                 data: 'user'
             },
             {
-                data: 'tipo'
+                data: 'table'
+            },
+            {
+                data: 'type'
             },
             {
                 data: 'created'
-            }
+            },
+            {
+                data: 'actions',
+                className: 'text-center',
+                render: function(data, type, full, meta) {
+                    let html = ``;
+                    html += datatablesCustom.buildBtnViewModal(full.actions.view, full.entity, 'view');
+                    return html;
+                }
+            },
         ]
     });
+
+    $('body')
+        .on('click', 'table.table-datatable .btn-view-modal', function (e) {
+            e.preventDefault();
+            let entity = datatablesCustom.convertObjectString($(this).data('entity'));
+            let $modal = $('#modal-view');
+            console.log(entity);
+            console.log($modal);
+            $modal.find('#user').html(entity.user.user);
+            $modal.find('#created').html(entity.created);
+            $modal.find('#table').html(entity.table);
+            $modal.find('#type').html(entity.type);
+
+
+            $modal.find('#new_values').html(generateHtmlByJson(entity.new_value_json));
+            $modal.find('#old_values').html(generateHtmlByJson(entity.old_value_json));
+            $modal.modal('toggle');
+        });
+
+    function generateHtmlByJson(json) {
+        let html = ``;
+        $.each(json, function(field, value) {
+            html += `<strong>${field}: </strong>`;
+            html += `<span>${value}</span><br/>`;
+        });
+        return html;
+    }
 </script>

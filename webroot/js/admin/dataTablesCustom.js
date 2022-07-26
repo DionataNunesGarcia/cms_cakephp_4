@@ -50,6 +50,17 @@ let datatablesCustom = {
           </a>
         `;
     },
+    buildBtnViewModal: function (url, entity, modalId) {
+        if (!url) {
+            return ``;
+        }
+        entity = encodeURIComponent(JSON.stringify(entity));
+        return `
+          <a class="btn btn-default btn-xs btn-view-modal" href="${url}" data-entity="${entity}">
+            <i class="fa fa-eye"></i>
+          </a>
+        `;
+    },
     buildBtnDelete: function (url) {
         if (!url) {
             return ``;
@@ -88,7 +99,6 @@ let datatablesCustom = {
             },
             success: function(result) {
                 // handle success
-                openLoad();
                 alert(result.message);
                 console.log('result: ', result);
                 datatableCurrent.draw('page')
@@ -98,9 +108,6 @@ let datatablesCustom = {
                 console.log('request: ', request);
                 console.log('msg: ', msg);
                 console.log('error: ', error);
-            },
-            complete: function () {
-                closeLoad();
             }
         });
     },
@@ -163,4 +170,11 @@ let datatablesCustom = {
             },
         };
     },
+    convertObjectString: function(entityString) {
+        let entityObject = [];
+        if (entityString != '') {
+            entityObject = JSON.parse(decodeURIComponent(entityString));
+        }
+        return entityObject;
+    }
 }

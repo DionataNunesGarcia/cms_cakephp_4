@@ -93,9 +93,26 @@ class RegisterLogChangeBehavior extends Behavior
         }
         //UPDATE
         return $this->saveUpdate();
-
     }
 
+    /**
+     * @param \Cake\Event\Event $event
+     * @param $entity
+     * @param $options
+     * @return bool
+     */
+    public function beforeDelete(\Cake\Event\Event $event, Entity $entity, $options): bool
+    {
+        if (!$this->generateChangeLogIsValid() || !$this->checkUserSession()) {
+            return false;
+        }
+        $this->setEntity($entity);
+        return $this->saveDelete();
+    }
+
+    /**
+     * @return bool
+     */
     private function generateChangeLogIsValid() :bool
     {
         $systemParametersTable = $this->_table->getTable() == "system_parameters"
@@ -108,6 +125,9 @@ class RegisterLogChangeBehavior extends Behavior
         return true;
     }
 
+    /**
+     * @return bool
+     */
     private function checkUserSession() :bool
     {
         if (empty(Configure::check('SessionUser'))) {
@@ -127,6 +147,9 @@ class RegisterLogChangeBehavior extends Behavior
             ->getDirty();
         $type = LogsChangeTypesEnum::CREATE;
         foreach ($modifyValues as $field) {
+            if (in_array($field, $this::ignoreFields())) {
+                continue;
+            }
             $newValues[$field] = $this->getEntity()->{$field};
         }
         return $this->saveEntityLog($type, $newValues, []);
@@ -147,14 +170,27 @@ class RegisterLogChangeBehavior extends Behavior
         $newValues = [];
         $oldValues = [];
         foreach ($modifyValues as $field) {
+            if (in_array($field, $this::ignoreFields())) {
+                continue;
+            }
             $oldValues[$field] = $this->getEntity()->getOriginal($field);
             $newValues[$field] = $this->getEntity()->{$field};
         }
         $type = LogsChangeTypesEnum::UPDATE;
+        // verify if status is DELETE
         if (isset($newValues['status']) && $newValues['status'] == StatusEnum::EXCLUDED) {
-            $type = LogsChangeTypesEnum::DELETE;
+            return $this->saveDelete();
         }
         return $this->saveEntityLog($type, $newValues, $oldValues);
+    }
+
+    /**
+     * @return bool
+     */
+    private function saveDelete() :bool
+    {
+        $type = LogsChangeTypesEnum::DELETE;
+        return $this->saveEntityLog($type, [], $this->buildOldValues());
     }
 
     /**
@@ -169,7 +205,8 @@ class RegisterLogChangeBehavior extends Behavior
          * @var LogsChange $logEntity
          */
         $logEntity = $this->tableLogsChange->newEmptyEntity();
-
+        ksort($oldValues);
+        ksort($newValues);
         $logEntity->user_id = $this->userLogged['id'];
         $logEntity->table_name = $this->_table->getAlias();
         $logEntity->record_id = $this->getEntity()->id;
@@ -185,25 +222,32 @@ class RegisterLogChangeBehavior extends Behavior
     }
 
     /**
-     * @param \Cake\Event\Event $event
-     * @param $entity
-     * @param $options
-     * @return bool
+     * @return string[]
      */
-    public function beforeDelete(\Cake\Event\Event $event, Entity $entity, $options): bool
+    private static function ignoreFields() :array
     {
-        if (!$this->generateChangeLogIsValid() || !$this->checkUserSession()) {
-            return false;
-        }
-        $this->setEntity($entity);
-        $type = LogsChangeTypesEnum::DELETE;
+        return [
+            'password',
+            'super',
+            'deletable',
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    private function buildOldValues() :array
+    {
         $oldValues = [];
         foreach ($this->getEntity()->toArray() as $field => $value) {
-            if (is_array($field)) {
+            if (is_array($field) || in_array($field, $this::ignoreFields())) {
                 continue;
             }
             $oldValues[$field] = $value;
         }
-        return $this->saveEntityLog($type, [], $oldValues);
+        if (isset($oldValues['status'])) {
+            unset($oldValues['status']);
+        }
+        return $oldValues;
     }
 }

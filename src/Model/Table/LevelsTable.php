@@ -51,6 +51,8 @@ class LevelsTable extends Table
 
         $this->addBehavior('Timestamp');
 
+        $this->addBehavior('RegisterLogChange');
+
         $this->hasMany('LevelsPermissions', [
             'foreignKey' => 'level_id',
         ]);

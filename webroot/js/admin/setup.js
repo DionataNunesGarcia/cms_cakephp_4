@@ -471,12 +471,12 @@ function setup() {
 
     $(document).ajaxError(function (e, jqXHR, ajaxSettings, thrownError) {
         // if 403 - check if user still has active session - if not redirect to login page
-        if (jqXHR.status == '403') {
-            // inactive session so redirect to login page
-            window.location = $('body').data('url') + "admin/users/logout";
-        } else if (jqXHR.status == '500') {
-            //window.location = $('body').data('url') + "admin/usuarios/logout";
-        }
+        // if (jqXHR.status == '403') {
+        //     // inactive session so redirect to login page
+        //     window.location = $('body').data('url') + "admin/users/logout";
+        // } else if (jqXHR.status == '500') {
+        //     //window.location = $('body').data('url') + "admin/usuarios/logout";
+        // }
     });
 
     $('body').append('<div id="toTop" class="btn btn-primary"><span class="fa fa-chevron-up"></span></div>');
