@@ -49,6 +49,8 @@ class AboutTable extends Table
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
+
+        $this->addBehavior('RegisterLogChange');
     }
 
     /**
