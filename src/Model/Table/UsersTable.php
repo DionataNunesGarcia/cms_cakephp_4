@@ -60,9 +60,11 @@ class UsersTable extends Table
             'joinType' => 'INNER',
         ]);
 
-        $this->belongsTo('Avatar', [
+        $this->hasOne('Avatar', [
             'className' => 'Uploads',
-            'foreignKey' => 'id',
+            'foreignKey' => [
+                'foreign_key'
+            ],
             'joinType' => 'LEFT',
             'conditions' => [
                 'Avatar.model' => 'Users',
