@@ -295,7 +295,7 @@ class AddCommonTables extends AbstractMigration
                 'limit' => 255,
                 'null' => true,
             ])
-            ->addColumn('order', 'integer', [
+            ->addColumn('order_files', 'integer', [
                 'default' => null,
                 'limit' => 11,
                 'null' => true,

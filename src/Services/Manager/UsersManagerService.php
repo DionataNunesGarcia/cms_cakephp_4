@@ -24,7 +24,7 @@ class UsersManagerService extends DefaultService
         parent::__construct($controller);
     }
 
-    public function saveEntity()
+    public function saveEntity() :array
     {
         $entity = $this->_controller
             ->{$this->getModel()}
@@ -33,6 +33,13 @@ class UsersManagerService extends DefaultService
         if (!$this->_controller->{$this->getModel()}->save($entity)) {
             throw new ValidationErrorException($entity);
         }
+        $uploadsManagerService = new UploadsManagerService($this->_controller);
+        $uploadsManagerService->saveFile(
+            $this->_request->getData('upload.file'),
+            $entity->id,
+            $this->getModel()
+        );
+
         $this->response['data'] = $entity;
         return $this->response;
     }

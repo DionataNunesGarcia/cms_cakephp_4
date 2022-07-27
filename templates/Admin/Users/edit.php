@@ -58,28 +58,14 @@ $controller = $controller ?? $this->getRequest()->getParam('controller');
                     ?>
                 </div>
                 <div class="form-group col-md-4">
+
                     <?php
-                    if (empty($entity->imagem)) {
-                        echo $this->Form->label('Imagem');
-                        echo $this->Form->file('imagem_upload', ['class' => 'upload_crop', 'multiple' => false, 'accept' => 'image/*', 'label' => 'Imagem']);
-                    } else {
-                        ?>
-                        <div class="col-md-8 no-padding">
-                            <strong>Imagem</strong><br/>
-                            <?= $this->Html->image('../' . $entity->imagem, ['class' => 'img-responsive img-usuario img-thumbnail']); ?>
-                        </div>
-                        <div class="col-md-4 text-rigth">
-                            <?=
-                            $this->Html->link("<i class='fa fa-trash'></i> Excluir", ['action' => 'excluir_imagem', $entity->id], [
-                                "alt" => "Imagem",
-                                'escape' => false,
-                                'confirm' => __('Tem certeza de que deseja excluir o arquivo?'),
-                                'class' => 'btn btn-xs btn-danger tex'
-                            ]);
-                            ?>
-                        </div>
-                    <?php } ?>
-                    <div id="uploaded_image"></div>
+                    $image = $entity->avatar ? $entity->avatar->filename : null;
+                    echo $this->element('admin/image-crop-upload', [
+                        'image' => $image,
+                        'id' => $entity->id,
+                    ])
+                    ?>
                 </div>
             </div>
         </fieldset>

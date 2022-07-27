@@ -8,6 +8,7 @@ use App\Utils\Enum\HttpStatusCodeEnum;
 use Cake\Controller\Controller;
 use Cake\I18n\FrozenTime;
 use Cake\ORM\Entity;
+use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 
 class DefaultService
@@ -38,7 +39,7 @@ class DefaultService
     protected string $__model;
 
     /**
-     * @var TableRegistry
+     * @var Table
      */
     protected $__table;
 
@@ -67,6 +68,7 @@ class DefaultService
     public function setModel(string $_model)
     {
         $this->__model = $_model;
+        $this->__table = TableRegistry::getTableLocator()->get($_model);
     }
 
     public function __construct(Controller $controller)

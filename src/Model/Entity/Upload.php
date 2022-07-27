@@ -13,7 +13,7 @@ use Cake\ORM\Entity;
  * @property int|null $foreign_key
  * @property string|null $model
  * @property string|null $type
- * @property int|null $order
+ * @property int|null $order_files
  * @property int $user_id
  * @property string|null $extension
  * @property string|null $alt
@@ -39,7 +39,7 @@ class Upload extends Entity
         'foreign_key' => true,
         'model' => true,
         'type' => true,
-        'order' => true,
+        'order_files' => true,
         'user_id' => true,
         'extension' => true,
         'alt' => true,

@@ -22,16 +22,11 @@ class AdminController extends AppController
     public function initialize(): void
     {
         parent::initialize();
-
         $this->loadComponent('Flash');
-
         $this->loadComponent('Authentication.Authentication');
-
         $this->loadComponent('Security');
-
         $this->loadComponent('RequestHandler');
     }
-
 
     /**
      * Index method
@@ -71,11 +66,9 @@ class AdminController extends AppController
         }
         $this->userSession = $result->getData()->toArray();
         Configure::write('SessionUser', $this->userSession);
-//        dd( Configure::read('SessionUser'));
         $this->set([
             'userSession' => $this->userSession
         ]);
-
         try {
             $this->hasPermission();
         } catch (UnauthenticatedException $ex) {
@@ -98,7 +91,7 @@ class AdminController extends AppController
             //não terá cadastro no sistema
             'CitiesController.php',
             'StatesController.php',
-            'StatusController.php',
+            'UtilsController.php',
         ];
     }
 
@@ -116,18 +109,15 @@ class AdminController extends AppController
         if ($this->userSession['super']) {
             return true;
         }
-
         // verify if controller exist in ignore list
         if (in_array("{$controller}Controller.php", self::ignoreControllerList())) {
             return true;
         }
-
         //get actions list ignored by controller
         $ignoreListActions = $this->getActionsIgnoreController($controller, $prefix);
         if (in_array($action, $ignoreListActions)) {
             return true;
         }
-
         if (!empty($this->userSession['level']['levels_permissions'])) {
             foreach ($this->userSession['level']['levels_permissions'] AS $permission) {
                 if (

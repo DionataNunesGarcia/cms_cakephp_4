@@ -102,6 +102,7 @@ class LevelsController extends AdminController
         $entity = $this->_formService->getEntity();
         if ($this->getRequest()->is(['patch', 'post', 'put'])) {
             try {
+                $id = $id ?? intval($this->request->getData('id'));
                 $this->_managerService->setId($id);
                 $response = $this->_managerService->saveEntity();
                 $this->Flash->success($response['message']);

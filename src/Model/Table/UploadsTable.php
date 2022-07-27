@@ -3,9 +3,13 @@ declare(strict_types=1);
 
 namespace App\Model\Table;
 
+use App\Model\Entity\Upload;
+use App\Model\Entity\User;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\Utility\Text;
 use Cake\Validation\Validator;
 
 /**
@@ -51,6 +55,24 @@ class UploadsTable extends Table
             'foreignKey' => 'user_id',
             'joinType' => 'INNER',
         ]);
+
+        $this->addBehavior('Josegonzalez/Upload.Upload', [
+            'filename' => [
+                'path' => "webroot{DS}Uploads{DS}",
+                'nameCallback' => function ($tableObj, $entity, $data, $field, $settings) {
+                    //if the file exists, salt it with time()
+                    $now = FrozenTime::now()->i18nFormat('yyyy-MM-dd-HH-mm-ss');
+                    $path = WWW_ROOT . DS . 'Uploads' . DS;
+                    return  "{$now}-{$entity->filename->getClientFilename()}";
+                },
+                'deleteCallback' => function ($path, $entity, $field, $settings) {
+                    return [
+                        $path . DS . $entity->{$field},
+                    ];
+                },
+                'keepFilesOnDelete' => false
+            ],
+        ]);
     }
 
     /**
@@ -61,11 +83,11 @@ class UploadsTable extends Table
      */
     public function validationDefault(Validator $validator): Validator
     {
-        $validator
-            ->scalar('filename')
-            ->maxLength('filename', 60)
-            ->requirePresence('filename', 'create')
-            ->notEmptyFile('filename');
+//        $validator
+//            ->scalar('filename')
+//            ->maxLength('filename', 60)
+//            ->requirePresence('filename', 'create')
+//            ->notEmptyFile('filename');
 
         $validator
             ->integer('foreign_key')
@@ -82,8 +104,8 @@ class UploadsTable extends Table
             ->allowEmptyString('type');
 
         $validator
-            ->integer('order')
-            ->allowEmptyString('order');
+            ->integer('order_files')
+            ->allowEmptyString('order_files');
 
         $validator
             ->integer('user_id')
@@ -121,5 +143,18 @@ class UploadsTable extends Table
         $rules->add($rules->existsIn('user_id', 'Users'), ['errorField' => 'user_id']);
 
         return $rules;
+    }
+
+    /**
+     * @param int|null $id
+     * @return Upload
+     */
+    public function getEntity(int $id = null) :Upload
+    {
+        if ($id) {
+            return $this
+                ->get($id);
+        }
+        return $this->newEntity([]);
     }
 }
