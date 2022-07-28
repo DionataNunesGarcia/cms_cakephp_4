@@ -98,27 +98,25 @@ $(document).ready(function () {
         $('#uploadimageModal').modal('show');
     });
 
-    if (urlCropImage != undefined) {
-        $('.crop_image')
-            .click(function (event) {
-                $image_crop.croppie('result', {
-                    type: 'canvas',
-                    size: 'viewport'
-                }).then(function (response) {
-                    $.ajax({
-                        url: urlCropImage,
-                        type: "GET",
-                        data: {"image": response},
-                        success: function (data){
-                            $('#uploadimageModal').modal('hide');
-                            $('#uploaded_image').html(data);
-                            $('.upload_crop').hide();
-                        }
-                    });
+    $('body')
+        .on('click', '.crop_image', function (event) {
+            $image_crop.croppie('result', {
+                type: 'canvas',
+                size: 'viewport'
+            }).then(function (response) {
+                $.ajax({
+                    url: urlCropImage,
+                    type: "GET",
+                    data: {"image": response},
+                    success: function (data){
+                        $('#uploadimageModal').modal('hide');
+                        $('#uploaded_image').html(data);
+                        $('.upload_crop').hide();
+                    }
                 });
-                return false;
             });
-    }
+            return false;
+        });
     //------------------CROP IMAGEM FIM------------------
 
     if($('form#form-jogadores [name=id]').val() !== ''){

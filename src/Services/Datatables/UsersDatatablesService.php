@@ -69,6 +69,7 @@ class UsersDatatablesService extends DatatablesService
     private function setConditions()
     {
         $this->conditions["{$this->getModel()}.status !="] = StatusEnum::EXCLUDED;
+        $this->conditions["{$this->getModel()}.super"] = FALSE;
     }
 
     private function getSearchQuery()
@@ -104,7 +105,7 @@ class UsersDatatablesService extends DatatablesService
         foreach ($results as $item) {
             $response[] = [
                 'id' => $item->id,
-                'avatar' => $item->avatar ? $this->avatar->file : "{$router}img/user-default.png",
+                'avatar' => $item->avatar ? $item->avatar->file : "{$router}img/user-default.png",
                 'user' => $item->user,
                 'level' => $item->level->name,
                 'status' => $item->situation->name,

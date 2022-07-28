@@ -64,6 +64,7 @@ $controller = $controller ?? $this->getRequest()->getParam('controller');
                     echo $this->element('admin/image-crop-upload', [
                         'image' => $image,
                         'id' => $entity->id,
+                        'label' => 'Avatar',
                     ])
                     ?>
                 </div>
@@ -76,3 +77,14 @@ $controller = $controller ?? $this->getRequest()->getParam('controller');
 </div>
 <?= $this->Form->end() ?>
 <?= $this->element('admin/image-crop-modal') ?>
+<script>
+    // Depois de carregar a tela
+    // apaga os campos de senha que o navegador preenche automaticamente
+    $(window).on('load', function () {
+        setTimeout(function(){
+            if (!$('[name=id]').val()) {
+                $('#user, #password, #password-confirm').val('');
+            }
+        }, 200);
+    });
+</script>

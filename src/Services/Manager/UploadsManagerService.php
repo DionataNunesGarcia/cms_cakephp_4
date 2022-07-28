@@ -45,7 +45,6 @@ class UploadsManagerService extends DefaultService
         $entity->modified = FrozenTime::now();
 
         if (!$this->__table->save($entity)) {
-            dd($entity);
             throw new ValidationErrorException($entity);
         }
         $this->response['data'] = $entity;
@@ -65,5 +64,34 @@ class UploadsManagerService extends DefaultService
         file_put_contents( $imageName, $data);
         move_uploaded_file($imageName, $imageName);
         return $imageName;
+    }
+
+    public function removeUploads(string $foreignKeysStr, string $model) :array
+    {
+        $foreignKeys = explode(',', $foreignKeysStr);
+        foreach ($foreignKeys as $foreignKey) {
+            $entity = $this->__table
+                ->find()
+                ->where([
+                    'foreign_key' => $foreignKey,
+                    'model' => $model,
+                ])
+                ->first();
+
+            if (!$entity) {
+                throw new ValidationErrorException(
+                    $entity,
+                    "Não foi encontrado o upload e por isso não pode ser deletado"
+                );
+            }
+            $filePath = WWW_ROOT . "Uploads" . DS . $entity->filename;
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+            if (!$this->__table->delete($entity)) {
+                throw new ValidationErrorException($entity, 'Erro ao deletar o upload.');
+            }
+        }
+        return $this->response;
     }
 }

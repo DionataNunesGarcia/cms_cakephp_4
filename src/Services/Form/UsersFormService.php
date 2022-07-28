@@ -36,6 +36,9 @@ class UsersFormService extends DefaultService
                     ];
                 },
             ])
+            ->where([
+                "{$this->getModel()}.super" => FALSE
+            ])
             ->contain([
                 'Levels'
             ])

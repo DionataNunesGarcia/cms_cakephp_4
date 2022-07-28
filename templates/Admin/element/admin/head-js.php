@@ -54,3 +54,9 @@
         json_encode(\Cake\Routing\Router::url('/', true)),
     ));
 ?>
+<?=
+    $this->Html->scriptBlock(sprintf(
+        'let urlCropImage = %s',
+        json_encode(\Cake\Routing\Router::url(['controller' => 'Utils', 'action' => 'cropImageAjax'], true)),
+    ));
+?>

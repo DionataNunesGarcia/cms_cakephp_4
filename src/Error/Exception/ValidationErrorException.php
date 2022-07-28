@@ -9,9 +9,9 @@ class ValidationErrorException extends HttpException
 {
     protected $_validationErrors;
 
-    protected EntityInterface $_entity;
+    protected ?EntityInterface $_entity;
 
-    public function __construct(EntityInterface $entity, $message = null, $code = 422)
+    public function __construct(EntityInterface $entity = null, $message = null, $code = 422)
     {
         $this->setEntity($entity);
         $this->_validationErrors = $entity->getErrors();
@@ -37,9 +37,9 @@ class ValidationErrorException extends HttpException
     }
 
     /**
-     * @param EntityInterface $entity
+     * @param ?EntityInterface $entity
      */
-    public function setEntity(EntityInterface $entity): void
+    public function setEntity(?EntityInterface $entity = null): void
     {
         $this->_entity = $entity;
     }

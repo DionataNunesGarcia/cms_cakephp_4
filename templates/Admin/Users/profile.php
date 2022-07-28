@@ -91,7 +91,8 @@ $placeholder = !empty($user->id) ? 'Só preencher se for alterar' : '';
     // apaga os campos de senha que o navegador preenche automaticamente
     $(window).on('load', function () {
         setTimeout(function(){
-            $('#password-confirm, #password-confirm').val('');
-        }, 300);
+            debugger
+            $('#password, #password-confirm').val('');
+        }, 600);
     });
 </script>
