@@ -4,25 +4,28 @@
  */
 ?>
 <?= $this->element('admin/search/metas-datatable') ?>
-<?= $this->Form->create(null, ['type' => 'get']); ?>
+<?= $this->Form->create(null, ['type' => 'get', 'id' => 'datatable-search']); ?>
 <div class="box">
     <?= $this->element('admin/box-title', ['title' => '<i class="fa fa-filter"></i> Filtrar']) ?>
     <div class="box-body">
-
         <div class="col-md-6">
             <?=
-            $this->Form->control('user_id', ['class' => 'form-control', 'label' => false,
-                'placeholder' => 'Pesquise por usuário',
-                'autofocus' => true,
-                'value' => $this->request->getQuery('user_id')]);
+            $this->element('admin/select2', [
+                'controller' => 'Users',
+                'name' => 'users_id',
+                'label' => __('Usuário'),
+                'multiple' => true,
+                'separator' => ',',
+            ])
             ?>
         </div>
         <div class="col-md-6">
             <?=
-            $this->Form->control('email', ['class' => 'form-control', 'label' => false,
-                'placeholder' => 'Pesquse por e-mail',
-                'autofocus' => true,
-                'value' => $this->request->getQuery('email')]);
+            $this->Form->control('dates_start_end', [
+                'class' => 'form-control dates-start-end',
+                'label' => 'Intervalo de Datas',
+                'placeholder' => 'Pesquise por Data Hora',
+            ]);
             ?>
         </div>
     </div>
@@ -119,7 +122,7 @@
     let datatableCurrent = $('#table-index').DataTable({
         serverSide: true,
         responsive: true,
-        ajax: urlDatatable,
+        ajax: datatablesCustom.ajax(urlDatatable),
         searching: false,
         paging: true,
         ordering: false,
@@ -146,7 +149,9 @@
                 className: 'text-center',
                 render: function(data, type, full, meta) {
                     let html = ``;
-                    html += datatablesCustom.buildBtnViewModal(full.actions.view, full.entity, 'view');
+                    if (full.actions) {
+                        html += datatablesCustom.buildBtnViewModal(full.actions.view, full.entity, 'view');
+                    }
                     return html;
                 }
             },

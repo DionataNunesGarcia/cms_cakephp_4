@@ -2,18 +2,39 @@
 
 namespace App\Services\Datatables;
 
+use App\Utils\Enum\ParameterTypesFilter;
 use App\Utils\Enum\StatusEnum;
 use Cake\Controller\Controller;
 use Cake\Routing\Router;
 
 class LogsAccessDatatablesService extends DatatablesService
 {
+    /**
+     * @return array[]
+     */
+    protected array $_customFields = [
+        "users_id[]" => [
+            'field' => 'Users.id',
+            'type' => ParameterTypesFilter::IN,
+        ],
+        "dates_start_end" => [
+            'field' => 'LogsAccess.created',
+            'type' => ParameterTypesFilter::DATE_RANGE,
+        ],
+    ];
+
+    /**
+     * @param Controller $controller
+     */
     public function __construct(Controller $controller)
     {
         $this->setModel('LogsAccess');
         parent::__construct($controller);
     }
 
+    /**
+     * @return array
+     */
     public function getResults()
     {
         try {
@@ -68,6 +89,7 @@ class LogsAccessDatatablesService extends DatatablesService
 
     private function setConditions()
     {
+        $this->setCustomFilters();
     }
 
     private function getSearchQuery()

@@ -32,6 +32,9 @@ class LevelsFormService extends DefaultService
                     ];
                 },
             ])
+            ->where([
+                "{$this->getModel()}.status !=" => StatusEnum::EXCLUDED
+            ])
             ->limit($this->autocompleteLimit);
 
         if ($this->_request->getQuery('id')) {
@@ -45,11 +48,6 @@ class LevelsFormService extends DefaultService
                 "upper({$this->getModel()}.name) like" => '%' . strtoupper($this->_request->getQuery('term')) . '%',
             ]);
         }
-//        dd($query->toArray());
-//        $result = [];
-//        foreach ($query->toArray() as $item) {
-//
-//        }
         return $query->toArray();
     }
 }

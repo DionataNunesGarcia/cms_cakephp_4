@@ -3,12 +3,30 @@
 namespace App\Services\Datatables;
 
 use App\Utils\Enum\LogsChangeTypesEnum;
+use App\Utils\Enum\ParameterTypesFilter;
 use App\Utils\TranslateControllerActions;
 use Cake\Controller\Controller;
 use Cake\Routing\Router;
 
 class LogsChangeDatatablesService extends DatatablesService
 {
+    /**
+     * @return array[]
+     */
+    protected array $_customFields = [
+        "users_id[]" => [
+            'field' => 'Users.id',
+            'type' => ParameterTypesFilter::IN,
+        ],
+        "dates_start_end" => [
+            'field' => 'LogsChange.created',
+            'type' => ParameterTypesFilter::DATE_RANGE,
+        ],
+    ];
+
+    /**
+     * @param Controller $controller
+     */
     public function __construct(Controller $controller)
     {
         $this->setModel('LogsChange');
@@ -69,6 +87,7 @@ class LogsChangeDatatablesService extends DatatablesService
 
     private function setConditions()
     {
+        $this->setCustomFilters();
     }
 
     private function getSearchQuery()
@@ -106,7 +125,6 @@ class LogsChangeDatatablesService extends DatatablesService
             $item->new_value_json = json_decode($item->new_value, JSON_OBJECT_AS_ARRAY);
             $item->old_value_json = json_decode($item->old_value, JSON_OBJECT_AS_ARRAY);
             $response[] = [
-                'id' => $item->id,
                 'user' => $item->user->user,
                 'table' => $item->table,
                 'type' => $item->type,

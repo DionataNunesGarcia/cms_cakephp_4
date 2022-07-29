@@ -4,25 +4,30 @@
  */
 ?>
 <?= $this->element('admin/search/metas-datatable') ?>
-<?= $this->Form->create(null, ['type' => 'get']); ?>
+<?= $this->Form->create(null, ['type' => 'get', 'id' => 'datatable-search']); ?>
 <div class="box">
     <?= $this->element('admin/box-title', ['title' => '<i class="fa fa-filter"></i> Filtrar']) ?>
     <div class="box-body">
-
         <div class="col-md-6">
             <?=
-            $this->Form->control('user', ['class' => 'form-control', 'label' => false,
-                'placeholder' => 'Pesquise por usuário',
-                'autofocus' => true,
-                'value' => $this->request->getQuery('user')]);
+            $this->element('admin/select2', [
+                'controller' => 'Users',
+                'name' => 'id',
+                'label' => __('Usuário'),
+                'multiple' => false,
+                'value' => $this->getRequest()->getQuery('Users.id'),
+            ])
             ?>
         </div>
         <div class="col-md-6">
             <?=
-            $this->Form->control('email', ['class' => 'form-control', 'label' => false,
-                'placeholder' => 'Pesquse por e-mail',
-                'autofocus' => true,
-                'value' => $this->request->getQuery('email')]);
+            $this->element('admin/select2', [
+                'controller' => 'Levels',
+                'name' => 'level_id',
+                'label' => __('Nível'),
+                'multiple' => false,
+                'value' => $this->getRequest()->getQuery('level_id'),
+            ])
             ?>
         </div>
     </div>
@@ -80,9 +85,14 @@
     ?>";
 
     let datatableCurrent = $('#table-index').DataTable({
+        dom: "<'row'<'col-sm-3'l><'col-sm-5'f><'col-sm-4 mt10'B>>\
+                    <'row'<'col-sm-4'<'severityFilterDiv'>>\
+                    <'col-sm-4'<'statusFilterDiv'>>\
+                    <'col-sm-4'<'pendingReplyFilterDiv'>>>\
+                    <'table-responsive'rt><'row'<'col-sm-6'i><'col-sm-6'p>>",
         serverSide: true,
         responsive: true,
-        ajax: urlDatatable,
+        ajax: datatablesCustom.ajax(urlDatatable),
         searching: false,
         paging: true,
         ordering: false,
@@ -124,8 +134,10 @@
                 className: 'text-center',
                 render: function(data, type, full, meta) {
                     let html = ``;
-                    html += datatablesCustom.buildBtnEdit(full.actions.edit);
-                    html += datatablesCustom.buildBtnDelete(full.actions.delete);
+                    if (full.actions) {
+                        html += datatablesCustom.buildBtnEdit(full.actions.edit);
+                        html += datatablesCustom.buildBtnDelete(full.actions.delete);
+                    }
                     return html;
                 }
             },

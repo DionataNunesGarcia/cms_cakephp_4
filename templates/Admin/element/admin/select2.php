@@ -45,16 +45,21 @@ if (!isset($id)) {
     $id = 'select2-' . $name;
 }
 
+if (!isset($separator)) {
+    $separator = null;
+}
+
 echo $this->Form->control($name, [
     'multiple' => $multiple,
     'class' => 'select2-ajax',
-    'hiddenField' => 'N',
     'type' => 'select',
     'id' => $id,
     'label' => $label,
     'data-ajax--url' => $url,
+    'data-separator' => $separator,
     'required' => $required,
     'data-allow-clear' => true,
     'data-val' => $values,
-    $disabled
+    $disabled,
+    'hiddenField' => false
 ]);

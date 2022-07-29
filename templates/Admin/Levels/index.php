@@ -4,17 +4,19 @@
  */
 ?>
 <?= $this->element('admin/search/metas-datatable') ?>
-<?= $this->Form->create(null, ['type' => 'get']); ?>
+<?= $this->Form->create(null, ['type' => 'get', 'id' => 'datatable-search']); ?>
 <div class="box">
     <?= $this->element('admin/box-title', ['title' => '<i class="fa fa-filter"></i> Filtrar']) ?>
     <div class="box-body">
-
         <div class="col-md-6">
             <?=
-            $this->Form->control('name', ['class' => 'form-control', 'label' => false,
-                'placeholder' => 'Pesquise por usuário',
-                'autofocus' => true,
-                'value' => $this->request->getQuery('user')]);
+            $this->element('admin/select2', [
+                'controller' => 'Levels',
+                'name' => 'id',
+                'label' => __('Nível'),
+                'multiple' => false,
+                'value' => $this->getRequest()->getQuery('id'),
+            ])
             ?>
         </div>
     </div>
@@ -70,7 +72,7 @@
     let datatableCurrent = $('#table-index').DataTable({
         serverSide: true,
         responsive: true,
-        ajax: urlDatatable,
+        ajax: datatablesCustom.ajax(urlDatatable),
         searching: false,
         paging: true,
         ordering: false,
@@ -102,8 +104,10 @@
                 className: 'text-center',
                 render: function(data, type, full, meta) {
                     let html = ``;
-                    html += datatablesCustom.buildBtnEdit(data.edit);
-                    html += datatablesCustom.buildBtnDelete(data.delete);
+                    if (full.actions) {
+                        html += datatablesCustom.buildBtnEdit(data.edit);
+                        html += datatablesCustom.buildBtnDelete(data.delete);
+                    }
                     return html;
                 }
             },

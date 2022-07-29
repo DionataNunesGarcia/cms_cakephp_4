@@ -3,6 +3,8 @@
 namespace App\Services\Datatables;
 
 use App\Services\DefaultService;
+use App\Utils\ConvertDates;
+use App\Utils\Enum\ParameterTypesFilter;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 
@@ -47,6 +49,11 @@ class DatatablesService extends DefaultService
      * @var int
      */
     protected int $draft;
+
+    /**
+     * @return array[]
+     */
+    protected array $_customFields = [];
 
     /**
      * DatatablesService constructor.
@@ -122,5 +129,44 @@ class DatatablesService extends DefaultService
             }
         }
         return false;
+    }
+
+    /**
+     * @return void
+     */
+    protected function setCustomFilters()
+    {
+        if ($this->_request->getQuery('filter_custom')) {
+            $fieldsIn = [];
+            foreach ($this->_request->getQuery('filter_custom') as $filter) {
+                if (!isset($this->_customFields[$filter['name']]) || empty($filter['value'])) {
+                    continue;
+                }
+                $type = $this->_customFields[$filter['name']]['type'];
+                switch ($type) {
+                    case ParameterTypesFilter::EQUAL:
+                        $this->conditions[$this->_customFields[$filter['name']]['field']] = $filter['value'];
+                        break;
+                    case ParameterTypesFilter::LIKE:
+                        $this->conditions[$this->_customFields[$filter['name']]['field'] . ' like'] = "%{$filter['value']}%";
+                        break;
+                    case ParameterTypesFilter::IN:
+                        $fieldsIn[$filter['name']][] = $filter['value'];
+                        break;
+                    case ParameterTypesFilter::DATE_RANGE:
+                        list($start, $end) = explode(' - ', $filter['value']);
+                        $start = ConvertDates::convertDateToDB($start) . ' 00:00:00';
+                        $end = ConvertDates::convertDateToDB($end) . ' 23:59:59';
+                        $this->conditions[$this->_customFields[$filter['name']]['field'] . ' >='] = $start;
+                        $this->conditions[$this->_customFields[$filter['name']]['field'] . ' <='] = $end;
+                        break;
+                }
+            }
+            if ($fieldsIn) {
+                foreach ($fieldsIn as $key => $array) {
+                    $this->conditions[$this->_customFields[$key]['field'] . ' in'] = $array;
+                }
+            }
+        }
     }
 }

@@ -6,6 +6,18 @@ let datatablesCustom = {
     init: function () {
         datatablesCustom.bind();
     },
+    ajax: function (url) {
+        return {
+            "url": url,
+            "type": 'GET',
+            "data": function (d) {
+                d.filter_custom = $('form#datatable-search').serializeArray();
+            },
+            error: function (xhr, error, thrown) {
+                alert('Unable to load data');
+            }
+        };
+    },
     bind: function () {
         $('body')
             .on('click', 'table.table-datatable .btn-delete', function (e) {
@@ -27,6 +39,10 @@ let datatablesCustom = {
             })
             .on('click', 'tbody [name^=selected]', function () {
                 datatablesCustom.verifyCheckboxSelected();
+            })
+            .on('submit', 'form#datatable-search', function (e) {
+                e.preventDefault();
+                datatableCurrent.draw();
             })
         ;
     },

@@ -31,4 +31,18 @@ class ConvertDates
         }
         return $date->format("H:i:s");
     }
+
+    /**
+     * @param string $value
+     * @return string
+     */
+    public static function convertDateToDB(string $value) :string
+    {
+        if (empty($value) || $value == '00/00/0000') {
+            return '';
+        }
+        $dateTime = \DateTime::createFromFormat('d/m/Y', $value);
+
+        return $dateTime->format('Y-m-d');
+    }
 }

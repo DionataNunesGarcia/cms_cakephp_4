@@ -2,12 +2,30 @@
 
 namespace App\Services\Datatables;
 
+use App\Utils\Enum\ParameterTypesFilter;
 use App\Utils\Enum\StatusEnum;
 use Cake\Controller\Controller;
 use Cake\Routing\Router;
 
 class UsersDatatablesService extends DatatablesService
 {
+    /**
+     * @return array[]
+     */
+    protected array $_customFields = [
+        "id" => [
+            'field' => 'Users.id',
+            'type' => ParameterTypesFilter::EQUAL,
+        ],
+        "level_id" => [
+            'field' => 'Users.level_id',
+            'type' => ParameterTypesFilter::EQUAL,
+        ],
+    ];
+
+    /**
+     * @param Controller $controller
+     */
     public function __construct(Controller $controller)
     {
         $this->setModel('Users');
@@ -27,7 +45,7 @@ class UsersDatatablesService extends DatatablesService
             $response = $this->handleResponse($results);
 
             return [
-                "draw" => $this->draw ? $this->draw : 1,
+                "draw" => $this->draw ?? 1,
                 "recordsTotal" => $total,
                 "recordsFiltered" => $total,
                 "data" => $response
@@ -70,6 +88,7 @@ class UsersDatatablesService extends DatatablesService
     {
         $this->conditions["{$this->getModel()}.status !="] = StatusEnum::EXCLUDED;
         $this->conditions["{$this->getModel()}.super"] = FALSE;
+        $this->setCustomFilters();
     }
 
     private function getSearchQuery()

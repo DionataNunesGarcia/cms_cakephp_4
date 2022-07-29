@@ -23,7 +23,7 @@ class UsersFormService extends DefaultService
     /**
      * @return array
      */
-    public function autocomplete() :array
+    public function getAutocomplete() :array
     {
         $query = $this->_controller
             ->{$this->getModel()}
@@ -32,12 +32,13 @@ class UsersFormService extends DefaultService
                 'valueField' => function($q){
                     return [
                         'id' => $q->id,
-                        'name' => "{$q->name} - {$q->level->name}"
+                        'value' => "{$q->user} - {$q->level->name}"
                     ];
                 },
             ])
             ->where([
-                "{$this->getModel()}.super" => FALSE
+//                "{$this->getModel()}.super" => FALSE,
+                "{$this->getModel()}.status !=" => StatusEnum::EXCLUDED,
             ])
             ->contain([
                 'Levels'
