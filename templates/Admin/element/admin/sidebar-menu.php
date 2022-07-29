@@ -9,12 +9,12 @@
         <div class="user-panel">
             <div class="pull-left image">
                 <?php
-                $imagem = 'user-default.png';
-                if (!empty($userSession['image']) && file_exists(WWW_ROOT . $userSession['image'])) {
-                    $imagem = '../' . $userSession['imagem'];
+                $image = 'user-default.png';
+                if (!empty($userSession['avatar']) && file_exists(WWW_ROOT . 'Uploads' . DS . $userSession['avatar']['filename'])) {
+                    $image = "../Uploads/"  . $userSession['avatar']['filename'];
                 }
                 ?>
-                <?= $this->Html->image($imagem, ['class' => 'img-circle']); ?>
+                <?= $this->Html->image($image, ['class' => 'img-circle']); ?>
             </div>
             <div class="pull-left info">
                 <p>

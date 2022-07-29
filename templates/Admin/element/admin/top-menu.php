@@ -45,12 +45,12 @@ use App\Utils\ConvertDates;
                         <!-- User image -->
                         <li class="user-header">
                             <?php
-                            $imagem = 'user-default.png';
-                            if (!empty($userSession['imagem']) && file_exists(WWW_ROOT . $userSession['imagem'])) {
-                                $imagem = '../' . $userSession['imagem'];
+                            $image = 'user-default.png';
+                            if (!empty($userSession['avatar']) && file_exists(WWW_ROOT . 'Uploads' . DS . $userSession['avatar']['filename'])) {
+                                $image = "../Uploads/"  . $userSession['avatar']['filename'];
                             }
                             ?>
-                            <?= $this->Html->image($imagem, ['class' => 'img-circle']); ?>
+                            <?= $this->Html->image($image, ['class' => 'img-circle']); ?>
                             <p>
                                 <?= strtoupper($userSession['user']); ?>
                                 <small>Membro desde <?= ConvertDates::convertDateToPtBR($userSession['created']); ?></small>
