@@ -16,4 +16,16 @@ class UploadsFormService extends DefaultService
         $this->setModel('Uploads');
         parent::__construct($controller);
     }
+
+    public function listFiles(array $data) :?array
+    {
+        return $this->__table
+            ->find()
+            ->where([
+                'foreign_key' => $data['foreign_key'],
+                'model' => $data['model'],
+            ])
+            ->orderDesc('created')
+            ->toArray();
+    }
 }

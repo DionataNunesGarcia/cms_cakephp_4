@@ -57,4 +57,17 @@ class AboutController extends AdminController
         }
         $this->set(compact('entity'));
     }
+
+    /**
+     * @return void
+     */
+    public function banners()
+    {
+        $entity = $this->_formService->getEntity();
+        if (empty($entity)) {
+            $this->Flash->error(__('Precisa registrar um conteúdo Sobre para salvar os banners'));
+            $this->redirect('edit');
+        }
+        $this->set(compact('entity'));
+    }
 }

@@ -60,10 +60,8 @@ $controller = $controller ?? $this->getRequest()->getParam('controller');
                 <div class="form-group col-md-4">
 
                     <?php
-                    $image = $entity->avatar ? $entity->avatar->filename : null;
                     echo $this->element('admin/image-crop-upload', [
-                        'image' => $image,
-                        'id' => $entity->id,
+                        'upload' => $entity->avatar,
                         'label' => 'Avatar',
                     ])
                     ?>

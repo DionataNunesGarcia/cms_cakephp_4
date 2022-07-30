@@ -20,6 +20,20 @@ class UploadsManagerService extends DefaultService
     }
 
     /**
+     * @return array
+     */
+    public function saveUploads() :array
+    {
+        $data = $this->_request->getData();
+        $response = $this->response;
+        foreach ($data['files'] as $file) {
+            $saveFile = $this->saveFile($file, $data['foreign_key'], $data['model']);
+            $response['data'][] = $saveFile['data'];
+        }
+        return $response;
+    }
+
+    /**
      * @param UploadedFile $file
      * @param int $foreignKey
      * @param string $model
@@ -77,7 +91,6 @@ class UploadsManagerService extends DefaultService
                     'model' => $model,
                 ])
                 ->first();
-
             if (!$entity) {
                 throw new ValidationErrorException(
                     $entity,

@@ -62,6 +62,12 @@
                             <?= __('Sobre') ?>
                         </a>
                     </li>
+                    <li>
+                        <a href="<?= $this->Url->build(['controller' => 'About', 'action' => 'banners'], ['fullBase' => true]); ?>" data-placement="right">
+                            <i class="fa fa-picture-o"></i>
+                            <?= __('Banners') ?>
+                        </a>
+                    </li>
                 </ul>
             </li>
 

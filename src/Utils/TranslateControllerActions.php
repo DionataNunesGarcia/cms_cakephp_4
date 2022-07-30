@@ -23,7 +23,7 @@ class TranslateControllerActions
     {
         return key_exists($action, self::ACTIONS_LIST)
             ? self::ACTIONS_LIST[$action]
-            : $action;
+            : ucfirst($action);
     }
 
     /**

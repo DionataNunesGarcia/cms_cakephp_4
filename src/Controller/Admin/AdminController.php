@@ -61,7 +61,7 @@ class AdminController extends AppController
         $this->set([
             '_csrfToken' => $this->request->getCookie('csrfToken')
         ]);
-        if (in_array($this->getRequest()->getParam('action'), ['delete'])) {
+        if (in_array($this->getRequest()->getParam('action'), self::ignoreValidatePost())) {
             $this->Security->setConfig('validatePost', false);
         }
         $this->userSession = $result->getData()->toArray();
@@ -75,6 +75,18 @@ class AdminController extends AppController
             $this->Flash->error(__($ex->getMessage()));
             return $this->redirect(['controller' => 'Admin', 'action' => 'index']);
         }
+    }
+
+    /**
+     * @return string[]
+     */
+    protected static function ignoreValidatePost() :array
+    {
+        return [
+            'delete',
+            'multipleFileUploads',
+            'multipleFileUploadsDelete'
+        ];
     }
 
     /**
