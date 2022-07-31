@@ -16,3 +16,32 @@
 <?= $this->Html->script(['https://cdn.datatables.net/rowgroup/1.1.3/js/dataTables.rowGroup.min.js',], ['block' => 'custom']) ?>
 <?= $this->Html->script(['https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js',], ['block' => 'custom']) ?>
 <?= $this->Html->script(['admin/dataTablesCustom.js',], ['block' => 'custom']) ?>
+
+<?php $logoBase64 = base64_encode(file_get_contents(WWW_ROOT . 'img/logo.png')); ?>
+<script>
+    let logoBase64 = "<?= $logoBase64 ?>";
+    let dateTime = "<?= \Cake\I18n\FrozenTime::now()->i18nFormat('dd/MM/yyyy HH:mm:ss') ?>";
+    let clientName = "<?= \Cake\Core\Configure::read('Client.name') ?>";
+</script>
+
+<style>
+    table.dataTable thead .sorting:before, table.dataTable thead .sorting_asc:before, table.dataTable thead .sorting_desc:before, table.dataTable thead .sorting_asc_disabled:before, table.dataTable thead .sorting_desc_disabled:before {
+        right: 1em;
+        content: "" !important;
+    }
+
+    table.dataTable thead .sorting:after, table.dataTable thead .sorting_asc:after, table.dataTable thead .sorting_desc:after, table.dataTable thead .sorting_asc_disabled:after, table.dataTable thead .sorting_desc_disabled:after {
+        right: 0.5em;
+        content: "\02C7" !important;
+    }
+
+    .btn-export {
+        color: #fff;
+        margin: 2px;
+    }
+
+    .datatable-group tr.odd td:first-child,
+    .datatable-group tr.even td:first-child {
+        padding-left: 4em;
+    }
+</style>

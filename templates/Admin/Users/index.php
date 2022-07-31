@@ -83,13 +83,10 @@
             'prefix' => 'Admin',
         ]);
     ?>";
-
+    let titlePdf = "Usuários";
     let datatableCurrent = $('#table-index').DataTable({
-        dom: "<'row'<'col-sm-3'l><'col-sm-5'f><'col-sm-4 mt10'B>>\
-                    <'row'<'col-sm-4'<'severityFilterDiv'>>\
-                    <'col-sm-4'<'statusFilterDiv'>>\
-                    <'col-sm-4'<'pendingReplyFilterDiv'>>>\
-                    <'table-responsive'rt><'row'<'col-sm-6'i><'col-sm-6'p>>",
+        dom: datatablesCustom.dom(),
+        buttons: datatablesCustom.buttons(),
         serverSide: true,
         responsive: true,
         ajax: datatablesCustom.ajax(urlDatatable),

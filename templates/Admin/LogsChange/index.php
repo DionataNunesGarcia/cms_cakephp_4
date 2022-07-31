@@ -119,7 +119,10 @@
         ]);
         ?>";
 
+    let titlePdf = "Logs de Alteração";
     let datatableCurrent = $('#table-index').DataTable({
+        dom: datatablesCustom.dom(),
+        buttons: datatablesCustom.buttons(),
         serverSide: true,
         responsive: true,
         ajax: datatablesCustom.ajax(urlDatatable),
