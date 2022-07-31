@@ -16,11 +16,14 @@ declare(strict_types=1);
  */
 namespace App;
 
+use Authentication\Authenticator\UnauthenticatedException;
+use Authentication\Identifier\IdentifierInterface;
 use Cake\Core\Configure;
 use Cake\Core\ContainerInterface;
 use Cake\Datasource\FactoryLocator;
 use Cake\Error\Middleware\ErrorHandlerMiddleware;
 use Cake\Http\BaseApplication;
+use Cake\Http\Client\Adapter\Stream;
 use Cake\Http\Middleware\BodyParserMiddleware;
 use Cake\Http\Middleware\CsrfProtectionMiddleware;
 use Cake\Http\MiddlewareQueue;
@@ -33,6 +36,8 @@ use Authentication\AuthenticationServiceInterface;
 use Authentication\AuthenticationServiceProviderInterface;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
+use Cake\Utility\Security;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -85,16 +90,16 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
     {
         $csrf = new CsrfProtectionMiddleware([
             'httponly' => true,
-        ]);;
+        ]);
 
         // Token check will be skipped when callback returns `true`.
         $csrf->skipCheckCallback(function ($request) {
             // Skip token check for API URLs.
-            $actions = [
-                'delete',
-                'autocomplete'
-            ];
-            if ($request->getParam('prefix') === 'Admin' && in_array($request->getParam('action'), $actions)) {
+            $action = $request->getParam('action');
+            $prefix = $request->getParam('prefix');
+            $actions = ['delete', 'autocomplete', 'login'];
+            $prefixArray = ['api', 'admin'];
+            if (in_array($prefix, $prefixArray) && in_array($action, $actions)) {
                 return true;
             }
         });
@@ -116,6 +121,22 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             // using it's second constructor argument:
             // `new RoutingMiddleware($this, '_cake_routes_')`
             ->add(new RoutingMiddleware($this))
+            ->add(function(ServerRequestInterface $request, ResponseInterface $response, $next){
+                try {
+                    /** @var ResponseInterface $response */
+                    $response = $next($request, $response);
+                } catch (UnauthenticatedException $e) {
+                    $stream = new Stream('php://memory', 'rw');
+                    $stream->write($e->getMessage());
+                    $response = $response
+                        ->withStatus(401)
+                        ->withBody($stream)
+                    ;
+                }
+
+                return $response
+                    ->withHeader('X-Powered-By', 'ASP.Net 3.1');
+            })
 
             // Parse various types of encoded request bodies so that they are
             // available as array through $request->getData()
@@ -160,30 +181,48 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
 
     public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
     {
-        $authenticationService = new AuthenticationService([
-            'unauthenticatedRedirect' => Router::url('/admin/login'),
-            'queryParam' => 'redirect',
-        ]);
+        $service = new AuthenticationService();
+        $fields = [
+            IdentifierInterface::CREDENTIAL_USERNAME => 'user',
+            IdentifierInterface::CREDENTIAL_PASSWORD => 'password',
+        ];
+        $prefix = strtolower($request->getParam('prefix'));
+        if ($prefix == 'admin') {
+            $urlLogin = Router::url('/admin/login');
+            $service = new AuthenticationService([
+                'unauthenticatedRedirect' => $urlLogin,
+                'queryParam' => 'redirect',
+            ]);
+            // Load identifiers, ensure we check email and password fields
+            $service->loadIdentifier('Authentication.Password', [
+                'fields' => $fields
+            ]);
+            // Load the authenticators, you want session first
+            $service->loadAuthenticator('Authentication.Session');
+            // Configure form data check to pick email and password
+            $service->loadAuthenticator('Authentication.Form', [
+                'fields' => $fields,
+                'loginUrl' => $urlLogin,
+            ]);
+        }
 
-        // Load identifiers, ensure we check email and password fields
-        $authenticationService->loadIdentifier('Authentication.Password', [
-            'fields' => [
-                'username' => 'user',
-                'password' => 'password',
-            ]
-        ]);
-
-        // Load the authenticators, you want session first
-        $authenticationService->loadAuthenticator('Authentication.Session');
-        // Configure form data check to pick email and password
-        $authenticationService->loadAuthenticator('Authentication.Form', [
-            'fields' => [
-                'username' => 'user',
-                'password' => 'password',
-            ],
-            'loginUrl' => Router::url('/admin/login'),
-        ]);
-
-        return $authenticationService;
+        if ($prefix == 'api') {
+            $service->loadAuthenticator('Authentication.Jwt', [
+                'returnPayload' => false,
+                'queryParam' => 'token',
+            ]);
+            $service->loadAuthenticator('Authentication.Form', [
+                'fields' => $fields,
+            ]);
+            $service->loadIdentifier('Authentication.JwtSubject',[
+                'tokenField' => 'id',
+                'dataField' => 'id'
+            ]);
+            $service->loadIdentifier('Authentication.Password', [
+                'returnPayload' => false,
+                'fields' => $fields,
+            ]);
+        }
+        return $service;
     }
 }

@@ -25,8 +25,7 @@ class UsersFormService extends DefaultService
      */
     public function getAutocomplete() :array
     {
-        $query = $this->_controller
-            ->{$this->getModel()}
+        $query = $this->__table
             ->find('list', [
                 'keyField' => function($q){},
                 'valueField' => function($q){
@@ -62,8 +61,7 @@ class UsersFormService extends DefaultService
 
     public function buildUserLogged(int $userId)
     {
-        return $this->_controller
-            ->{$this->getModel()}
+        return $this->__table
             ->find()
             ->where([
                 "{$this->getModel()}.id" => $userId,

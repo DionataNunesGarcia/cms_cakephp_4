@@ -106,8 +106,7 @@ class DefaultService
     public function getEntity() :Entity
     {
         $id = $this->getId() ?? null;
-        return $this->_controller
-            ->{$this->getModel()}
+        return $this->__table
             ->getEntity($id);
     }
 }

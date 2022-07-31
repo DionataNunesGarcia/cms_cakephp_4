@@ -21,8 +21,7 @@ class LevelsFormService extends DefaultService
 
     public function getAutocomplete() :array
     {
-        $query = $this->_controller
-            ->{$this->getModel()}
+        $query = $this->__table
             ->find('list', [
                 'keyField' => function($q){},
                 'valueField' => function($q){

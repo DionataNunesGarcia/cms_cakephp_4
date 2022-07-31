@@ -26,11 +26,10 @@ class UsersManagerService extends DefaultService
 
     public function saveEntity() :array
     {
-        $entity = $this->_controller
-            ->{$this->getModel()}
+        $entity = $this->__table
             ->patchEntity($this->getEntity(), $this->_request->getData());
 
-        if (!$this->_controller->{$this->getModel()}->save($entity)) {
+        if (!$this->__table->save($entity)) {
             throw new ValidationErrorException($entity);
         }
         $uploadsManagerService = new UploadsManagerService($this->_controller);
@@ -51,7 +50,7 @@ class UsersManagerService extends DefaultService
             throw new \Exception("Nenhum registro foi selecionado", HttpStatusCodeEnum::BAD_REQUEST);
         }
 
-        $entities = $this->_controller->{$this->getModel()}
+        $entities = $this->__table
             ->find()
             ->where([
                 'id IN'  => $ids,
@@ -62,7 +61,7 @@ class UsersManagerService extends DefaultService
             $entity->status = StatusEnum::EXCLUDED;
             $entity->user = "#del-{$entity->id}#{$entity->user}";
             $entity->modified = FrozenTime::now();
-            if (!$this->_controller->{$this->getModel()}->save($entity)) {
+            if (!$this->__table->save($entity)) {
                 throw new ValidationErrorException($entity, "Erro ao deletar o Usuário {$entity->user}");
             }
         }

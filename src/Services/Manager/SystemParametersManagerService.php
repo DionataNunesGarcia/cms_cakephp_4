@@ -22,10 +22,9 @@ class SystemParametersManagerService extends DefaultService
      */
     public function saveEntity()
     {
-        $entity = $this->_controller
-            ->{$this->getModel()}
+        $entity = $this->__table
             ->patchEntity($this->getEntity(), $this->_request->getData());
-        if (!$this->_controller->{$this->getModel()}->save($entity)) {
+        if (!$this->__table->save($entity)) {
             throw new ValidationErrorException($entity);
         }
         $this->response['data'] = $entity;

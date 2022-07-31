@@ -21,19 +21,12 @@ class AboutManagerService extends DefaultService
     /**
      * @return array
      */
-    public function saveEntity()
+    public function saveEntity() :array
     {
-        $entity = $this->_controller
-            ->{$this->getModel()}
+        $entity = $this->__table
             ->patchEntity($this->getEntity(), $this->_request->getData());
-        try {
-            if (!$this->_controller->{$this->getModel()}->save($entity)) {
-                dd($entity);
-                throw new ValidationErrorException($entity);
-            }
-        } catch (\PDOException $ex) {
-
-            dd($ex);
+        if (!$this->__table->save($entity)) {
+            throw new ValidationErrorException($entity);
         }
         $this->response['data'] = $entity;
         return $this->response;

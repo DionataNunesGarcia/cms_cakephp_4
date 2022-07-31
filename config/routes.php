@@ -99,4 +99,20 @@ return static function (RouteBuilder $routes) {
 
         $routes->fallbacks(DashedRoute::class);
     });
+
+    $routes->scope('/api', function (RouteBuilder $builder) {
+
+        // Parse specified extensions from URLs
+        $builder->setExtensions(['json']);
+
+        // Connect API actions here.
+        $builder->connect('/login', ['controller' => 'Api', 'action' => 'login', 'prefix' => 'api']);
+        $builder->connect('/configs', ['controller' => 'Api', 'action' => 'configs', 'prefix' => 'api']);
+        // $builder->connect('/user/:id', ['controller' => 'Api', 'action' => 'view', 'prefix' => 'api', 'id' => null], ['pass' => ['id']]);
+        $builder->connect('/user/{id}', ['controller' => 'Api', 'action' => 'view', 'prefix' => 'api'])->setPass(['id'])->setPatterns(['id' => '[0-9]+']);;
+        $builder->connect('/user/edit/{id}', ['controller' => 'Api', 'action' => 'edit', 'prefix' => 'api'])->setPass(['id'])->setPatterns(['id' => '[0-9]+']);;
+        $builder->connect('/user/delete/{id}', ['controller' => 'Api', 'action' => 'delete', 'prefix' => 'api'])->setPass(['id'])->setPatterns(['id' => '[0-9]+']);;
+
+        $builder->fallbacks();
+    });
 };

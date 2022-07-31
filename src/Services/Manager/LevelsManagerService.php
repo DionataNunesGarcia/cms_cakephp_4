@@ -32,10 +32,9 @@ class LevelsManagerService extends DefaultService
 
     public function saveEntity()
     {
-        $entity = $this->_controller
-            ->{$this->getModel()}
+        $entity = $this->__table
             ->patchEntity($this->getEntity(), $this->_request->getData());
-        if (!$this->_controller->{$this->getModel()}->save($entity)) {
+        if (!$this->__table->save($entity)) {
             throw new ValidationErrorException($entity);
         }
 
@@ -51,7 +50,7 @@ class LevelsManagerService extends DefaultService
             throw new \Exception("Nenhum registro foi selecionado", HttpStatusCodeEnum::BAD_REQUEST);
         }
 
-        $entities = $this->_controller->{$this->getModel()}
+        $entities = $this->__table
             ->find()
             ->where([
                 'id IN'  => $ids,
@@ -61,7 +60,7 @@ class LevelsManagerService extends DefaultService
         foreach ($entities as $entity) {
             $entity->status = StatusEnum::EXCLUDED;
             $entity->modified = FrozenTime::now();
-            if (!$this->_controller->{$this->getModel()}->save($entity)) {
+            if (!$this->__table->save($entity)) {
                 throw new ValidationErrorException($entity, "Erro ao deletar o Nível {$entity->user}");
             }
         }
