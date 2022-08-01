@@ -32,7 +32,10 @@ class UsersDatatablesService extends DatatablesService
         parent::__construct($controller);
     }
 
-    public function getResults()
+    /**
+     * @return array
+     */
+    public function getResults() :array
     {
         try {
             $this->setDataTableFilters();

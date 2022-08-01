@@ -35,7 +35,7 @@ class LogsAccessDatatablesService extends DatatablesService
     /**
      * @return array
      */
-    public function getResults()
+    public function getResults() :array
     {
         try {
             $this->setDataTableFilters();

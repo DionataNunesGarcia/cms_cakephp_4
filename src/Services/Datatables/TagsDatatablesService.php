@@ -7,14 +7,14 @@ use App\Utils\Enum\StatusEnum;
 use Cake\Controller\Controller;
 use Cake\Routing\Router;
 
-class LevelsDatatablesService extends DatatablesService
+class TagsDatatablesService extends DatatablesService
 {
     /**
      * @return array[]
      */
     protected array $_customFields = [
-        "id" => [
-            'field' => 'Levels.id',
+        "name" => [
+            'field' => 'Tags.id',
             'type' => ParameterTypesFilter::EQUAL,
         ],
     ];
@@ -24,7 +24,7 @@ class LevelsDatatablesService extends DatatablesService
      */
     public function __construct(Controller $controller)
     {
-        $this->setModel('Levels');
+        $this->setModel('Tags');
         parent::__construct($controller);
     }
 
@@ -118,26 +118,28 @@ class LevelsDatatablesService extends DatatablesService
     {
         $response = [];
         foreach ($results as $item) {
-            $users = count($item->users);
+            $models = count($item->tags_models);
             $response[] = [
                 'id' => $item->id,
                 'name' => $item->name,
-                'users' => $users,
+                'models' => $models,
                 'created' => $item->created->i18nFormat('dd/MM/yyyy HH:mm:ss'),
                 'actions' => [
-                    'edit' => $this->hasPermission('edit', 'Levels', $item->id),
-                    'delete' => $users ? false : $this->hasPermission('delete', 'Levels', $item->id),
+                    'edit' => $this->hasPermission('edit', $this->getModel(), $item->id),
+                    'delete' => $models ? false : $this->hasPermission('delete', $this->getModel(), $item->id),
                 ],
             ];
         }
         return $response;
     }
 
-    public function getContains()
+    /**
+     * @return string[]
+     */
+    public function getContains() :array
     {
         return [
-            'Users'
+            'TagsModels'
         ];
     }
-
 }

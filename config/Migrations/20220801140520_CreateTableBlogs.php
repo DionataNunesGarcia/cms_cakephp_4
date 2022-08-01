@@ -16,6 +16,16 @@ class CreateTableBlogs extends AbstractMigration
                 'limit' => 60,
                 'null' => false,
             ])
+            ->addColumn('slug', 'string', [
+                'default' => null,
+                'limit' => 60,
+                'null' => false,
+            ])
+            ->addColumn('status', 'integer', [
+                'default' => null,
+                'limit' => 11,
+                'null' => false,
+            ])
             ->addColumn('created', 'datetime', [
                 'default' => null,
                 'limit' => null,
@@ -29,7 +39,7 @@ class CreateTableBlogs extends AbstractMigration
             ->create();
 
         $this->table('tags_models')
-            ->addColumn('user_id', 'string', [
+            ->addColumn('tag_id', 'string', [
                 'default' => null,
                 'limit' => 60,
                 'null' => false,

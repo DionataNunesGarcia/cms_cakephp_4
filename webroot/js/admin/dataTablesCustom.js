@@ -115,9 +115,8 @@ let datatablesCustom = {
             },
             success: function(result) {
                 // handle success
-                alert(result.message);
-                console.log('result: ', result);
                 datatableCurrent.draw('page')
+                alert(result.message);
             },
             error: function(request, msg, error) {
                 // handle failure
@@ -194,7 +193,7 @@ let datatablesCustom = {
         return entityObject;
     },
     dom: function () {
-        return "<'row'<'col-sm-3'l><'col-sm-5'f><'col-sm-4 mt10'B>>\
+        return "<'row'<'col-sm-4'B><'col-sm-6'f><'col-sm-2'l>>\
                     <'table-responsive'rt><'row'<'col-sm-6'i><'col-sm-6'p>>";
     },
     buttons: function () {

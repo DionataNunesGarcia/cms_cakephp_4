@@ -37,9 +37,21 @@
                 </a>
                 <ul class="treeview-menu">
                     <li>
-                        <a href="<?= $this->Url->build(['controller' => 'About', 'action' => 'edit'], ['fullBase' => true]); ?>" title="" data-placement="right">
+                        <a href="<?= $this->Url->build(['controller' => 'Tags', 'action' => 'index'], ['fullBase' => true]); ?>" title="" data-placement="right">
                             <i class="fa fa-circle-o"></i>
-                            <?= __('Usuarios') ?>
+                            <?= __('Tags') ?>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="<?= $this->Url->build(['controller' => 'Blogs', 'action' => 'index'], ['fullBase' => true]); ?>" title="" data-placement="right">
+                            <i class="fa fa-circle-o"></i>
+                            <?= __('Blogs') ?>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="<?= $this->Url->build(['controller' => 'BlogsCategories', 'action' => 'index'], ['fullBase' => true]); ?>" title="" data-placement="right">
+                            <i class="fa fa-circle-o"></i>
+                            <?= __('Categorias de Blogs') ?>
                         </a>
                     </li>
                 </ul>

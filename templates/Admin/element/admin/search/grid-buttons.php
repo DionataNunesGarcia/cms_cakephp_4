@@ -1,4 +1,4 @@
-<div class="botoes text-right">
+<div class="col-md-12 grid-buttons text-right">
     <?=
     $this->Html->link(__('<i class="fa fa-trash"></i> Excluir Selecionados'), [
         'action' => 'delete',

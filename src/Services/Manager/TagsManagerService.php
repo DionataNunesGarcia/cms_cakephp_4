@@ -13,7 +13,7 @@ use Cake\I18n\FrozenTime;
 use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
 
-class LevelsManagerService extends DefaultService
+class TagsManagerService extends DefaultService
 {
     /**
      * @var LevelsPermissionsTable
@@ -25,20 +25,19 @@ class LevelsManagerService extends DefaultService
      */
     public function __construct(Controller $controller)
     {
-        $this->setModel('Levels');
+        $this->setModel('Tags');
         parent::__construct($controller);
-        $this->_levelsPermissionsTable = TableRegistry::getTableLocator()->get('LevelsPermissions');
     }
 
     public function saveEntity()
     {
         $entity = $this->__table
             ->patchEntity($this->getEntity(), $this->_request->getData());
+
         if (!$this->__table->save($entity)) {
+            dd($entity);
             throw new ValidationErrorException($entity);
         }
-
-        $this->saveLevelsPermissions($entity);
         $this->response['data'] = $entity;
         return $this->response;
     }
@@ -61,7 +60,7 @@ class LevelsManagerService extends DefaultService
             $entity->status = StatusEnum::EXCLUDED;
             $entity->modified = FrozenTime::now();
             if (!$this->__table->save($entity)) {
-                throw new ValidationErrorException($entity, "Erro ao deletar o Nível {$entity->name}");
+                throw new ValidationErrorException($entity, "Erro ao deletar a Tag {$entity->name}");
             }
         }
         $this->response['data'] = $entities;
