@@ -141,7 +141,10 @@ class LogsChangeDatatablesService extends DatatablesService
         return $response;
     }
 
-    public function getContains()
+    /**
+     * @return string[]
+     */
+    public function getContains() :array
     {
         return [
             'Users'
