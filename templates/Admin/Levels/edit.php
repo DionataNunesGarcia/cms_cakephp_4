@@ -16,7 +16,7 @@ $this->Form->create($entity, ['url' => [
             <?= $this->Form->hidden('id') ?>
             <?= $this->Form->hidden('status',['value' => 1]); ?>
             <div class="form-group col-md-6">
-                <?= $this->Form->control('name'); ?>
+                <?= $this->Form->control('name', ['label' => 'Nome']); ?>
             </div>
         </fieldset>
     </div>

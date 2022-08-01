@@ -277,7 +277,7 @@ class AddCommonTables extends AbstractMigration
         $this->table('uploads')
             ->addColumn('filename', 'string', [
                 'default' => null,
-                'limit' => 60,
+                'limit' => 1000,
                 'null' => false,
             ])
             ->addColumn('foreign_key', 'integer', [

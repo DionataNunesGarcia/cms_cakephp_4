@@ -84,8 +84,7 @@ class TagsController extends AdminController
                 $this->Flash->error($ex->getMessage());
             }
         }
-        $permissionsList = $this->getPermissionsList('Admin');
-        $this->set(compact('entity', 'permissionsList'));
+        $this->set(compact('entity'));
         $this->render('edit');
     }
 
@@ -112,8 +111,7 @@ class TagsController extends AdminController
                 $this->Flash->error($ex->getMessage());
             }
         }
-        $permissionsList = $this->getPermissionsList('Admin');
-        $this->set(compact('entity', 'permissionsList'));
+        $this->set(compact('entity'));
     }
 
     /**

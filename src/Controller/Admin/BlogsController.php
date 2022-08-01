@@ -4,36 +4,33 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Controller\AppController;
-use App\Services\Datatables\BlogsCategoriesDatatablesService;
-use App\Services\Form\BlogsCategoriesFormService;
-use App\Services\Manager\BlogsCategoriesManagerService;
-use Cake\Controller\ComponentRegistry;
-use Cake\Event\EventManagerInterface;
-use Cake\Http\Response;
-use Cake\Http\ServerRequest;
+use App\Error\Exception\ValidationErrorException;
+use App\Services\Datatables\BlogsDatatablesService;
+use App\Services\Form\BlogsFormService;
+use App\Services\Manager\BlogsManagerService;
 
 /**
- * BlogsCategories Controller
+ * Blogs Controller
  *
- * @property \App\Model\Table\BlogsCategoriesTable $BlogsCategories
- * @method \App\Model\Entity\BlogsCategory[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
+ * @property \App\Model\Table\BlogsTable $Blogs
+ * @method \App\Model\Entity\Blog[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
-class BlogsCategoriesController extends AdminController
+class BlogsController extends AdminController
 {
     /**
-     * @var BlogsCategoriesFormService $_formService
+     * @var BlogsFormService $_formService
      */
-    private BlogsCategoriesFormService $_formService;
+    private BlogsFormService $_formService;
 
     /**
-     * @var BlogsCategoriesManagerService $_managerService
+     * @var BlogsManagerService $_managerService
      */
-    private BlogsCategoriesManagerService $_managerService;
+    private BlogsManagerService $_managerService;
 
     /**
-     * @var BlogsCategoriesDatatablesService
+     * @var BlogsDatatablesService
      */
-    private BlogsCategoriesDatatablesService $_datatableService;
+    private BlogsDatatablesService $_datatableService;
 
     /**
      * @return void
@@ -42,9 +39,9 @@ class BlogsCategoriesController extends AdminController
     {
         parent::initialize();
 
-        $this->_formService = new BlogsCategoriesFormService($this);
-        $this->_managerService = new BlogsCategoriesManagerService($this);
-        $this->_datatableService = new BlogsCategoriesDatatablesService($this);
+        $this->_formService = new BlogsFormService($this);
+        $this->_managerService = new BlogsManagerService($this);
+        $this->_datatableService = new BlogsDatatablesService($this);
     }
 
     /**
@@ -87,7 +84,8 @@ class BlogsCategoriesController extends AdminController
                 $this->Flash->error($ex->getMessage());
             }
         }
-        $this->set(compact('entity'));
+        $permissionsList = $this->getPermissionsList('Admin');
+        $this->set(compact('entity', 'permissionsList'));
         $this->render('edit');
     }
 

@@ -13,14 +13,14 @@ use Cake\I18n\FrozenTime;
 use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
 
-class BlogsCategoriesManagerService extends DefaultService
+class BlogsManagerService extends DefaultService
 {
     /**
      * @param Controller $controller
      */
     public function __construct(Controller $controller)
     {
-        $this->setModel('BlogsCategories');
+        $this->setModel('Blogs');
         parent::__construct($controller);
     }
 
@@ -32,6 +32,9 @@ class BlogsCategoriesManagerService extends DefaultService
         $entity = $this->__table
             ->patchEntity($this->getEntity(), $this->_request->getData());
 
+        if ($entity->isNew()) {
+            $entity->user_id = $this->_userSession['id'];
+        }
         if (!$this->__table->save($entity)) {
             throw new ValidationErrorException($entity);
         }
@@ -62,7 +65,7 @@ class BlogsCategoriesManagerService extends DefaultService
             $entity->status = StatusEnum::EXCLUDED;
             $entity->modified = FrozenTime::now();
             if (!$this->__table->save($entity)) {
-                throw new ValidationErrorException($entity, "Erro ao deletar a categoria {$entity->name}");
+                throw new ValidationErrorException($entity, "Erro ao deletar o blog {$entity->name}");
             }
         }
         $this->response['data'] = $entities;
