@@ -13,14 +13,14 @@ use Cake\I18n\FrozenTime;
 use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
 
-class TagsManagerService extends DefaultService
+class BlogsCategoriesManagerService extends DefaultService
 {
     /**
      * @param Controller $controller
      */
     public function __construct(Controller $controller)
     {
-        $this->setModel('Tags');
+        $this->setModel('BlogsCategories');
         parent::__construct($controller);
     }
 

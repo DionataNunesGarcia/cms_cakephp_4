@@ -7,14 +7,14 @@ use App\Utils\Enum\StatusEnum;
 use Cake\Controller\Controller;
 use Cake\Routing\Router;
 
-class TagsDatatablesService extends DatatablesService
+class BlogsCategoriesDatatablesService extends DatatablesService
 {
     /**
      * @return array[]
      */
     protected array $_customFields = [
         "id" => [
-            'field' => 'Tags.id',
+            'field' => 'BlogsCategories.id',
             'type' => ParameterTypesFilter::EQUAL,
         ],
     ];
@@ -24,7 +24,7 @@ class TagsDatatablesService extends DatatablesService
      */
     public function __construct(Controller $controller)
     {
-        $this->setModel('Tags');
+        $this->setModel('BlogsCategories');
         parent::__construct($controller);
     }
 
@@ -118,15 +118,15 @@ class TagsDatatablesService extends DatatablesService
     {
         $response = [];
         foreach ($results as $item) {
-            $models = count($item->tags_models);
+            $blogs = 0;//count($item->blogs);
             $response[] = [
                 'id' => $item->id,
                 'name' => $item->name,
-                'models' => $models,
+                'blogs' => $blogs,
                 'created' => $item->created->i18nFormat('dd/MM/yyyy HH:mm:ss'),
                 'actions' => [
                     'edit' => $this->hasPermission('edit', $this->getModel(), $item->id),
-                    'delete' => $models ? false : $this->hasPermission('delete', $this->getModel(), $item->id),
+                    'delete' => $blogs ? false : $this->hasPermission('delete', $this->getModel(), $item->id),
                 ],
             ];
         }
@@ -139,7 +139,7 @@ class TagsDatatablesService extends DatatablesService
     public function getContains() :array
     {
         return [
-            'TagsModels'
+//            'Blogs'
         ];
     }
 }
