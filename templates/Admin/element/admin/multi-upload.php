@@ -49,18 +49,24 @@ $accept = !isset($accept) ? '*' : $accept;
         color: #222;
         border-color: #222;
     }
-    #list-files div.linha-file {
-        margin-bottom: 10px;
+    #list-files div.card-file {
         border: 1px solid #dee2e6 !important;
-        padding-top: 10px !important;
+        margin: 10px !important;
         box-shadow: 0 1px 2px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+        min-height: 215px;
     }
-    #list-files .arquivo img{
-        max-height: 200px;
-        max-width: 200px;
+    #list-files button{
         margin-bottom: 10px;
+        margin-right: 5px;
     }
-    #list-files .arquivo button{
+    #list-files .file {
+        max-height: 100px;
+        min-height: 100px;
+        margin-top: 10px;
+    }
+    #list-files .file img {
+        max-height: 100px;
+        min-height: 100px;
         margin-bottom: 10px;
     }
 </style>
@@ -68,6 +74,7 @@ $accept = !isset($accept) ? '*' : $accept;
     let multipleFileUploads = "<?= $this->Url->build(['controller' => 'Utils', 'action' => 'multipleFileUploads',])?>";
     let multipleFileUploadsList = "<?= $this->Url->build(['controller' => 'Utils', 'action' => 'multipleFileUploadsList',])?>";
     let multipleFileUploadsDelete = "<?= $this->Url->build(['controller' => 'Utils', 'action' => 'multipleFileUploadsDelete',])?>";
+    let urlDownload = "<?= $this->Url->build(['controller' => 'Utils', 'action' => 'download',])?>";
     let pathFiles = "<?= \Cake\Routing\Router::url('/', true) . 'Uploads/' ?>";
 </script>
 <?= $this->Html->script(['/js/admin/multi-uploads'], ['block' => 'custom']) ?>

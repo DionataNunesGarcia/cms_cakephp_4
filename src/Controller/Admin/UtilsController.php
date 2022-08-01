@@ -76,15 +76,17 @@ class UtilsController extends AdminController
      */
     public function download(int $id) :\Cake\Http\Response
     {
-        $entity = $this->_uploadsFormService->getEntity($id);
-        $file_path = WWW_ROOT . $entity->filename;
-        $this->response->file($file_path, array(
-            'download' => true,
-            'name' => FrozenTime::now()->i18nFormat('yyyy-MM-dd HH-mm-ss')
-                . " {$entity->type}."
-                . pathinfo($entity->filename, PATHINFO_EXTENSION),
-        ));
-        return $this->response;
+        $this->_uploadsFormService->setId($id);
+        $entity = $this->_uploadsFormService->getEntity();
+        $filePath = WWW_ROOT . "Uploads" . DS . $entity->filename;
+        $time = FrozenTime::now()->i18nFormat('yyyy-MM-dd-HH-mm-ss');
+        $filename = str_replace(".$entity->extension", '', $entity->alt);
+
+        return $this->response
+            ->withFile($filePath, [
+                'download' => true,
+                'name' => "{$time} {$filename}.{$entity->extension}"
+            ]);
     }
 
     /**

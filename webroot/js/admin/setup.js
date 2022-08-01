@@ -469,6 +469,20 @@ function setup() {
 //        }
 //    });
 
+    $(".fancybox-pdf")
+        .fancybox({
+            openEffect: 'elastic',
+            closeEffect: 'elastic',
+            autoSize: true,
+            type: 'iframe',
+            iframe: {
+                preload: false // fixes issue with iframe and IE
+            }
+        });
+
+    $(".fancybox")
+        .fancybox();
+
     $(document).ajaxError(function (e, jqXHR, ajaxSettings, thrownError) {
         // if 403 - check if user still has active session - if not redirect to login page
         // if (jqXHR.status == '403') {

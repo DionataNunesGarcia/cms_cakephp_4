@@ -52,6 +52,10 @@ $(function() {
             }
             e.preventDefault();
             deleteFile($(this).data('foreign-key'), $(this).data('model'),$(this).data('id'));
+        })
+        .on('click', '.download-file', function(e){
+            e.preventDefault();
+            downloadFile($(this).data('id'));
         });
 });
 
@@ -89,12 +93,23 @@ function uploadData(){
 // Added thumbnail
 function addThumbnail(entity){
     $("#uploadfile").text("Clique ou arraste e solte files aqui");
+    let file = pathFiles + entity.filename;
     //start div
-    let html = '<div class="col-md-4 no-padding row-file" id="file-thumbnail-' + entity.id + '">';
+    let html = '<div class="col-md-4 no-padding" id="file-thumbnail-' + entity.id + '">';
+    html += '<div class="card-file">';
 
     //image
     html += '<div class=" text-center file col-md-12">';
-    html += '<img src="'+ pathFiles + entity.filename + '" class="img-thumbnail img-responsive" ><br>';
+    if (entity.extension == 'png' || entity.extension == 'jpg' || entity.extension == 'jpeg') {
+        html += '<a href="'+ file + '" data-fancybox="gallery" data-caption="'+ entity.alt + '">';
+        html += '<img src="'+ file + '" class="img-thumbnail img-responsive"><br>';
+        html += '</a>';
+    }
+    if (entity.extension == 'pdf') {
+        html += '<a class="fancybox-pdf" href="'+ file + '" data-fancybox="iframe" data-fancybox-type="iframe" data-caption="'+ entity.alt + '">';
+        html += '<i class="fa fa-file-pdf-o fa-5x"></i>';
+        html += '</a>';
+    }
     html += '</div>';
 
     //title
@@ -102,10 +117,12 @@ function addThumbnail(entity){
     html += '<label>Título</label><br>';
     html += '<input type="hidden" name="file[id][]" value="' + entity.id +'" >';
     html += '<input type="text" name="file[title][]" data-id="' + entity.id +'" value="' + entity.alt +'" class="form-control" autocomplete="off">';
-    html += '<button type="button" class="btn btn-danger btn-xs delete-file" data-id="' + entity.id + '" data-foreign-key="' + entity.foreign_key + '" data-model="' + entity.model + '">Excluir <i class="fa fa-trash"></i></button>';
+    html += '<button type="button" class="btn btn-primary btn-xs download-file" data-id="' + entity.id + '" data-foreign-key="' + entity.foreign_key + '" data-model="' + entity.model + '"><i class="fa fa-download"></i></button>';
+    html += '<button type="button" class="btn btn-danger btn-xs delete-file" data-id="' + entity.id + '" data-foreign-key="' + entity.foreign_key + '" data-model="' + entity.model + '"><i class="fa fa-trash"></i></button>';
     html += '</div>';
 
     //end div
+    html += '</div>';
     html += '</div>';
     // Creating an thumbnail
     $("#list-files").append(html);
@@ -169,4 +186,14 @@ function deleteFile(foreignKeys, model, id) {
     }).done(function(){
         closeLoad();
     });
+}
+
+// Carrega os files ao inicializar
+function downloadFile(id) {
+
+    //open download link in new page
+    window.open( urlDownload + "/" + id );
+    //redirect current page to success page
+    // window.location="www.example.com/success.html";
+    window.focus();
 }

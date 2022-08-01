@@ -29,6 +29,7 @@
 <?= $this->Html->script('../plugins/input-mask/jquery.inputmask.date.extensions.js') ?>
 <?= $this->Html->script('../plugins/jquery-maskmoney-master/dist/jquery.maskMoney.js') ?>
 <?= $this->Html->script('../plugins/input-mask/jquery.inputmask.extensions.js') ?>
+<?= $this->Html->script('../plugins/fancybox-master/dist/jquery.fancybox.js') ?>
 <?= $this->Html->script('../adminlte/js/adminlte.min.js') ?>
 <?= $this->Html->script('../adminlte/js/pages/dashboard.js') ?>
 <?= $this->Html->script('../adminlte/js/demo.js') ?>

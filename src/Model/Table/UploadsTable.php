@@ -62,8 +62,8 @@ class UploadsTable extends Table
                 'nameCallback' => function ($tableObj, $entity, $data, $field, $settings) {
                     //if the file exists, salt it with time()
                     $now = FrozenTime::now()->i18nFormat('yyyy-MM-dd-HH-mm-ss');
-                    $path = WWW_ROOT . DS . 'Uploads' . DS;
-                    return  "{$now}-{$entity->filename->getClientFilename()}";
+                    $uuid = Text::uuid();
+                    return  "{$now}-{$entity->model}-{$entity->foreign_key}-{$uuid}.{$entity->extension}";
                 },
                 'deleteCallback' => function ($path, $entity, $field, $settings) {
                     return [
@@ -83,12 +83,6 @@ class UploadsTable extends Table
      */
     public function validationDefault(Validator $validator): Validator
     {
-//        $validator
-//            ->scalar('filename')
-//            ->maxLength('filename', 60)
-//            ->requirePresence('filename', 'create')
-//            ->notEmptyFile('filename');
-
         $validator
             ->integer('foreign_key')
             ->allowEmptyString('foreign_key');

@@ -11,6 +11,7 @@
 <?= $this->Html->css('../plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css') ?>
 <?= $this->Html->css('../plugins/timepicker/bootstrap-timepicker.min.css') ?>
 <?= $this->Html->css('../plugins/dual-listbox-master/dist/dual-listbox.css') ?>
+<?= $this->Html->css('../plugins/fancyBox-master/dist/jquery.fancybox.css') ?>
 <?= $this->Html->css('../plugins/iCheck/all.css') ?>
 <?= $this->Html->css('../plugins/croppie-image/croppie.css') ?>
 <?= $this->Html->css('../adminlte/css/AdminLTE.min.css') ?>
