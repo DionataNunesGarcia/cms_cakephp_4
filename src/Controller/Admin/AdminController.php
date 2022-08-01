@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Controller\AppController;
+use App\Services\Form\HomeFormService;
 use App\Utils\TranslateControllerActions;
 use Authentication\Authenticator\UnauthenticatedException;
 use Cake\Core\Configure;
@@ -15,10 +16,19 @@ use Cake\Event\EventInterface;
 class AdminController extends AppController
 {
     /**
+     * @var HomeFormService $_formService
+     */
+    private HomeFormService $_formService;
+
+    /**
      * @var array
      */
     protected array $userSession;
 
+    /**
+     * @return void
+     * @throws \Exception
+     */
     public function initialize(): void
     {
         parent::initialize();
@@ -26,6 +36,7 @@ class AdminController extends AppController
         $this->loadComponent('Authentication.Authentication');
         $this->loadComponent('Security');
         $this->loadComponent('RequestHandler');
+        $this->_formService = new HomeFormService($this);
     }
 
     /**
@@ -35,7 +46,9 @@ class AdminController extends AppController
      */
     public function index()
     {
+        $counts = $this->_formService->getCounts();
 
+        $this->set(compact('counts'));
     }
 
     /**
