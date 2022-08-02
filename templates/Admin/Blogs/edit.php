@@ -7,20 +7,23 @@ $this->Form->create($entity, ['url' => [
     $entity->id,
     'fullBase' => true,
 ]]);
+$this->Form->unlockField('tags');
+$this->Form->unlockField('redirect');
 ?>
 <div class="box">
     <?= $this->element('admin/box-title', ['title' => 'Cadastro']) ?>
     <div class="box-body">
         <fieldset>
             <?= $this->Form->hidden('id') ?>
+            <?= $this->Form->hidden('redirect',['value' => $actionForm]); ?>
             <?= $this->Form->hidden('status',['value' => 1]); ?>
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-6">
                 <?= $this->Form->control('title', ['label' => 'Título']); ?>
             </div>
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-6">
                 <?= $this->Form->control('subtitle', ['label' => 'Subtitulo']); ?>
             </div>
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-6">
                 <?=
                 $this->element('admin/select2', [
                     'controller' => 'BlogsCategories',
@@ -32,9 +35,32 @@ $this->Form->create($entity, ['url' => [
                 ])
                 ?>
             </div>
+            <div class="form-group col-md-6">
+                <?=
+                $this->Form->control('show_website', [
+                    'type' => 'select',
+                    'label' => __('Mostrar no Site'),
+                    'class' => 'form-control select2',
+                    'required' => true,
+                    'options' => \App\Utils\Enum\YesNoEnum::getArray()
+                ]);
+                ?>
+            </div>
             <div class="form-group col-md-12">
                 <label for="content" class="required">Conteúdo</label>
                 <?= $this->Form->input('content', ['class' => 'ckeditor', 'text' => 'Conteúdo', 'type' => 'textarea']) ?>
+            </div>
+            <div class="form-group col-md-12">
+                <?=
+                $this->element('admin/select2', [
+                    'controller' => 'Tags',
+                    'name' => 'tags',
+                    'label' => __('Tags'),
+                    'multiple' => true,
+                    'required' => false,
+                    'value' => $entity->tags_ids,
+                ]);
+                ?>
             </div>
         </fieldset>
     </div>

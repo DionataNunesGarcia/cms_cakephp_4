@@ -13,8 +13,12 @@ use Cake\ORM\Entity;
  * @property string $subtitle
  * @property string $slug
  * @property string|null $content
- * @property string $user_id
+ * @property int $user_id
+ * @property int $status
+ * @property bool $show_website
  * @property string $blog_category_id
+ * @property array $tags_ids
+ * @property array $tags_models
  * @property \Cake\I18n\FrozenTime|null $created
  * @property \Cake\I18n\FrozenTime|null $modified
  *
@@ -38,10 +42,14 @@ class Blog extends Entity
         'slug' => true,
         'content' => true,
         'user_id' => true,
+        'status' => true,
+        'show_website' => true,
         'blog_category_id' => true,
         'created' => true,
         'modified' => true,
         'user' => true,
         'blog_category' => true,
+        'tags_models' => true,
+        'tags_ids' => true,
     ];
 }

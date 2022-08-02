@@ -7,6 +7,7 @@ use App\Services\DefaultService;
 use App\Utils\Enum\StatusEnum;
 use Cake\Controller\Controller;
 use Cake\I18n\FrozenTime;
+use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 
 class HomeFormService extends DefaultService
@@ -19,16 +20,34 @@ class HomeFormService extends DefaultService
         parent::__construct($controller);
     }
 
-    public function getCounts()
+    /**
+     * @return array
+     */
+    public function getCounts() :array
     {
-        $users = TableRegistry::getTableLocator()->get("Users")
-            ->find()
-            ->where(['status !=' => StatusEnum::EXCLUDED])
-            ->count();
-
         return [
-            'users' => $users,
+            'users' => self::getCount('Users', ['status !=' => StatusEnum::EXCLUDED]),
+            'blogs' => self::getCount('Blogs', ['status !=' => StatusEnum::EXCLUDED]),
         ];
     }
 
+    /**
+     * @return array
+     */
+    public function getLatestBlogs() :array
+    {
+        $conditions['Blogs.status !='] = StatusEnum::EXCLUDED;
+        if (!$this->_userSession['super']) {
+            $conditions['Blogs.user_id'] = $this->_userSession['id'];
+        }
+        return self::getTableLocator('Blogs')
+            ->find()
+            ->where($conditions)
+            ->contain([
+                'BlogsCategories'
+            ])
+            ->orderDesc('Blogs.created')
+            ->limit(5)
+            ->toArray();
+    }
 }

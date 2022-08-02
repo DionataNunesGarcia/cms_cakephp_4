@@ -61,6 +61,13 @@ class BlogsTable extends Table
             'foreignKey' => 'blog_category_id',
             'joinType' => 'INNER',
         ]);
+        $this->hasMany('TagsModels', [
+            'foreignKey' => 'foreign_key',
+            'joinType' => 'LEFT',
+            'conditions' => [
+                'TagsModels.model' => 'Blogs',
+            ],
+        ]);
     }
 
     /**
@@ -146,9 +153,15 @@ class BlogsTable extends Table
      */
     public function getEntity(int $id = null) :Blog
     {
+        $entity = $this->newEmptyEntity();
+        $entity->tags_ids = [];
         if ($id) {
-            return $this->get($id, ['contain' => ['BlogsCategories', 'Users']]);
+            $entity = $this->get($id, ['contain' => ['BlogsCategories', 'Users', 'TagsModels.Tags']]);
+            $entity->tags_ids = [];
+            foreach ($entity->tags_models as $tag) {
+                $entity->tags_ids[] = $tag->tag_id;
+            }
         }
-        return $this->newEmptyEntity();
+        return $entity;
     }
 }

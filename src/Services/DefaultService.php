@@ -111,34 +111,57 @@ class DefaultService
             ->getEntity($id);
     }
 
+    /**
+     * @return array
+     */
     public function getAutocomplete() :array
     {
-        $query = $this->__table
+        $conditions["{$this->getModel()}.status !="] = StatusEnum::EXCLUDED;
+        //if load the id, get then
+        if ($this->_request->getQuery('id')) {
+            $conditions["{$this->getModel()}.id IN"] = explode(',',$this->_request->getQuery('id'));
+        }
+        //if is search, get by term
+        if (!empty($this->_request->getQuery('term'))) {
+            $conditions["upper({$this->getModel()}.name) like"] = '%' . strtoupper($this->_request->getQuery('term')) . '%';
+        }
+        return $this->__table
             ->find('list', [
                 'keyField' => function($q){},
                 'valueField' => function($q){
                     return [
                         'id' => $q->id,
-                        'value' => "{$q->name}"
+                        'value' => $q->name
                     ];
                 },
             ])
-            ->where([
-                "{$this->getModel()}.status !=" => StatusEnum::EXCLUDED
-            ])
-            ->limit($this->autocompleteLimit);
+            ->where($conditions)
+            ->limit($this->autocompleteLimit)
+            ->toArray();
+    }
 
-        if ($this->_request->getQuery('id')) {
-            //if load the id, get then
-            $query->where([
-                "{$this->getModel()}.id in " => explode(',',$this->_request->getQuery('id'))
-            ]);
-        } else if (!empty($this->_request->getQuery('term'))) {
-            //se pesquisar, busca pelo termo
-            $query->where([
-                "upper({$this->getModel()}.name) like" => '%' . strtoupper($this->_request->getQuery('term')) . '%',
-            ]);
-        }
-        return $query->toArray();
+    /**
+     * @param string $tableName
+     * @return Table
+     */
+    protected static function getTableLocator(string $tableName) :Table
+    {
+        return TableRegistry::getTableLocator()
+            ->get($tableName);
+    }
+
+    /**
+     * @param string $tableName
+     * @param array $conditions
+     * @param array $contain
+     * @return int
+     */
+    protected static function getCount(string $tableName, array $conditions = [], array $contain = []) :int
+    {
+        return self::getTableLocator($tableName)
+            ->find()
+            ->where($conditions)
+            ->contain($contain)
+            ->count();
     }
 }

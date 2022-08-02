@@ -3,6 +3,7 @@
 namespace App\Services\Manager;
 
 use App\Error\Exception\ValidationErrorException;
+use App\Model\Entity\TagsModel;
 use App\Model\Table\LevelsPermissionsTable;
 use App\Model\Table\LevelsTable;
 use App\Services\DefaultService;
@@ -68,5 +69,27 @@ class TagsManagerService extends DefaultService
         $this->response['data'] = $entities;
         $this->response['status'] = HttpStatusCodeEnum::RESET_CONTENT;
         return $this->response;
+    }
+
+    /**
+     * @param int $foreignKey
+     * @param string $model
+     * @param array $tags
+     * @return void
+     */
+    public function saveTagsModels(int $foreignKey, string $model, array $tags = []) :void
+    {
+        $table = self::getTableLocator('TagsModels');
+        $table->deleteAll([
+            'model' => $model
+        ]);
+        /** @var TagsModel $entity */
+        foreach ($tags as $tagId) {
+           $entity = $table->newEmptyEntity();
+           $entity->foreign_key = $foreignKey;
+           $entity->tag_id = $tagId;
+           $entity->model = $model;
+           $table->save($entity);
+        }
     }
 }

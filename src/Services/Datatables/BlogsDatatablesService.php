@@ -17,6 +17,10 @@ class BlogsDatatablesService extends DatatablesService
             'field' => 'Blogs.title',
             'type' => ParameterTypesFilter::LIKE,
         ],
+        "blog_category_id" => [
+            'field' => 'Blogs.blog_category_id',
+            'type' => ParameterTypesFilter::EQUAL,
+        ],
     ];
 
     /**
@@ -29,14 +33,15 @@ class BlogsDatatablesService extends DatatablesService
     }
 
     /**
+     * @param bool $onlyOwn
      * @return array
      */
-    public function getResults() :array
+    public function getResults(bool $onlyOwn = false) :array
     {
         try {
             $this->setDataTableFilters();
             $this->addSortCondition();
-            $this->setConditions();
+            $this->setConditions($onlyOwn);
             $query = $this->getSearchQuery();
             $total = $query->count();
             $results = $query->toArray();
@@ -83,9 +88,12 @@ class BlogsDatatablesService extends DatatablesService
         ];
     }
 
-    private function setConditions()
+    private function setConditions($onlyOwn)
     {
         $this->conditions["{$this->getModel()}.status !="] = StatusEnum::EXCLUDED;
+        if ($onlyOwn) {
+            $this->conditions["{$this->getModel()}.user_id"] = $this->_userSession['id'];
+        }
         $this->setCustomFilters();
     }
 
@@ -118,20 +126,33 @@ class BlogsDatatablesService extends DatatablesService
     {
         $response = [];
         foreach ($results as $item) {
-//            $blogs = 0;//count($item->blogs);
             $response[] = [
                 'id' => $item->id,
                 'title' => $item->title,
                 'subtitle' => $item->subtitle,
-//                'blogs' => $blogs,
+                'category' => $item->blogs_category->name,
+                'user' => $item->user->user,
+                'user_avatar' => $item->user->avatar
+                    ? '..' . DS . 'Uploads' . DS . $item->user->avatar->filename
+                    : DS . 'img' . DS . 'user-default.png',
                 'created' => $item->created->i18nFormat('dd/MM/yyyy HH:mm:ss'),
-                'actions' => [
-                    'edit' => $this->hasPermission('edit', $this->getModel(), $item->id),
-                    'delete' => $this->hasPermission('delete', $this->getModel(), $item->id),
-                ],
+                'actions' => $this->getActions($item->id),
             ];
         }
         return $response;
+    }
+
+    /**
+     * @param int $id
+     * @return array
+     */
+    private function getActions(int $id) :array
+    {
+        $edit = $this->hasPermission('edit', $this->getModel(), $id);
+        $delete = $this->hasPermission('delete', $this->getModel(), $id);
+        $actions['edit'] = $edit ?: $this->hasPermission('editYourContents', $this->getModel(), $id);
+        $actions['delete'] = $delete ?: $this->hasPermission('deleteYourContents', $this->getModel(), $id);
+        return $actions;
     }
 
     /**
@@ -141,7 +162,9 @@ class BlogsDatatablesService extends DatatablesService
     {
         return [
             'BlogsCategories',
-            'Users',
+            'Users' => [
+                'Avatar'
+            ],
         ];
     }
 }

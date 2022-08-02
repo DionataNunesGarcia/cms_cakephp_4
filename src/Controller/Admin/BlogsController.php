@@ -58,9 +58,10 @@ class BlogsController extends AdminController
      *
      * @return \Cake\Http\Response|null|void Renders view
      */
-    public function searchAjax()
+    public function searchAjax(bool $onlyOwn = false)
     {
-        $response = $this->_datatableService->getResults();
+
+        $response = $this->_datatableService->getResults($onlyOwn);
         $this->RequestHandler->renderAs($this, 'json');
         $this->set(compact('response'));
         $this->set('_serialize', 'response');
@@ -70,6 +71,7 @@ class BlogsController extends AdminController
      * Add method
      *
      * @return \Cake\Http\Response|void|null
+     * @throws \ReflectionException
      */
     public function add()
     {
@@ -78,14 +80,13 @@ class BlogsController extends AdminController
             try {
                 $response = $this->_managerService->saveEntity();
                 $this->Flash->success($response['message']);
-                return $this->redirect(['action' => 'edit', $response['data']->id]);
+                return $this->redirect(['action' => 'index']);
             } catch (ValidationErrorException $ex) {
                 $entity = $ex->getEntity();
                 $this->Flash->error($ex->getMessage());
             }
         }
-        $permissionsList = $this->getPermissionsList('Admin');
-        $this->set(compact('entity', 'permissionsList'));
+        $this->set(compact('entity'));
         $this->render('edit');
     }
 
@@ -118,7 +119,6 @@ class BlogsController extends AdminController
     /**
      * Delete method
      *
-     * @param string|null $id User id.
      * @return \Cake\Http\Response|null|void Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
@@ -128,6 +128,71 @@ class BlogsController extends AdminController
         $this->RequestHandler->renderAs($this,'json');
         try {
             $response = $this->_managerService->deletedEntities($ids);
+        } catch (\Exception $exc) {
+            $code = $exc->getCode() != 0? $exc->getCode() : 403;
+            $this->response = $this->response->withStatus($code);
+            $response = [
+                'message' => $exc->getMessage(),
+            ];
+        }
+        $this->set(compact('response'));
+        $this->set('_serialize', 'response');
+    }
+
+    /**
+     * searchYourContents method
+     *
+     * @return \Cake\Http\Response|null|void Renders view
+     */
+    public function searchYourContents()
+    {
+    }
+
+    /**
+     * Edit your contents method
+     *
+     * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     */
+    public function editYourContents(int $id = null)
+    {
+        $action = $this->request->getParam('action');
+        $this->_formService->setId($id);
+        try {
+            $entity = $this->_formService->getEntity(true);
+            if ($this->getRequest()->is(['patch', 'post', 'put'])) {
+                try {
+                    $id = $id ?? intval($this->request->getData('id'));
+                    $this->_managerService->setId($id);
+                    $response = $this->_managerService->saveEntity();
+                    $this->Flash->success($response['message']);
+                    return $this->redirect(['action' => 'editYourContents', $response['data']->id]);
+                } catch (ValidationErrorException $ex) {
+                    $entity = $ex->getEntity();
+                    $this->Flash->error($ex->getMessage());
+                }
+            }
+        } catch (\Exception $ex) {
+            $this->Flash->error($ex->getMessage());
+            return $this->redirect(['action' => 'index']);
+        }
+        $this->set(compact('entity', 'action'));
+        $this->render('edit');
+    }
+
+    /**
+     * Delete your content method
+     *
+     * @param string|null $id User id.
+     * @return \Cake\Http\Response|null|void Redirects to index.
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     */
+    public function deleteYourContents($ids)
+    {
+        $this->request->allowMethod(['post', 'delete']);
+        $this->RequestHandler->renderAs($this,'json');
+        try {
+            $response = $this->_managerService->deletedEntities($ids, true);
         } catch (\Exception $exc) {
             $code = $exc->getCode() != 0? $exc->getCode() : 403;
             $this->response = $this->response->withStatus($code);

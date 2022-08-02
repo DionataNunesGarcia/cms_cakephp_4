@@ -306,6 +306,7 @@ td.table-image, th.table-image {
 table.table-datatable .avatar {
     max-height: 50px;
     max-width: 50px;
+    border-radius: 50%;
 }
 table .checkbox-select {
     text-align: center !important;

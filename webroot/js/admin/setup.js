@@ -354,10 +354,11 @@ function setup() {
         //verifica se tem um ou mais componentes de select2 usados com ajax na tela
         $('.select2-ajax').each(function () { //executa todos os selects para ver se tem valores
 
-            var $element = $(this); // seta o elemento
-            var ids = $element.attr('data-val');
-
-            if (ids !== '0') { //verifica se tem valores para carregados via ajax
+            let $element = $(this); // seta o elemento
+            let ids = $element.attr('data-val');
+            //verifica se tem valores para carregados via ajax
+            if (ids !== '0') {
+                console.log(ids);
                 var $request = $.ajax({
                     url: $(this).data('ajax--url'), // pega a url pelo atributo data
                     data: {id: ids}, //converte os ids em string

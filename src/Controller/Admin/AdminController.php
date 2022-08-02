@@ -47,8 +47,9 @@ class AdminController extends AppController
     public function index()
     {
         $counts = $this->_formService->getCounts();
+        $latestBlogs = $this->_formService->getLatestBlogs();
 
-        $this->set(compact('counts'));
+        $this->set(compact('counts', 'latestBlogs'));
     }
 
     /**
@@ -59,7 +60,6 @@ class AdminController extends AppController
     {
         $result = $this->Authentication->getResult();
         if (strtolower($this->request->getParam('prefix')) == 'admin' && $result->isValid()) {
-
             $this->configurePrefixAdmin($result);
         }
     }
@@ -98,7 +98,8 @@ class AdminController extends AppController
         return [
             'delete',
             'multipleFileUploads',
-            'multipleFileUploadsDelete'
+            'multipleFileUploadsDelete',
+            'deleteYourContents',
         ];
     }
 

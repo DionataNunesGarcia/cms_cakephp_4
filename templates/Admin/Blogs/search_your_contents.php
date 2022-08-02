@@ -24,9 +24,6 @@
                         <th class="text-center">
                             <?= __('Categoria') ?>
                         </th>
-                        <th class="text-center">
-                            <?= __('Usuário') ?>
-                        </th>
                         <th>
                             <?= __('Criado') ?>
                         </th>
@@ -44,8 +41,9 @@
 <script>
     let urlDatatable = "<?=
         $this->Url->build([
-            'action' => 'searchAjax',
             'prefix' => 'Admin',
+            'action' => 'searchAjax',
+            1
         ]);
         ?>";
 
@@ -78,15 +76,6 @@
             {
                 data: 'category',
                 className: 'text-center',
-            },
-            {
-                data: 'user',
-                className: 'text-center',
-                render: function(data, type, full, meta) {
-                    let html = `<img src="${full.user_avatar}" class="avatar"><br/>`;
-                    html += `<span>${data}</span>`;
-                    return html;
-                }
             },
             {
                 data: 'created'

@@ -17,11 +17,10 @@ function addHelp(name, text) {
 }
 
 function verifyPermissions() {
-    if (!userPermissions.super) {
+    if (userPermissions.super) {
         return;
     }
     let permissionsList = userPermissions.level.levels_permissions;
-    console.log(permissionsList);
 
     $('a[href]').each(function () {
         var href = $(this).attr('href');
@@ -33,6 +32,8 @@ function verifyPermissions() {
         if (!hasPermission(permissionsList, href)) {
             $(this).parent('li').remove();
             $(this).remove();
+            // console.log(href);
+            // console.log(permissionsList);
         }
     });
 
@@ -41,9 +42,8 @@ function verifyPermissions() {
         if ($(this).attr('id') === 'search' || $(this).attr('data-auth') === 'false') {
             return;
         }
-
         if (!hasPermission(permissionsList, action)) {
-
+            // console.log(action);
             $(this).find(':input:not(:disabled)').prop('disabled', true);
             $(this).find('button[type=submit], .autocomplete-btn').remove();
             $(this).attr('action', '');
@@ -64,16 +64,20 @@ function hasPermission(permissionsList, href) {
 
     $.each(permissionsList, function (i, item) {
         if (
-            item.prefix.toLowerCase() === href.prefix
+            hydrate(item.prefix) === hydrate(href.prefix)
             &&
-            item.controller.toLowerCase() === href.controller
+            hydrate(item.controller) === hydrate(href.controller)
             &&
-            item.action.toLowerCase() === href.action
+            hydrate(item.action) === hydrate(href.action)
         ) {
             ok = true;
         }
     });
     return ok;
+}
+
+function hydrate(str) {
+    return str.toLowerCase().replace('-', '');
 }
 
 function urlConvert(href) {

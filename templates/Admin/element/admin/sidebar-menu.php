@@ -49,6 +49,12 @@
                         </a>
                     </li>
                     <li>
+                        <a href="<?= $this->Url->build(['controller' => 'Blogs', 'action' => 'searchYourContents'], ['fullBase' => true]); ?>" title="" data-placement="right">
+                            <i class="fa fa-circle-o"></i>
+                            <?= __('Meus Blogs') ?>
+                        </a>
+                    </li>
+                    <li>
                         <a href="<?= $this->Url->build(['controller' => 'BlogsCategories', 'action' => 'index'], ['fullBase' => true]); ?>" title="" data-placement="right">
                             <i class="fa fa-circle-o"></i>
                             <?= __('Categorias de Blogs') ?>

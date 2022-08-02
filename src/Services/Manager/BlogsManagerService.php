@@ -15,6 +15,8 @@ use Cake\ORM\TableRegistry;
 
 class BlogsManagerService extends DefaultService
 {
+    private TagsManagerService $tagsManagerService;
+
     /**
      * @param Controller $controller
      */
@@ -22,6 +24,7 @@ class BlogsManagerService extends DefaultService
     {
         $this->setModel('Blogs');
         parent::__construct($controller);
+        $this->tagsManagerService = new TagsManagerService($controller);
     }
 
     /**
@@ -38,27 +41,35 @@ class BlogsManagerService extends DefaultService
         if (!$this->__table->save($entity)) {
             throw new ValidationErrorException($entity);
         }
+        // save tags
+        $this->tagsManagerService->saveTagsModels(
+            $entity->id,
+            $this->getModel(),
+            $this->_request->getData('tags') ?? []
+        );
         $this->response['data'] = $entity;
         return $this->response;
     }
 
     /**
      * @param string $ids
+     * @param bool $onlyOwn
      * @return array
      * @throws \Exception
      */
-    public function deletedEntities(string $ids) :array
+    public function deletedEntities(string $ids, bool $onlyOwn = false) :array
     {
         $ids = explode(',', $ids);
         if (empty($ids)) {
             throw new \Exception("Nenhum registro foi selecionado", HttpStatusCodeEnum::BAD_REQUEST);
         }
-
+        $conditions['id IN'] = $ids;
+        if ($onlyOwn) {
+            $conditions['user_id'] = $this->_userSession['id'];
+        }
         $entities = $this->__table
             ->find()
-            ->where([
-                'id IN'  => $ids,
-            ])
+            ->where($conditions)
             ->toArray();
 
         foreach ($entities as $entity) {
