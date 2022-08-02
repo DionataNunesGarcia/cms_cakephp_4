@@ -36,8 +36,13 @@
     }
 
     .btn-export {
-        color: #fff;
         margin: 2px;
+        border: 1px solid #8f8d8d;
+        border-radius: 3px !important;
+    }
+    div.dataTables_wrapper div.dataTables_length select,
+    div.dataTables_wrapper div.dataTables_length label {
+        width: 100% !important;
     }
 
     .datatable-group tr.odd td:first-child,

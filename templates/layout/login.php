@@ -3,7 +3,7 @@
 
 use Cake\Core\Configure;
 
-$cakeDescription = Configure::read('Cliente.nome');
+$cakeDescription = Configure::read('Client.name');
 ?>
 <html>
     <head>
@@ -45,6 +45,37 @@ $cakeDescription = Configure::read('Cliente.nome');
 
                     <?= $this->fetch('content') ?>
 
+                    <div class="modal fade" id="forget-password" data-backdrop="false" role="dialog">
+                        <div class="modal-dialog" role="document">
+                            <?= $this->Form->create(null, ['url' => ['controller' => 'Users', 'action' => 'forgetPassword', 'prefix' => 'Admin']]) ?>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">
+                                        Resetar sua Senha
+                                    </h4>
+                                </div>
+                                <div class="modal-body">
+                                    <?=
+                                    $this->Form->control('email', [
+                                        'label' => 'Informe seu e-mail para receber uma nova senha.',
+                                        'placeholder' => 'Seu e-mail',
+                                        'class' => 'username form-control',
+                                        'required' => true,
+                                        'autofocus' => true
+                                    ]);
+                                    ?>
+                                    <br>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                                    <?= $this->Form->button(__('Gerar Senha'), ['class' => 'login-btn btn btn-success', 'type' => 'submit'] ); ?>
+                                </div>
+                            </div>
+                            <?= $this->Form->end() ?>
+                        </div>
+                    </div>
+                    <!-- /.login-box -->
                 </div>
                 <!-- /.login-box-body -->
             </div>

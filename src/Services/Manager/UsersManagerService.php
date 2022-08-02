@@ -8,11 +8,14 @@ use App\Model\Entity\User;
 use App\Services\DefaultService;
 use App\Utils\Enum\HttpStatusCodeEnum;
 use App\Utils\Enum\StatusEnum;
+use App\Utils\Generate;
 use Cake\Controller\Controller;
+use Cake\Core\Configure;
 use Cake\I18n\FrozenTime;
 use Cake\I18n\Time;
 use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
+use Cake\Routing\Router;
 
 class UsersManagerService extends DefaultService
 {
@@ -25,6 +28,9 @@ class UsersManagerService extends DefaultService
         parent::__construct($controller);
     }
 
+    /**
+     * @return array
+     */
     public function saveEntity() :array
     {
         $entity = $this->__table
@@ -44,7 +50,12 @@ class UsersManagerService extends DefaultService
         return $this->response;
     }
 
-    public function deletedEntities($ids)
+    /**
+     * @param string $ids
+     * @return array
+     * @throws \Exception
+     */
+    public function deletedEntities(string $ids)
     {
         $ids = explode(',', $ids);
         if (empty($ids)) {
@@ -116,5 +127,72 @@ class UsersManagerService extends DefaultService
         }
         $this->response['data'] = $user;
         return $this->response;
+    }
+
+    /**
+     * @return array
+     */
+    public function forgetPassword() :array
+    {
+        $email = $this->_request->getData('email');
+        $user = $this->getUserByEmail($email);
+
+        $password = Generate::newPassword(12, false, true);
+        $user->password = $password;
+        $user->modified = FrozenTime::now();
+        if (!$this->__table->save($user)) {
+            throw new ValidationErrorException($user, 'Não foi possível gerar uma senha nova.');
+        }
+        $this->sendNewPassword($user, $password);
+        return $this->response;
+    }
+
+    /**
+     * @param string $email
+     * @return User
+     */
+    private function getUserByEmail(string $email) :User
+    {
+        /** @var User $user */
+        $user = $this->__table->find()
+            ->where([
+                'email' => trim($email)
+            ])
+            ->first();
+        if (!$user) {
+            throw new ValidationErrorException(null, "Usuário com o e-mail {$email} não foi encontrado");
+        }
+        if ($user->status != StatusEnum::ACTIVE) {
+            throw new ValidationErrorException($user, "Você não tem permissão para trocar a senha, contate um administrador.");
+        }
+        return $user;
+    }
+
+    /**
+     * @param User $user
+     * @param string $password
+     * @return void
+     */
+    private function sendNewPassword(User $user, string $password)
+    {
+        $client = Configure::read('Client');
+
+        $url = Router::url(['controller' => 'Usuarios', 'action' => 'login'], true);
+
+        $subject = $client['name'] . ' - Dados de Acesso ao Sistema.';
+
+        $message = "Olá."
+            . "<br/>"
+            . "Os seus dados de acesso ao sistema com a nova senha:"
+            . "<br/><br/>"
+            . "Login: " . $user->user
+            . "<br/>"
+            . "Senha: " . $password
+            . "<br/><br/>"
+            . "Link de acesso: <a href='$url' target='_blank' >" . $client['name'] . "</a>"
+            . "<br/><br/>"
+            . "Ao acessar o sistema pela primeira vez, será necessário mudar a senha para sua segurança."
+        ;
+        $this->sendEmail($user->email, $subject, html_entity_decode($message));
     }
 }

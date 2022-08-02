@@ -7,11 +7,14 @@ use App\Model\Entity\User;
 use App\Utils\Enum\HttpStatusCodeEnum;
 use App\Utils\Enum\StatusEnum;
 use Cake\Controller\Controller;
+use Cake\Core\Configure;
 use Cake\I18n\FrozenTime;
+use Cake\Mailer\Mailer;
 use Cake\ORM\Entity;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
+use PharIo\Manifest\Email;
 
 class DefaultService
 {
@@ -213,5 +216,28 @@ class DefaultService
             }
         }
         return false;
+    }
+
+    /**
+     * @param string $emailTo
+     * @param string $subject
+     * @param string $message
+     * @param string|NULL $from
+     * @return void
+     */
+    public function sendEmail(string $emailTo, string $subject, string $message, string $from = NULL) :void
+    {
+        $client = Configure::read('Client');
+        if (empty($from)) {
+            $from = $client['email'];
+        }
+
+        $mailer = new Mailer('default');
+        $mailer
+            ->setFrom([$from => "{$client['name']}"])
+            ->setEmailFormat('html')
+            ->setTo($emailTo)
+            ->setSubject($subject)
+            ->deliver($message);
     }
 }

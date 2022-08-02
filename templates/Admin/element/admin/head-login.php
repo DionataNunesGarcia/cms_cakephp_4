@@ -44,11 +44,19 @@
     }
     .login-box-body {
         border-radius: 4px !important;
+        padding-bottom: 45px;
+        height: auto;
     }
     .logo-cliente{
         display: flex;
         margin: 0 auto;
         max-height: 100px;
+    }
+    .margin-top-10 {
+        margin-top: 10px;
+    }
+    .margin-bottom-10 {
+        margin-bottom: 10px;
     }
 </style>
 

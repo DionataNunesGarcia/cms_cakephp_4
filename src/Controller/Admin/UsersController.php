@@ -52,7 +52,10 @@ class UsersController extends AdminController
         parent::beforeFilter($event);
         // Configure the login action to not require authentication, preventing
         // the infinite redirect loop issue
-        $this->Authentication->addUnauthenticatedActions(['login']);
+        $this->Authentication->addUnauthenticatedActions([
+            'login',
+            'forgetPassword'
+        ]);
     }
 
     /**
@@ -66,6 +69,7 @@ class UsersController extends AdminController
             'profile',
             'passwordRenew',
             'firstAccess',
+            'forgetPassword',
         ];
     }
 
@@ -248,6 +252,20 @@ class UsersController extends AdminController
             $this->Flash->success(__('Você saiu do sistema.'));
             return $this->redirect(['controller' => 'Users', 'action' => 'login']);
         }
+    }
+
+
+    public function forgetPassword()
+    {
+        if ($this->getRequest()->is(['patch', 'post', 'put'])) {
+            try {
+                $response = $this->_managerService->forgetPassword();
+                $this->Flash->success($response['message']);
+            } catch (ValidationErrorException $ex) {
+                $this->Flash->error($ex->getMessage());
+            }
+        }
+        return $this->redirect(['action' => 'login']);
     }
 
 }

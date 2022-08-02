@@ -133,7 +133,7 @@
                 </ul>
             </li>
             <li>
-                <a href="<?= $this->Url->build(null, ['controller' => 'Users', 'action' => 'logout'], ['fullBase' => true]); ?>" data-auth="false" data-placement="right">
+                <a href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'logout'], ['fullBase' => true]); ?>" data-auth="false" data-placement="right">
                     <i class="fa fa-sign-out"></i>
                     <?= __('Sair') ?>
                 </a>

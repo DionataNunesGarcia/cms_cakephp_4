@@ -16,3 +16,15 @@
 <?= $this->Form->submit(__('Login'), ['class' => 'login-btn btn btn-info form-control']); ?>
 
 <?= $this->Form->end() ?>
+
+<div class="col-md-12 no-padding margin-top-10 margin-bottom-10">
+    <?=
+    $this->Html->link(__('<i class="fa fa-unlock"></i> Esqueci minha senha'), '#', [
+        'class' => 'text-primary pull-right',
+        'escape' => false,
+        'title' => 'Esqueci Minha Senha',
+        "data-toggle" => "modal",
+        "data-target" => "#forget-password"
+    ]);
+    ?>
+</div>
