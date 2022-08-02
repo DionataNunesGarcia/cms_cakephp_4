@@ -10,7 +10,7 @@ class ConvertCharacters
      */
     public static function onlyNumbers(string $value) :?int
     {
-        if (empty($value) || intval($value) == 0) {
+        if (empty($value)) {
             return null;
         }
         return preg_replace('/[^0-9]/', '', $value);

@@ -1,6 +1,3 @@
-<?php
-$placeholder = !empty($user->id) ? 'Só preencher se for alterar' : '';
-?>
 <?= $this->Form->create(null, ['action' => 'profile', 'enctype' => 'multipart/form-data', 'id' => 'form-profile', 'data-auth' => 'false']) ?>
 <div class="box">
     <?= $this->element('admin/box-title', ['title' => '<i class="fa fa-drivers-license-o"></i> Dados Pessoais']) ?>
@@ -9,68 +6,125 @@ $placeholder = !empty($user->id) ? 'Só preencher se for alterar' : '';
             <div class="well profile">
                 <figure>
                     <?php
-                    if (empty($user->avatar)) {
-                        echo $this->Form->file('imagem_upload', ['class' => 'upload_crop', 'multiple' => false, 'accept' => 'image/*', 'label' => 'Imagem']);
-                    } else {
-                        ?>
-                        <div class="col-md-12 no-padding">
-                            <?=
-                            $this->Html->image("../{$user->avatar->file}", [
-                                'class' => 'img-circle img-responsive img-usuario img-thumbnail'
-                            ]);
-                            ?>
-                        </div>
-                        <div class="col-md-12 text-rigth">
-                            <?=
-                            $this->Html->link("<i class='fa fa-trash'></i> Excluir Imagem", ['action' => 'delete_image_profile', $user->id], [
-                                "alt" => "Avatar",
-                                'data-auth' => 'false',
-                                'escape' => false,
-                                'confirm' => __('Tem certeza de que deseja excluir o arquivo?'),
-                                'class' => 'btn btn-danger btn-xs'
-                            ]);
-                            ?>
-                        </div>
-                    <?php } ?>
-                    <div id="uploaded_image"></div>
+                    echo $this->element('admin/image-crop-upload', [
+                        'upload' => $user->avatar,
+                        'label' => false,
+                    ])
+                    ?>
                 </figure>
-                <h2>
-                    <?= $user->user ?>
-                </h2>
                 <hr/>
+                <div class="text-center">
+                    <h2>
+                        <?= $user->user ?>
+                    </h2>
+                </div>
                 <div class="text-left">
                     <p>
                         <strong>Nível: </strong>
                         <?= $user->level->name ?>
                     </p>
-                    <p>
+                    <small>
                         <strong>
                             Membro desde:
                         </strong>
-                        <?= \App\Utils\ConvertDates::convertDateToPtBR($user->created) ?>
-                    </p>
+                        <?= \App\Utils\ConvertDates::convertDateToPtBR($user->created, true) ?>
+                    </small>
+                    <br/>
+                    <small>
+                        <strong>
+                            Primeiro Acesso:
+                        </strong>
+                        <?= \App\Utils\ConvertDates::convertDateToPtBR($user->first_access, true) ?>
+                    </small>
+                    <br/>
+                    <small>
+                        <strong>
+                            Último Acesso:
+                        </strong>
+                        <?= \App\Utils\ConvertDates::convertDateToPtBR($user->last_access, true) ?>
+                    </small>
                 </div>
             </div>
         </div>
         <div class="col-lg-9 col-md-9 col-sm-6 col-xs-12 no-padding">
             <fieldset>
+                <?= $this->Form->hidden('id', ['value' => $user->id]) ?>
                 <div class="form-group col-md-4">
-                    <?= $this->Form->control('usuario', [
-                        'value' => $user->user,
+                    <?= $this->Form->control('name', [
+                        'value' => $user->name,
+                        'label' => 'Nome',
                         'required' => true
                     ]); ?>
                 </div>
                 <div class="form-group col-md-4">
-                    <?= $this->Form->control('password', ['label' => 'Senha', 'type' => 'password', 'required' => false, 'value' => '', 'placeholder' => $placeholder]); ?>
+                    <?= $this->Form->control('user', [
+                        'value' => $user->user,
+                        'label' => 'Usuário',
+                        'required' => true
+                    ]); ?>
                 </div>
                 <div class="form-group col-md-4">
-                    <?= $this->Form->control('password_confirm', ['label' => 'Confirmar Senha', 'type' => 'password', 'value' => '', 'required' => false, 'placeholder' => $placeholder]); ?>
+                    <?= $this->Form->control('email', [
+                        'value' => $user->email,
+                        'label' => 'E-mail',
+                        'required' => true
+                    ]); ?>
+                </div>
+                <div class="form-group col-md-4">
+                    <?=
+                    $this->Form->control('phone', [
+                        'value' => h($user->phone),
+                        'class' => 'phone',
+                        'label' => 'Telefone',
+                    ]);
+                    ?>
+                </div>
+                <div class="form-group col-md-4">
+                    <?=
+                    $this->Form->control('cell_phone', [
+                        'value' => ($user->cell_phone),
+                        'class' => 'phone',
+                        'label' => 'Celular',
+                    ]);
+                    ?>
+                </div>
+                <div class="form-group col-md-4">
+                    <?=
+                    $this->Form->control('status', [
+                        'type' => 'select',
+                        'label' => __('Situação'),
+                        'class' => 'form-control select2',
+                        'required' => true,
+                        'options' => \App\Utils\Enum\StatusEnum::ARRAY_SIMPLE
+                    ]);
+                    ?>
+                </div>
+                <div class="form-group col-md-4">
+                    <?=
+                    $this->Form->control('password', [
+                        'label' => 'Senha',
+                        'type' => 'password',
+                        'required' => false,
+                        'value' => '',
+                        'placeholder' => 'Só preencher se for alterar'
+                    ]);
+                    ?>
+                </div>
+                <div class="form-group col-md-4">
+                    <?=
+                    $this->Form->control('password_confirm', [
+                        'label' => 'Confirmar Senha',
+                        'type' => 'password',
+                        'value' => '', 'required' => false,
+                        'placeholder' => 'Só preencher se for alterar'
+                    ]);
+                    ?>
                 </div>
             </fieldset>
         </div>
     </div>
     <div class="box-footer text-rigth">
-        <?= $this->Form->submit('Salvar <i class="fa fa-save"></i>', ['class' => 'btn btn-primary pull-right', 'escapeTitle' => false]);?>
+        <?= $this->Form->button('Salvar <i class="fa fa-save"></i>', ['class' => 'btn btn-primary pull-right', 'escapeTitle' => false]);?>
     </div>
 </div>
 <?= $this->Form->end() ?>
@@ -91,7 +145,6 @@ $placeholder = !empty($user->id) ? 'Só preencher se for alterar' : '';
     // apaga os campos de senha que o navegador preenche automaticamente
     $(window).on('load', function () {
         setTimeout(function(){
-            debugger
             $('#password, #password-confirm').val('');
         }, 600);
     });

@@ -3,6 +3,7 @@
 namespace App\Services\Manager;
 
 use App\Error\Exception\ValidationErrorException;
+use App\Model\Entity\SystemParameter;
 use App\Model\Entity\User;
 use App\Services\DefaultService;
 use App\Utils\Enum\HttpStatusCodeEnum;
@@ -60,6 +61,7 @@ class UsersManagerService extends DefaultService
         foreach ($entities as $entity) {
             $entity->status = StatusEnum::EXCLUDED;
             $entity->user = "#del-{$entity->id}#{$entity->user}";
+            $entity->email = "#del-{$entity->id}#{$entity->email}";
             $entity->modified = FrozenTime::now();
             if (!$this->__table->save($entity)) {
                 throw new ValidationErrorException($entity, "Erro ao deletar o Usuário {$entity->user}");
@@ -76,8 +78,10 @@ class UsersManagerService extends DefaultService
      */
     public function generateLog(User $user) :array
     {
-        $tableParameters = TableRegistry::getTableLocator()->get("LogsAccess");
-        $parameters = $tableParameters->getEntity();
+        $this->saveLastAccess($user);
+        /** @var SystemParameter $parameters */
+        $parameters = self::getTableLocator('SystemParameters')
+            ->getEntity();
         if (!$parameters->generate_access_logs) {
             return $this->response;
         }
@@ -93,6 +97,24 @@ class UsersManagerService extends DefaultService
             throw new ValidationErrorException($entity);
         }
         $this->response['data'] = $entity;
+        return $this->response;
+    }
+
+    /**
+     * @param User $user
+     * @return array
+     */
+    public function saveLastAccess(User $user) :array
+    {
+        if (!$user->first_access) {
+            $user->first_access = FrozenTime::now();
+        }
+        $user->last_access = FrozenTime::now();
+
+        if (!self::getTableLocator('Users')->save($user)) {
+            throw new ValidationErrorException($user);
+        }
+        $this->response['data'] = $user;
         return $this->response;
     }
 }

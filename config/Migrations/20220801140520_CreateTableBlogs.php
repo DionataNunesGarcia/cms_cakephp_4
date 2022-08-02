@@ -13,12 +13,12 @@ class CreateTableBlogs extends AbstractMigration
         $this->table('tags')
             ->addColumn('name', 'string', [
                 'default' => null,
-                'limit' => 60,
+                'limit' => 255,
                 'null' => false,
             ])
             ->addColumn('slug', 'string', [
                 'default' => null,
-                'limit' => 60,
+                'limit' => 255,
                 'null' => false,
             ])
             ->addColumn('status', 'integer', [
@@ -39,7 +39,7 @@ class CreateTableBlogs extends AbstractMigration
             ->create();
 
         $this->table('tags_models')
-            ->addColumn('tag_id', 'string', [
+            ->addColumn('tag_id', 'integer', [
                 'default' => null,
                 'limit' => 60,
                 'null' => false,
@@ -59,7 +59,7 @@ class CreateTableBlogs extends AbstractMigration
         $this->table('blogs_categories')
             ->addColumn('name', 'string', [
                 'default' => null,
-                'limit' => 60,
+                'limit' => 255,
                 'null' => false,
             ])
             ->addColumn('slug', 'string', [
@@ -87,17 +87,17 @@ class CreateTableBlogs extends AbstractMigration
         $this->table('blogs')
             ->addColumn('title', 'string', [
                 'default' => null,
-                'limit' => 60,
+                'limit' => 255,
                 'null' => false,
             ])
             ->addColumn('subtitle', 'string', [
                 'default' => null,
-                'limit' => 60,
+                'limit' => 255,
                 'null' => false,
             ])
             ->addColumn('slug', 'string', [
                 'default' => null,
-                'limit' => 60,
+                'limit' => 255,
                 'null' => false,
             ])
             ->addColumn('content', 'text', [
@@ -106,7 +106,7 @@ class CreateTableBlogs extends AbstractMigration
             ])
             ->addColumn('user_id', 'string', [
                 'default' => null,
-                'limit' => 60,
+                'limit' => 11,
                 'null' => false,
             ])
             ->addColumn('blog_category_id', 'string', [

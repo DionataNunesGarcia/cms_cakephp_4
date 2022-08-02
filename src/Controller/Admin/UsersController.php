@@ -186,11 +186,18 @@ class UsersController extends AdminController
      */
     public function profile()
     {
-        $user = $this->Users->get($this->userSession['id'], [
-            'contain' => [
-                'Levels'
-            ],
-        ]);
+        $user = $this->Users->getEntity($this->userSession['id']);
+        if ($this->getRequest()->is(['patch', 'post', 'put'])) {
+            try {
+                $this->_managerService->setId($this->userSession['id']);
+                $response = $this->_managerService->saveEntity();
+                $this->Flash->success($response['message']);
+                return $this->redirect(['action' => 'profile']);
+            } catch (ValidationErrorException $ex) {
+                $user = $ex->getEntity();
+                $this->Flash->error($ex->getMessage());
+            }
+        }
         $this->set(compact('user'));
     }
 

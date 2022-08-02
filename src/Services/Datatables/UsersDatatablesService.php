@@ -127,8 +127,12 @@ class UsersDatatablesService extends DatatablesService
         foreach ($results as $item) {
             $response[] = [
                 'id' => $item->id,
-                'avatar' => $item->avatar ? $item->avatar->file : "{$router}img/user-default.png",
+                'avatar' => $item->avatar
+                    ? $router . 'Uploads' . DS . $item->avatar->filename
+                    : "{$router}img/user-default.png",
+                'name' => $item->name,
                 'user' => $item->user,
+                'email' => $item->email,
                 'level' => $item->level->name,
                 'status' => $item->situation->name,
                 'created' => $item->created->i18nFormat('dd/MM/yyyy HH:mm:ss'),

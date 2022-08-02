@@ -54,7 +54,10 @@
                     <th>
                     </th>
                     <th>
-                        <?= __('Nome') ?>
+                        <?= __('Usuário') ?>
+                    </th>
+                    <th>
+                        <?= __('E-mail') ?>
                     </th>
                     <th>
                         <?= __('Nível') ?>
@@ -115,7 +118,13 @@
                 }
             },
             {
-                data: 'user'
+                data: 'user',
+                render: function(data, type, full, meta) {
+                    return 'Usuário: ' + data + '<br/><strong>' + full.name + '</strong>';
+                }
+            },
+            {
+                data: 'email'
             },
             {
                 data: 'level'

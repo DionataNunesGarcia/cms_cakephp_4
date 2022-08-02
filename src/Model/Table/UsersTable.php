@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Model\Table;
 
 use App\Model\Entity\User;
+use App\Utils\ConvertCharacters;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\ORM\Query;
@@ -119,6 +120,9 @@ class UsersTable extends Table
         $rules->add($rules->isUnique(['user'],
             'Esse Usuário já estão sendo usado.'
         ));
+        $rules->add($rules->isUnique(['email'],
+            'Esse E-mail já estão sendo usado.'
+        ));
         $rules->add($rules->existsIn('level_id', 'Levels'), ['errorField' => 'level_id']);
 
         return $rules;
@@ -128,6 +132,12 @@ class UsersTable extends Table
     {
         if (!empty($data['id']) && empty($data['password'])) {
             unset($data['password']);
+        }
+        if (!empty($data['phone'])) {
+            $data['phone'] = ConvertCharacters::onlyNumbers($data['phone']);
+        }
+        if (!empty($data['cell_phone'])) {
+            $data['cell_phone'] = ConvertCharacters::onlyNumbers($data['cell_phone']);
         }
     }
 
