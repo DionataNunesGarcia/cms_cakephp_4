@@ -34,6 +34,7 @@ class BlogsController extends AdminController
 
     /**
      * @return void
+     * @throws \Exception
      */
     public function initialize(): void
     {

@@ -37,7 +37,7 @@ class HomeFormService extends DefaultService
     public function getLatestBlogs() :array
     {
         $conditions['Blogs.status !='] = StatusEnum::EXCLUDED;
-        if (!$this->_userSession['super']) {
+        if (!$this->hasPermission('index', 'Blogs')) {
             $conditions['Blogs.user_id'] = $this->_userSession['id'];
         }
         return self::getTableLocator('Blogs')
