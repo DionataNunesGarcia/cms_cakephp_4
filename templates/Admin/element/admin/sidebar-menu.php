@@ -49,7 +49,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="<?= $this->Url->build(['controller' => 'Blogs', 'action' => 'searchYourContents'], ['fullBase' => true]); ?>" title="" data-placement="right">
+                        <a href="<?= $this->Url->build(['controller' => 'Blogs', 'action' => 'searchOwners'], ['fullBase' => true]); ?>" title="" data-placement="right">
                             <i class="fa fa-circle-o"></i>
                             <?= __('Meus Blogs') ?>
                         </a>
@@ -130,13 +130,13 @@
                             <?= __('Logs Acessos') ?>
                         </a>
                     </li>
-                    <li>
-                        <a href="<?= $this->Url->build(null, ['controller' => 'Users', 'action' => 'logout'], ['fullBase' => true]); ?>" data-auth="false" data-placement="right">
-                            <i class="fa fa-sign-out"></i>
-                            <?= __('Sair') ?>
-                        </a>
-                    </li>
                 </ul>
+            </li>
+            <li>
+                <a href="<?= $this->Url->build(null, ['controller' => 'Users', 'action' => 'logout'], ['fullBase' => true]); ?>" data-auth="false" data-placement="right">
+                    <i class="fa fa-sign-out"></i>
+                    <?= __('Sair') ?>
+                </a>
             </li>
         </ul>
     </section>

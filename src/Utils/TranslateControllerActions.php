@@ -11,9 +11,9 @@ class TranslateControllerActions
         'index' => 'Pesquisar',
         'add' => 'Adicionar',
         'edit' => 'Editar',
-        'searchYourContents' => 'Pesquisar seus conteúdos',
-        'editYourContents' => 'Editar seus conteúdos',
-        'deleteYourContents' => 'Deletar seus conteúdos',
+        'searchOwners' => 'Pesquisar seus conteúdos',
+        'editOwner' => 'Editar seu conteúdo',
+        'deleteOwner' => 'Deletar seu conteúdo',
         'delete' => 'Excluir',
         'view' => 'Visualizar',
     ];

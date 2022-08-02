@@ -145,7 +145,7 @@ class BlogsController extends AdminController
      *
      * @return \Cake\Http\Response|null|void Renders view
      */
-    public function searchYourContents()
+    public function searchOwners()
     {
     }
 
@@ -155,7 +155,7 @@ class BlogsController extends AdminController
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function editYourContents(int $id = null)
+    public function editOwner(int $id = null)
     {
         $action = $this->request->getParam('action');
         $this->_formService->setId($id);
@@ -188,7 +188,7 @@ class BlogsController extends AdminController
      * @return \Cake\Http\Response|null|void Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function deleteYourContents($ids)
+    public function deleteOwner($ids)
     {
         $this->request->allowMethod(['post', 'delete']);
         $this->RequestHandler->renderAs($this,'json');

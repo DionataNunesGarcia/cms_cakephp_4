@@ -15,10 +15,9 @@
             <?=
             $this->element('admin/select2', [
                 'controller' => 'BlogsCategories',
-                'name' => 'id',
+                'name' => 'blog_category_id',
                 'label' => __('Categorias de Blogs'),
                 'multiple' => false,
-                'value' => $this->getRequest()->getQuery('id'),
             ])
             ?>
         </div>
