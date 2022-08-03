@@ -99,7 +99,8 @@ class AdminController extends AppController
             'delete',
             'multipleFileUploads',
             'multipleFileUploadsDelete',
-            'deleteYourContents',
+            'deleteOwner',
+            'enabledDisabled',
         ];
     }
 

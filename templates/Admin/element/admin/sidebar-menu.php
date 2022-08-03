@@ -92,10 +92,16 @@
                             <?= __('Banners') ?>
                         </a>
                     </li>
+                    <li>
+                        <a href="<?= $this->Url->build(['controller' => 'ContactsNewsletters', 'action' => 'index'], ['fullBase' => true]); ?>" title="" data-placement="right">
+                            <i class="fa fa-envelope-square"></i>
+                            <?= __('NewsLetters') ?>
+                        </a>
+                    </li>
                 </ul>
             </li>
 
-            <!--Administração-->
+            <!--Admin-->
             <li class=" treeview">
                 <a href="#">
                     <i class="fa fa-gears"></i> <span>

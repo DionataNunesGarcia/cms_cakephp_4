@@ -11,11 +11,12 @@ class TranslateControllerActions
         'index' => 'Pesquisar',
         'add' => 'Adicionar',
         'edit' => 'Editar',
-        'searchOwners' => 'Pesquisar seus conteúdos',
-        'editOwner' => 'Editar seu conteúdo',
         'deleteOwner' => 'Deletar seu conteúdo',
         'delete' => 'Excluir',
         'view' => 'Visualizar',
+        'searchOwners' => 'Pesquisar seus conteúdos',
+        'editOwner' => 'Editar seu conteúdo',
+        'enabledDisabled' => 'Habilitar/Desabilitar',
     ];
 
     /**
@@ -35,6 +36,7 @@ class TranslateControllerActions
     const CONTROLLER_LIST = [
         'About' => 'Sobre',
         'BlogsCategories' => 'Categorias de Blog',
+        'ContactsNewsletters' => 'NewsLetters',
         'Levels' => 'Níveis',
         'LogsAccess' => 'Logs de Acesso',
         'LogsChange' => 'Logs de Alterações',
@@ -53,9 +55,3 @@ class TranslateControllerActions
             : $controller;
     }
 }
-/***
- * 400 MB
- * 1 telefone fixo
- * 1 APP com 30 mil filmes
- *
- */

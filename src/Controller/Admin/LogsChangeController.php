@@ -26,6 +26,7 @@ class LogsChangeController extends AdminController
 
     /**
      * @return void
+     * @throws \Exception
      */
     public function initialize(): void
     {
