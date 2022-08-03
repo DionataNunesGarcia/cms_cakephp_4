@@ -10,22 +10,22 @@ use App\Utils\TranslateControllerActions;
 use Cake\Controller\Controller;
 use Cake\Routing\Router;
 
-class ContactsNewslettersDatatablesService extends DatatablesService
+class ContactsDatatablesService extends DatatablesService
 {
     /**
      * @return array[]
      */
     protected array $_customFields = [
         "name" => [
-            'field' => 'ContactsNewsletters.name',
+            'field' => 'Contacts.name',
             'type' => ParameterTypesFilter::LIKE,
         ],
         "email" => [
-            'field' => 'ContactsNewsletters.email',
+            'field' => 'Contacts.email',
             'type' => ParameterTypesFilter::LIKE,
         ],
         "dates_start_end" => [
-            'field' => 'ContactsNewsletters.created',
+            'field' => 'Contacts.created',
             'type' => ParameterTypesFilter::DATE_RANGE,
         ],
     ];
@@ -35,7 +35,7 @@ class ContactsNewslettersDatatablesService extends DatatablesService
      */
     public function __construct(Controller $controller)
     {
-        $this->setModel('ContactsNewsletters');
+        $this->setModel('Contacts');
         parent::__construct($controller);
     }
 
@@ -96,7 +96,6 @@ class ContactsNewslettersDatatablesService extends DatatablesService
 
     private function setConditions()
     {
-        $this->conditions["{$this->getModel()}.status !="] = StatusEnum::EXCLUDED;
         $this->setCustomFilters();
     }
 
@@ -132,11 +131,11 @@ class ContactsNewslettersDatatablesService extends DatatablesService
             $response[] = [
                 'name' => $item->name,
                 'email' => $item->email,
+                'subject' => $item->subject,
                 'phone' => Masks::phone($item->phone),
-                'status' => $item->status = StatusEnum::getType($item->status),
                 'created' => $item->created = $item->created->i18nFormat('dd/MM/yyyy HH:mm:ss'),
                 'entity' => $item,
-                'actions' => $this->verifyHasPermissionActions(['view', 'delete', 'enabledDisabled'], $this->getModel(), $item->id),
+                'actions' => $this->verifyHasPermissionActions(['view'], $this->getModel(), $item->id),
             ];
         }
         return $response;

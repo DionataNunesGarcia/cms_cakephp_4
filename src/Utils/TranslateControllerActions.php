@@ -36,6 +36,7 @@ class TranslateControllerActions
     const CONTROLLER_LIST = [
         'About' => 'Sobre',
         'BlogsCategories' => 'Categorias de Blog',
+        'Contacts' => 'Contatos',
         'ContactsNewsletters' => 'NewsLetters',
         'Levels' => 'Níveis',
         'LogsAccess' => 'Logs de Acesso',

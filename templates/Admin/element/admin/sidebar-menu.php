@@ -93,8 +93,14 @@
                         </a>
                     </li>
                     <li>
+                        <a href="<?= $this->Url->build(['controller' => 'Contacts', 'action' => 'index'], ['fullBase' => true]); ?>" title="" data-placement="right">
+                            <i class="fa fa-users"></i>
+                            <?= __('Contatos') ?>
+                        </a>
+                    </li>
+                    <li>
                         <a href="<?= $this->Url->build(['controller' => 'ContactsNewsletters', 'action' => 'index'], ['fullBase' => true]); ?>" title="" data-placement="right">
-                            <i class="fa fa-envelope-square"></i>
+                            <i class="fa fa-envelope"></i>
                             <?= __('NewsLetters') ?>
                         </a>
                     </li>

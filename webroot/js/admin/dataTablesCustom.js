@@ -201,20 +201,20 @@ let datatablesCustom = {
             {
                 extend:    'print',
                 text:      '<i class="fa fa-print"></i>',
-                titleAttr: 'Copy',
+                titleAttr: 'Imprimir',
                 className: 'bnt btn-sm btn-default btn-export',
                 title: titlePdf + ' - '  + dateTime,
                 action: datatablesCustom.newExportAction,
-                messageTop: writeFilters,
+                messageTop: datatablesCustom.writeFilters,
             },
             {
                 extend:    'copyHtml5',
                 text:      '<i class="fa fa-files-o"></i>',
-                titleAttr: 'Copy',
+                titleAttr: 'Copiar',
                 className: 'bnt btn-sm btn-default btn-export',
                 title: titlePdf + ' - '  + dateTime,
                 action: datatablesCustom.newExportAction,
-                messageTop: writeFilters,
+                messageTop: datatablesCustom.writeFilters,
                 footer: true
             },
             {
@@ -224,7 +224,7 @@ let datatablesCustom = {
                 className: 'bnt btn-sm btn-default btn-export',
                 title: titlePdf + ' - '  + dateTime,
                 action: datatablesCustom.newExportAction,
-                messageTop: writeFilters,
+                messageTop: datatablesCustom.writeFilters,
                 footer: true
             },
             {
@@ -234,7 +234,7 @@ let datatablesCustom = {
                 className: 'bnt btn-sm btn-default btn-export',
                 title: titlePdf + ' - '  + dateTime,
                 action: datatablesCustom.newExportAction,
-                messageTop: writeFilters,
+                messageTop: datatablesCustom.writeFilters,
                 footer: true
             },
             {
@@ -246,7 +246,7 @@ let datatablesCustom = {
                 pageSize: 'A4',
                 title: titlePdf + ' - '  + dateTime,
                 action: datatablesCustom.newExportAction,
-                messageTop: writeFilters,
+                messageTop: datatablesCustom.writeFilters,
                 footer: true,
                 exportOptions: {
                     modifier: {
@@ -320,15 +320,14 @@ let datatablesCustom = {
         });
         // Requery the server with the new one-time export settings
         dt.ajax.reload();
+    },
+    writeFilters: function () {
+        let textFilter = "";
+        if ($('#MES').length) {
+            textFilter += "Mês: " + $('#filter').val();
+        }
+        return textFilter;
     }
-}
-
-function writeFilters() {
-    let textFilter = "";
-    if ($('#MES').length) {
-        textFilter += "Mês: " + $('#filter').val();
-    }
-    return '';
 }
 
 function getLabelsSelected(idSelect2) {

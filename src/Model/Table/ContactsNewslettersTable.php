@@ -78,4 +78,16 @@ class ContactsNewslettersTable extends Table
 
         return $validator;
     }
+
+    /**
+     * @param int|null $id
+     * @return Entity
+     */
+    public function getEntity(int $id = null) :Entity
+    {
+        if ($id) {
+            return $this->get($id);
+        }
+        return $this->newEmptyEntity();
+    }
 }

@@ -26,24 +26,6 @@ class ContactsNewslettersManagerService extends DefaultService
     }
 
     /**
-     * @return array
-     */
-    public function changeStatus() :array
-    {
-        /** @var ContactsNewsletter $entity */
-        $entity = $this->getEntity();
-
-        $entity->status = $this->_request->getData('status');
-        $entity->modified = FrozenTime::now();
-
-        if (!$this->__table->save($entity)) {
-            throw new ValidationErrorException($entity);
-        }
-        $this->response['data'] = $entity;
-        return $this->response;
-    }
-
-    /**
      * @param string $ids
      * @return array
      * @throws \Exception
@@ -67,7 +49,7 @@ class ContactsNewslettersManagerService extends DefaultService
             $entity->email = "#del-{$entity->id}#{$entity->email}";
             $entity->modified = FrozenTime::now();
             if (!$this->__table->save($entity)) {
-                throw new ValidationErrorException($entity, "Erro ao deletar a categoria {$entity->name}");
+                throw new ValidationErrorException($entity, "Erro ao deletar o registro {$entity->name}");
             }
         }
         $this->response['data'] = $entities;

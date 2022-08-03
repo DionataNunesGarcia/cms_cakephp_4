@@ -24,6 +24,14 @@
             ]);
             ?>
         </div>
+        <div class="form-group col-md-6">
+            <?=
+            $this->Form->control('subject', [
+                'label' => 'Assunto',
+                'placeholder' => 'Pesquisar pelo assunto'
+            ]);
+            ?>
+        </div>
         <div class="col-md-6">
             <?=
             $this->Form->control('dates_start_end', [
@@ -61,7 +69,7 @@
                         <?= __('Telefone') ?>
                     </th>
                     <th>
-                        <?= __('Situação') ?>
+                        <?= __('Assunto') ?>
                     </th>
                     <th>
                         <?= __('Criado') ?>
@@ -82,7 +90,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Newsletter</h4>
+                <h4 class="modal-title">Contato</h4>
             </div>
             <div class="modal-body">
                 <div class="row">
@@ -95,8 +103,10 @@
                         <span class="help-block"  id="email"></span>
                         <strong><?= __('Telefone') ?></strong>
                         <span class="help-block" id="phone"></span>
-                        <strong><?= __('Situação') ?></strong>
-                        <span class="help-block" id="status"></span>
+                        <strong><?= __('Assunto') ?></strong>
+                        <span class="help-block" id="subject"></span>
+                        <strong><?= __('Mensagem') ?></strong>
+                        <span class="help-block" id="message"></span>
                     </div>
                 </div>
             </div>
@@ -114,7 +124,7 @@
         ]);
         ?>";
 
-    let titlePdf = "Newsletter";
+    let titlePdf = "Contatos";
     let datatableCurrent = $('#table-index').DataTable({
         dom: datatablesCustom.dom(),
         buttons: datatablesCustom.buttons(),
@@ -140,7 +150,7 @@
                 data: 'phone'
             },
             {
-                data: 'status'
+                data: 'subject'
             },
             {
                 data: 'created'
@@ -152,7 +162,6 @@
                     let html = ``;
                     if (full.actions) {
                         html += datatablesCustom.buildBtnViewModal(full.actions.view, full.entity, 'view');
-                        html += datatablesCustom.buildBtnDelete(data.delete);
                     }
                     return html;
                 }
@@ -169,6 +178,8 @@
             $modal.find('#email').html(entity.email);
             $modal.find('#phone').html(entity.phone);
             $modal.find('#status').html(entity.status);
+            $modal.find('#subject').html(entity.subject);
+            $modal.find('#message').html(entity.message);
             $modal.find('#created').html(entity.created);
             $modal.modal('toggle');
         });
