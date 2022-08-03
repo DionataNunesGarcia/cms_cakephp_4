@@ -9,11 +9,11 @@ echo '</div>';
 if (!empty($upload->filename)) {
     ?>
     <div class="file-avatar">
-        <div class="col-md-12 no-padding">
+        <div class="col-md-12 no-padding text-center">
             <strong><?= $label ?: '' ?></strong><br/>
             <?= $this->Html->image('../Uploads/' . $upload->filename, ['class' => 'img-responsive img-usuario img-thumbnail']); ?>
         </div>
-        <div class="col-md-12 no-padding text-center file-avatar">
+        <div class="col-md-12 no-padding text-center">
             <?=
             $this->Html->link("<i class='fa fa-trash'></i> Excluir", '#', [
                 "alt" => $label,
@@ -32,6 +32,12 @@ if (!empty($upload->filename)) {
 <style>
     .hidden-upload {
         display: none;
+    }
+    .file-avatar {
+        border: 1px solid #dee2e6 !important;
+        margin: 0 10px !important;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+        min-height: 215px;
     }
 </style>
 <script>

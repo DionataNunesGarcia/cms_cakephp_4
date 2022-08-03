@@ -1,12 +1,9 @@
-<?php
-$actionForm = $action ?? $this->getRequest()->getParam('action');
-?>
 <?=
 $this->Form->create($entity, ['url' => [
-    'action' => $actionForm,
+    'action' => $this->getRequest()->getParam('action'),
     $entity->id,
     'fullBase' => true,
-]]);
+], 'enctype' => 'multipart/form-data'])
 ?>
 <div class="box">
     <?= $this->element('admin/box-title', ['title' => 'Cadastro']) ?>
@@ -41,6 +38,14 @@ $this->Form->create($entity, ['url' => [
                 <label for="content" class="required">Conteúdo</label>
                 <?= $this->Form->input('content', ['class' => 'ckeditor', 'text' => 'Conteúdo', 'type' => 'textarea']) ?>
             </div>
+            <div class="form-group col-md-4 no-padding">
+                <?php
+                echo $this->element('admin/image-crop-upload', [
+                    'upload' => $entity->avatar,
+                    'label' => 'Avatar',
+                ])
+                ?>
+            </div>
         </fieldset>
     </div>
     <div class="box-footer">
@@ -48,3 +53,4 @@ $this->Form->create($entity, ['url' => [
     </div>
 </div>
 <?= $this->Form->end() ?>
+<?= $this->element('admin/image-crop-modal') ?>

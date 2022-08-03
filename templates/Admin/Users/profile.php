@@ -2,7 +2,7 @@
 <div class="box">
     <?= $this->element('admin/box-title', ['title' => '<i class="fa fa-drivers-license-o"></i> Dados Pessoais']) ?>
     <div class="box-body">
-        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 text-center">
+        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 text-center">
             <div class="well profile">
                 <figure>
                     <?php
@@ -46,31 +46,31 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-9 col-md-9 col-sm-6 col-xs-12 no-padding">
+        <div class="col-lg-8 col-md-8 col-sm-6 col-xs-12 no-padding">
             <fieldset>
                 <?= $this->Form->hidden('id', ['value' => $user->id]) ?>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-6">
                     <?= $this->Form->control('name', [
                         'value' => $user->name,
                         'label' => 'Nome',
                         'required' => true
                     ]); ?>
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-6">
                     <?= $this->Form->control('user', [
                         'value' => $user->user,
                         'label' => 'Usuário',
                         'required' => true
                     ]); ?>
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-6">
                     <?= $this->Form->control('email', [
                         'value' => $user->email,
                         'label' => 'E-mail',
                         'required' => true
                     ]); ?>
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-6">
                     <?=
                     $this->Form->control('phone', [
                         'value' => h($user->phone),
@@ -79,7 +79,7 @@
                     ]);
                     ?>
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-6">
                     <?=
                     $this->Form->control('cell_phone', [
                         'value' => ($user->cell_phone),
@@ -88,7 +88,7 @@
                     ]);
                     ?>
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-6">
                     <?=
                     $this->Form->control('status', [
                         'type' => 'select',
@@ -99,7 +99,7 @@
                     ]);
                     ?>
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-6">
                     <?=
                     $this->Form->control('password', [
                         'label' => 'Senha',
@@ -110,7 +110,7 @@
                     ]);
                     ?>
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-6">
                     <?=
                     $this->Form->control('password_confirm', [
                         'label' => 'Confirmar Senha',

@@ -38,6 +38,12 @@ class TestimonialsManagerService extends DefaultService
         if (!$this->__table->save($entity)) {
             throw new ValidationErrorException($entity);
         }
+        $uploadsManagerService = new UploadsManagerService($this->_controller);
+        $uploadsManagerService->saveFile(
+            $this->_request->getData('upload.file'),
+            $entity->id,
+            $this->getModel()
+        );
         $this->response['data'] = $entity;
         return $this->response;
     }

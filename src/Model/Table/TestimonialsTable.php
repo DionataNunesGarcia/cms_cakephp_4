@@ -54,6 +54,17 @@ class TestimonialsTable extends Table
             'foreignKey' => 'user_id',
             'joinType' => 'INNER',
         ]);
+
+        $this->hasOne('Avatar', [
+            'className' => 'Uploads',
+            'foreignKey' => [
+                'foreign_key'
+            ],
+            'joinType' => 'LEFT',
+            'conditions' => [
+                'Avatar.model' => 'Users',
+            ],
+        ]);
     }
 
     /**
@@ -143,7 +154,12 @@ class TestimonialsTable extends Table
     public function getEntity(int $id = null) :Entity
     {
         if ($id) {
-            return $this->get($id);
+            return $this
+                ->get($id, [
+                    'contain' => [
+                        "Avatar"
+                    ]
+                ]);
         }
         return $this->newEmptyEntity();
     }
