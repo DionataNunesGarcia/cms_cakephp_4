@@ -6,6 +6,10 @@
 /tmp/*
 /vendor/*
 /webroot/Uploads/*
+/.env
+/config/app.php
+/webroot/upload/*
+/config/Migrations/schema-dump-default.lock
 
 # OS generated files #
 ######################
@@ -53,12 +57,6 @@ nbproject/*
 yarn-debug.log
 yarn-error.log
 
-# CakePHP specific files #
-##########################
-/config/app.php
-/webroot/upload/*
-/config/Migrations/schema-dump-default.lock
-
 ### Docker ###
 .docker/nginx/log
 .docker/app/log
@@ -66,3 +64,4 @@ yarn-error.log
 .docker/database/data
 !.docker/database/dumps/.gitkeep
 !.docker/database/data/.gitkeep
+/docker/mysql

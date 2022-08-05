@@ -1,0 +1,47 @@
+version: '3.1'
+
+services:
+  database:
+    image: mysql:5.7
+    container_name: database
+    volumes:
+      - ./docker/database/dumps:/dumps:rw,cached
+      - ./docker/database/data/mysql-master:/var/lib/mysql
+      - ./docker/database/config/mysql-master:/etc/mysql/conf.d
+    environment:
+      - MYSQL_DATABASE=${DATABASE_NAME}
+      - MYSQL_ROOT_PASSWORD=${DATABASE_ROOT_PASSWORD}
+      - MYSQL_USER=${DATABASE_USER}
+      - MYSQL_PASSWORD=${DATABASE_PASSWORD}
+    expose:
+      - "${DATABASE_PORT}"
+    ports:
+      - "${DATABASE_PORT}:3306"
+    restart: always
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 9200:8080
+    links:
+      - database
+    environment:
+      ADMINER_DESIGN: "arcs-material"
+      ADMINER_DEFAULT_SERVER: "database"
+  app:
+    container_name: cakeapi
+    environment:
+      DATABASE_URL: "mysql://${DATABASE_USER}:${DATABASE_PASSWORD}@database/${DATABASE_NAME}?encoding=utf8&timezone=UTC&cacheMetadata=true&quoteIdentifiers=false&persistent=false"
+    env_file:
+      - .env
+    build:
+      ./docker
+    ports:
+      - "9090:80"
+    volumes:
+      - ./:/var/www/
+    links:
+      - database
+    depends_on:
+      - database
+    command: ["./wait-for-it.sh", "database:3306"]
