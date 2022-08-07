@@ -38,6 +38,8 @@ class TranslateControllerActions
         'BlogsCategories' => 'Categorias de Blog',
         'Contacts' => 'Contatos',
         'ContactsNewsletters' => 'NewsLetters',
+        'Events' => 'Eventos',
+        'EventsTypes' => 'Tipos de Eventos',
         'Levels' => 'Níveis',
         'LogsAccess' => 'Logs de Acesso',
         'LogsChange' => 'Logs de Alterações',

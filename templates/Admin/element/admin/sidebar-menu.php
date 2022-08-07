@@ -106,6 +106,32 @@
                     </li>
                 </ul>
             </li>
+            <!-- Site -->
+            <li class=" treeview">
+                <a href="#">
+                    <i class="fa fa-calendar"></i>
+                    <span>
+                        <?= __('Calendário') ?>
+                    </span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li>
+                        <a href="<?= $this->Url->build(['controller' => 'Events', 'action' => 'index'], ['fullBase' => true]); ?>" data-placement="right">
+                            <i class="fa fa-calendar-plus-o"></i>
+                            <?= __('Eventos') ?>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="<?= $this->Url->build(['controller' => 'EventsTypes', 'action' => 'index'], ['fullBase' => true]); ?>" data-placement="right">
+                            <i class="fa fa-calendar-o"></i>
+                            <?= __('Tipos de Eventos') ?>
+                        </a>
+                    </li>
+                </ul>
+            </li>
 
             <!--Admin-->
             <li class=" treeview">
