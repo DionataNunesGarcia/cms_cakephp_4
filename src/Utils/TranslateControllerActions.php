@@ -17,6 +17,7 @@ class TranslateControllerActions
         'searchOwners' => 'Pesquisar seus conteúdos',
         'editOwner' => 'Editar seu conteúdo',
         'enabledDisabled' => 'Habilitar/Desabilitar',
+        'addEventTypeCustom' => 'Adicionar Tipo de Evento Customizado',
     ];
 
     /**

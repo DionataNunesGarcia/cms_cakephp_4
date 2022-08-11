@@ -101,6 +101,8 @@ class AdminController extends AppController
             'multipleFileUploadsDelete',
             'deleteOwner',
             'enabledDisabled',
+            'addEventTypeCustom',
+            'updateEvent',
         ];
     }
 

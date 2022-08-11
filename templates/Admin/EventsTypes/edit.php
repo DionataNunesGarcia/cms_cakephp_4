@@ -7,6 +7,7 @@ $this->Form->create($entity, ['url' => [
     $entity->id,
     'fullBase' => true,
 ]]);
+$this->Form->unlockField('color');
 ?>
 <div class="box">
     <?= $this->element('admin/box-title', ['title' => 'Cadastro']) ?>
@@ -18,7 +19,14 @@ $this->Form->create($entity, ['url' => [
                 <?= $this->Form->control('name', ['label' => 'Nome']); ?>
             </div>
             <div class="form-group col-md-6">
-                <?= $this->Form->control('color', ['label' => 'Cor', 'class' => 'form-control color-picker']); ?>
+                <label for="color">Cor</label>
+                <select id="color" name="color" class="form-control" required="true">
+                    <?php foreach (\App\Utils\Enum\EventsColorsEnum::ARRAY_STR as $color => $name) {
+                        $selected = $entity->color == $color ? 'selected' : '';
+                        echo "<option style='background-color: {$color}' value='{$color}' {$selected}>{$name}</option>";
+                    }
+                    ?>
+                </select>
             </div>
         </fieldset>
     </div>

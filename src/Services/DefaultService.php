@@ -97,7 +97,7 @@ class DefaultService
     }
 
     /**
-     * @param int|null $id
+     * @param string|int|null $id
      * @return void
      */
     public function setId(int $id = null)
@@ -190,7 +190,7 @@ class DefaultService
      * @param int|null $id
      * @return false|string
      */
-    protected function hasPermission(string $action, string $controller = null, int $id = null)
+    public function hasPermission(string $action, string $controller = null, int $id = null)
     {
         $permissions = $this->_userSession->level->levels_permissions;
         $controller = $controller ?? $this->_request->getParam("controller");

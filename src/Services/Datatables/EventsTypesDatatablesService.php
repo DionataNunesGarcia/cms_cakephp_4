@@ -118,7 +118,7 @@ class EventsTypesDatatablesService extends DatatablesService
     {
         $response = [];
         foreach ($results as $item) {
-//            $events = count($item->events);
+            $events = count($item->events);
             $response[] = [
                 'id' => $item->id,
                 'name' => $item->name,
@@ -127,7 +127,7 @@ class EventsTypesDatatablesService extends DatatablesService
                 'created' => $item->created->i18nFormat('dd/MM/yyyy HH:mm:ss'),
                 'actions' => [
                     'edit' => $this->hasPermission('edit', $this->getModel(), $item->id),
-                    'delete' => 0 ? false : $this->hasPermission('delete', $this->getModel(), $item->id),
+                    'delete' => !$item->deletable || $events ? false : $this->hasPermission('delete', $this->getModel(), $item->id),
                 ],
             ];
         }
@@ -140,7 +140,7 @@ class EventsTypesDatatablesService extends DatatablesService
     public function getContains() :array
     {
         return [
-//            'Events'
+            'Events'
         ];
     }
 }

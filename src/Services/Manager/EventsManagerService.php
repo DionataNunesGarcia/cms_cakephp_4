@@ -3,10 +3,12 @@
 namespace App\Services\Manager;
 
 use App\Error\Exception\ValidationErrorException;
-use App\Model\Entity\EventsType;
+use App\Model\Entity\Event;
 use App\Model\Table\LevelsPermissionsTable;
 use App\Model\Table\LevelsTable;
 use App\Services\DefaultService;
+use App\Utils\ConvertDates;
+use App\Utils\Enum\EventsStatusEnum;
 use App\Utils\Enum\HttpStatusCodeEnum;
 use App\Utils\Enum\StatusEnum;
 use Cake\Controller\Controller;
@@ -15,14 +17,14 @@ use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Text;
 
-class EventsTypesManagerService extends DefaultService
+class EventsManagerService extends DefaultService
 {
     /**
      * @param Controller $controller
      */
     public function __construct(Controller $controller)
     {
-        $this->setModel('EventsTypes');
+        $this->setModel('Events');
         parent::__construct($controller);
     }
 
@@ -31,11 +33,12 @@ class EventsTypesManagerService extends DefaultService
      */
     public function saveEntity() :array
     {
+        /** @var Event $entity */
         $entity = $this->__table
             ->patchEntity($this->getEntity(), $this->_request->getData());
 
         if (!$this->__table->save($entity)) {
-            throw new ValidationErrorException($entity);
+            throw new ValidationErrorException($entity, HttpStatusCodeEnum::BAD_GATEWAY);
         }
         $this->response['data'] = $entity;
         return $this->response;
@@ -69,31 +72,6 @@ class EventsTypesManagerService extends DefaultService
         }
         $this->response['data'] = $entities;
         $this->response['status'] = HttpStatusCodeEnum::RESET_CONTENT;
-        return $this->response;
-    }
-
-    /**
-     * @return array
-     * @throws \Exception
-     */
-    public function saveCustom() :array
-    {
-        /** @var EventsType $entity */
-        $entity = $this->getEntity();
-
-        $entity->user_id = $this->_userSession['id'];
-        $entity->name = $this->_request->getData('name');
-        $entity->slug = Text::slug($entity->name);
-        $entity->color = $this->_request->getData('color');
-        $entity->status = StatusEnum::ACTIVE;
-        $entity->deletable = true;
-        $entity->created = FrozenTime::now();
-        $entity->modified = FrozenTime::now();
-
-        if (!$this->__table->save($entity)) {
-            throw new \Exception('Erro ao salvar o evento', HttpStatusCodeEnum::BAD_GATEWAY);
-        }
-        $this->response['data'] = $entity;
         return $this->response;
     }
 }

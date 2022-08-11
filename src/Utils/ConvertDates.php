@@ -7,17 +7,19 @@ use Cake\I18n\FrozenTime;
 class ConvertDates
 {
     /**
-     * @param FrozenTime $date
+     * @param FrozenTime|null $date
      * @param bool $time
+     * @param bool $seconds
      * @return string
      */
-    public static function convertDateToPtBR(FrozenTime $date, bool $time = false): string
+    public static function convertDateToPtBR(FrozenTime $date = null, bool $time = false, bool $seconds = true): string
     {
         if (empty($date)) {
             return '';
         }
-        $strTime = $time ? " H:i:s" : "";
-        return $date->format("d/m/Y{$strTime}");
+        $strTime = $time ? " H:i" : "";
+        $strSeconds = $time && $seconds ? ":s" : "";
+        return $date->format("d/m/Y{$strTime}{$strSeconds}");
     }
 
     /**
@@ -44,5 +46,21 @@ class ConvertDates
         $dateTime = \DateTime::createFromFormat('d/m/Y', $value);
 
         return $dateTime->format('Y-m-d');
+    }
+
+    /**
+     * @param string $value
+     * @return string
+     */
+    public static function convertDateTimeToDB(string $value = null) :string
+    {
+        if (empty($value) || $value == '00/00/0000') {
+            return '';
+        }
+
+        $value = strlen($value) > 16 ? substr($value, 0, -3) : $value;
+        $dateTime = \DateTime::createFromFormat('d/m/Y H:i', $value);
+
+        return $dateTime->format('Y-m-d H:i');
     }
 }

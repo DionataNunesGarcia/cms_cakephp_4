@@ -33,6 +33,7 @@ class EventsTypesController extends AdminController
 
     /**
      * @return void
+     * @throws \Exception
      */
     public function initialize(): void
     {
@@ -41,6 +42,16 @@ class EventsTypesController extends AdminController
         $this->_formService = new EventsTypesFormService($this);
         $this->_managerService = new EventsTypesManagerService($this);
         $this->_datatableService = new EventsTypesDatatablesService($this);
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function ignoreListActionsCustom() :array
+    {
+        return [
+            'listAllAjax',
+        ];
     }
 
     /**
@@ -116,7 +127,7 @@ class EventsTypesController extends AdminController
     /**
      * Delete method
      *
-     * @param string|null $id User id.
+     * @param string|null $ids id.
      * @return \Cake\Http\Response|null|void Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
@@ -147,6 +158,19 @@ class EventsTypesController extends AdminController
         $response = $this->_formService
             ->getAutocomplete();
 
+        $this->RequestHandler->renderAs($this, 'json');
+        $this->set(compact('response'));
+        $this->set('_serialize', 'response');
+    }
+
+    /**
+     * List All Ajax method
+     *
+     * @return void
+     */
+    public function listAllAjax()
+    {
+        $response = $this->_formService->getList();
         $this->RequestHandler->renderAs($this, 'json');
         $this->set(compact('response'));
         $this->set('_serialize', 'response');

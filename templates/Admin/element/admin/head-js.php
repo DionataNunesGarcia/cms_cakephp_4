@@ -20,6 +20,8 @@
 <?= $this->Html->script('../bower_components/select2/dist/js/select2.full.min.js') ?>
 <?= $this->Html->script('../bower_components/select2/dist/js/i18n/pt-BR.js') ?>
 <?= $this->Html->script('../bower_components/bootstrap-datepicker/dist/locales/bootstrap-datepicker.pt-BR.min.js') ?>
+<?= $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/eonasdan-bootstrap-datetimepicker/3.1.4/js/bootstrap-datetimepicker.min.js') ?>
+<?= $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js') ?>
 <?= $this->Html->script('../bower_components/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js') ?>
 <?= $this->Html->script('../plugins/timepicker/bootstrap-timepicker.min.js') ?>
 <?= $this->Html->script('../plugins/dual-listbox-master/dist/dual-listbox.js') ?>

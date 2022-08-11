@@ -6,6 +6,8 @@
 <?= $this->Html->css('../plugins/jvectormap/jquery-jvectormap-1.2.2.css') ?>
 <?= $this->Html->css('../bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css') ?>
 <?= $this->Html->css('../bower_components/bootstrap-daterangepicker/daterangepicker.css') ?>
+<?= $this->Html->css('https://cdnjs.cloudflare.com/ajax/libs/eonasdan-bootstrap-datetimepicker/3.1.4/css/bootstrap-datetimepicker.css') ?>
+<?= $this->Html->css('https://cdnjs.cloudflare.com/ajax/libs/eonasdan-bootstrap-datetimepicker/3.1.4/css/bootstrap-datetimepicker.min.css') ?>
 <?= $this->Html->css('../bower_components/bootstrap-colorpicker/dist/css/bootstrap-colorpicker.min.css') ?>
 <?= $this->Html->css('../bower_components/select2/dist/css/select2.min.css') ?>
 <?= $this->Html->css('../plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css') ?>

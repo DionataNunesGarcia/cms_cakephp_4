@@ -101,7 +101,7 @@
                 data: 'color',
                 className: 'text-center',
                 render: function(data, type, full, meta) {
-                    return `<span style="background-color: ${data}"><i class="fa fa-square"></i></>`;
+                    return `<span style="background-color: ${data}" class="external-event"></span>`;
                 }
             },
             {
