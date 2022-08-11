@@ -8,49 +8,11 @@
  * Licensed under MIT
  * http://www.opensource.org/licenses/mit-license.php
  */
-
-// JavaScript Document
-$(document).ready(function() {
-    //
-    // // page is now ready, initialize the calendar...
-    // $('#calendar').fullCalendar({
-    //     header: {
-    //         left:   'title',
-    //         center: '',
-    //         right:  'today agendaDay,agendaWeek,month prev,next'
-    //     },
-    //     defaultView: 'agendaWeek',
-    //     firstHour: 8,
-    //     weekMode: 'variable',
-    //     aspectRatio: 2,
-    //     editable: true,
-    //     events: urlFeed,
-    //     eventRender: function(event, element) {
-    //         element.qtip({
-    //             content: event.details,
-    //             position: {
-    //                 target: 'mouse',
-    //                 adjust: {
-    //                     x: 10,
-    //                     y: -5
-    //                 }
-    //             },
-    //             style: {
-    //                 name: 'light',
-    //                 tip: 'leftTop'
-    //             }
-    //         });
-    //     },
-    //     eventDragStart: function(event) {
-    //         $(this).qtip("destroy");
-    //     },
-    // });
-
-    listEventsTypes();
-
-});
-
 $(function () {
+
+    /* list events types
+     -----------------------------------------------------------------*/
+    listEventsTypes();
 
     /* initialize the external events
      -----------------------------------------------------------------*/
@@ -114,9 +76,12 @@ $(function () {
             saveEvent(event);
         },
         dayClick: function(date, jsEvent, view) {
-            console.log(date);
+
         },
         eventRender: function(event, element) {
+            if(window.eventScrolling) {
+                return;
+            }
             element.popover({
                 title: event.title,
                 content: event.details,
@@ -126,10 +91,13 @@ $(function () {
                 container: 'body'
             });
         },
+        eventDragStart: function(event) {
+            $(".popover").remove();
+        },
     })
 
     /* ADDING EVENTS */
-    var currColor = '#3c8dbc' //Red by default
+    let currColor = '#3c8dbc' //Red by default
     //Color chooser button
     var colorChooser = $('#color-chooser-btn')
     $('#color-chooser > li > a').click(function (e) {
@@ -142,7 +110,7 @@ $(function () {
     $('#add-new-event').click(function (e) {
         e.preventDefault()
         //Get value and make sure it is not null
-        var val = $('#new-event').val()
+        let val = $('#new-event').val()
         if (val.length == 0) {
             alert('Selecione uma cor e digite o nome');
             $('#new-event').focus();
@@ -163,7 +131,7 @@ $(function () {
             }
         });
         //Create events
-        var event = $('<div />')
+        let event = $('<div />')
         event.css({
             'background-color': currColor,
             'border-color'    : currColor,
@@ -209,12 +177,12 @@ function init_events(ele) {
 
         // create an Event Object (http://arshaw.com/fullcalendar/docs/event_data/Event_Object/)
         // it doesn't need to have a start or end
-        var eventObject = {
+        let eventObject = {
             title: $.trim($(this).text()) // use the element's text as the event title
         }
 
         // store the Event Object in the DOM element so we can get to it later
-        $(this).data('eventObject', eventObject)
+        $(this).data('eventObject', eventObject);
 
         // make the event draggable using jQuery UI
         $(this).draggable({
@@ -245,16 +213,16 @@ function saveEvent(event) {
             xhr.setRequestHeader("X-CSRF-Token", _csrfToken);
         },
         success: function(response){
-            console.log(response)
+            console.log(response);
         }
     });
+    $(".popover").remove();
 }
 
 function buildDate(str) {
     if (str == undefined || str == '') {
         return '';
     }
-    debugger
     let date = new Date(str);
     let year = date.getFullYear();
 
