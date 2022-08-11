@@ -1,53 +1,56 @@
-# CakePHP Application Skeleton
-
-![Build Status](https://github.com/cakephp/app/actions/workflows/ci.yml/badge.svg?branch=master)
-[![Total Downloads](https://img.shields.io/packagist/dt/cakephp/app.svg?style=flat-square)](https://packagist.org/packages/cakephp/app)
-[![PHPStan](https://img.shields.io/badge/PHPStan-level%207-brightgreen.svg?style=flat-square)](https://github.com/phpstan/phpstan)
-
-A skeleton for creating applications with [CakePHP](https://cakephp.org) 4.x.
-
-The framework source code can be found here: [cakephp/cakephp](https://github.com/cakephp/cakephp).
+# Cakephp 4 Template
+CMS and API
 
 ## Installation
 
-1. Download [Composer](https://getcomposer.org/doc/00-intro.md) or update `composer self-update`.
-2. Run `php composer.phar create-project --prefer-dist cakephp/app [app_name]`.
+1. Download and install [Composer](https://getcomposer.org/doc/00-intro.md).
 
-If Composer is installed globally, run
+2. Download and install [GIT](https://git-scm.com/downloads).
 
+3. Project Clone
 ```bash
-composer create-project --prefer-dist cakephp/app
+git clone https://gitlab.com/DionataNunesGarcia/laticineos.git
 ```
 
-In case you want to use a custom app dir name (e.g. `/myapp/`):
-
+Update project dependence using composer
 ```bash
-composer create-project --prefer-dist cakephp/app myapp
+composer install
 ```
 
-You can now either use your machine's webserver to view the default home page, or start
-up the built-in webserver with:
+## Config database
 
+Read and edit `config/app.php` with connection data.
+If environment is local, copy `config/app_local.example.php` and rename to `config/app_local.php`, after config connections data.
+
+To update scripts database, is used the [migrations](https://book.cakephp.org/migrations/2/pt/index.html#migrations), para saber mais só entrar no link https://book.cakephp.org/migrations/2/pt/index.html#migrations
+
+## Local Server
+To deploy local machine, execute the command
 ```bash
 bin/cake server -p 8765
 ```
 
-Then visit `http://localhost:8765` to see the welcome page.
+## Server Update
+Para atualizar os dados no servidor, só executar o comando pull do git apontando para a branch main dentro da raiz do projeto `var/www/html/`
 
-## Update
+```bash
+git pull origin main
+```
 
-Since this skeleton is a starting point for your application and various files
-would have been modified as per your needs, there isn't a way to provide
-automated upgrades, so you have to do any updates manually.
+To check if exist scripts
 
-## Configuration
+```bash
+bin/cake migrations status
+```
 
-Read and edit the environment specific `config/app_local.php` and setup the 
-`'Datasources'` and any other configuration relevant for your application.
-Other environment agnostic settings can be changed in `config/app.php`.
+To execute all migrations scripts, execute command
 
-## Layout
+```bash
+bin/cake migrations migrate
+```
 
-The app skeleton uses [Milligram](https://milligram.io/) (v1.3) minimalist CSS
-framework by default. You can, however, replace it with any other library or
-custom styles.
+To cache clear
+
+```bash
+bin/cake cache clear_all
+```
