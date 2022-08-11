@@ -152,6 +152,9 @@ class EventsTable extends Table
         if (empty($data['event_type_id']) && !empty($data['id'])) {
             unset($data['event_type_id']);
         }
+        if (!isset($data['details']) || empty($data['details'])) {
+            $data['details'] = ' ';
+        }
     }
 
     /**

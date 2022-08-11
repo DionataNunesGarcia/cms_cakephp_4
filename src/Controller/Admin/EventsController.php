@@ -80,7 +80,8 @@ class EventsController extends AdminController
                 $this->_managerService->setId($id);
             }
             $response = $this->_managerService->saveEntity();
-        } catch (\ValidationErrorException $exc) {
+        } catch (\Exception $exc) {
+            dd($exc);
             $code = $exc->getCode() != 0? $exc->getCode() : 403;
             $this->response = $this->response->withStatus($code);
             $response = [

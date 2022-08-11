@@ -37,6 +37,10 @@ class EventsManagerService extends DefaultService
         $entity = $this->__table
             ->patchEntity($this->getEntity(), $this->_request->getData());
 
+        if ($entity->isNew()) {
+            $entity->user_id = $this->_userSession['id'];
+        }
+
         if (!$this->__table->save($entity)) {
             throw new ValidationErrorException($entity, HttpStatusCodeEnum::BAD_GATEWAY);
         }

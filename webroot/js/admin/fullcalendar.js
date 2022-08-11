@@ -66,6 +66,7 @@ $(function () {
         y    = date.getFullYear();
 
     $('#calendar-events').fullCalendar({
+        //Random default events
         header    : {
             left  : 'prev,next today',
             center: 'title',
@@ -77,14 +78,17 @@ $(function () {
             week: "Semana",
             day: "Dia"
         },
-        //Random default events
-        events : urlFeed,
+        timezone: 'local',
+        events    : urlFeed,
+        defaultView: 'agendaWeek',
+        firstHour : 8,
+        weekMode  : 'variable',
+        aspectRatio: 2,
         editable  : true,
         droppable : true, // this allows things to be dropped onto the calendar !!!
         drop      : function (date, allDay) { // this function is called when something is dropped
             // retrieve the dropped element's stored Event Object
-            let originalEventObject = $(this).data('eventObject')
-
+            let originalEventObject = $(this).data('eventObject');
             // we need to copy it, so that multiple events don't have a reference to the same object
             let copiedEventObject = $.extend({}, originalEventObject)
 
@@ -104,7 +108,7 @@ $(function () {
             saveEvent(event);
         },
         eventResizeStart: function(event) {
-            // $(this).qtip("destroy");
+            saveEvent(event);
         },
         eventResize: function(event) {
             saveEvent(event);
@@ -121,9 +125,6 @@ $(function () {
                 placement: 'top',
                 container: 'body'
             });
-            element.attr('data-toggle', "modal");
-            element.attr('data-target', "#sched-modal");
-            element.attr('href', "/details");
         },
     })
 
