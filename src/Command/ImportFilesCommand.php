@@ -55,7 +55,10 @@ class ImportFilesCommand extends Command
         $totalError = 0;
         $totalOn = 0;
         $totalOff = 0;
+        $values = [];
         foreach ($csv as $k => $data) {
+            $values['date'] = ConvertDates::convertDateTimeToFrozen($data[1]);
+            $values['position'] = $data[2] == 'Ligado' ? true : false;
 
             /** @var FrozenTime $dateTime */
             $dateTime = ConvertDates::convertDateTimeToFrozen($data[1]);
@@ -69,6 +72,10 @@ class ImportFilesCommand extends Command
 
             $totalSuccess++;
         }
+//
+//        foreach () {
+//
+//        }
         die;
 
         //message de tempo
