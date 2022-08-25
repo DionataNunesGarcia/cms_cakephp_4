@@ -58,9 +58,23 @@ class ConvertDates
             return '';
         }
 
-        $value = strlen($value) > 16 ? substr($value, 0, -3) : $value;
-        $dateTime = \DateTime::createFromFormat('d/m/Y H:i', $value);
+//        $value = strlen($value) > 16 ? substr($value, 0, -3) : $value;
+        $dateTime = \DateTime::createFromFormat('d/m/Y H:i:s', $value);
 
-        return $dateTime->format('Y-m-d H:i');
+        return $dateTime->format('Y-m-d H:i:s');
+    }
+
+    /**
+     * @param string $value
+     * @return string
+     */
+    public static function convertDateTimeToFrozen(string $value = null) :FrozenTime
+    {
+        if (empty($value) || $value == '00/00/0000') {
+            return '';
+        }
+        $dateTime = \DateTime::createFromFormat('d/m/Y H:i:s', $value);
+
+        return FrozenTime::parse($dateTime);
     }
 }
